@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#06251f">
+
+<title>Enquiries | Keys99 Admin</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin-enquiries.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+
+<body>
+
+
+<div class="admin-shell">
+
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <main class="admin-main">
+
+    <div class="admin-topbar">
+      <div class="admin-title">
+        <h1>Enquiries</h1>
+        <p>Every lead submitted across all listings.</p>
+      </div>
+    </div>
+
+    <div class="admin-message" id="enqMessage" hidden></div>
+
+    <div class="admin-panel">
+
+      <div class="admin-filters">
+        <button type="button" class="admin-filter-btn active" data-filter="all">All</button>
+        <button type="button" class="admin-filter-btn" data-filter="new">New</button>
+        <button type="button" class="admin-filter-btn" data-filter="contacted">Contacted</button>
+        <button type="button" class="admin-filter-btn" data-filter="closed">Closed</button>
+        <input type="text" class="admin-search-input" id="enqSearch" placeholder="Search name, phone, email...">
+      </div>
+
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Contact</th>
+              <th>Property</th>
+              <th>Message</th>
+              <th>Received</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="enqTableBody">
+            <tr class="admin-empty-row"><td colspan="7">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<script src="js/config.js"></script>
+<script src="js/admin-auth.js"></script>
+
+<script>
+
+/* =========================================================
+   KEYS99 - ADMIN ENQUIRIES
+========================================================= */
+
+const ENQUIRY_STATES = ["new","contacted","closed"];
+
+let allEnquiries = [];
+let activeFilter = "all";
+
+(async () => {
+
+  const user = await requireAdmin();
+  if(!user) return;
+
+  renderAdminSidebar("admin-enquiries.html");
+
+  await loadEnquiries();
+
+  document.querySelectorAll(".admin-filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".admin-filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      activeFilter = btn.dataset.filter;
+      renderTable();
+    });
+  });
+
+  document.getElementById("enqSearch").addEventListener("input", renderTable);
+
+})();
+
+
+async function loadEnquiries(){
+
+  const { data, error } = await supabaseClient
+    .from("enquiries")
+    .select("id, name, phone, email, message, status, created_at, property_id, projects(developer, city, locality)")
+    .order("created_at", { ascending: false });
+
+  if(error){
+    showAdminMessage("enqMessage", "Failed to load enquiries: " + error.message, "error");
+    return;
+  }
+
+  allEnquiries = data || [];
+  renderTable();
+
+}
+
+function renderTable(){
+
+  const tbody = document.getElementById("enqTableBody");
+  const search = document.getElementById("enqSearch").value.trim().toLowerCase();
+
+  let rows = allEnquiries;
+
+  if(activeFilter !== "all"){
+    rows = rows.filter(e => (e.status || "new") === activeFilter);
+  }
+
+  if(search){
+    rows = rows.filter(e =>
+      String(e.name || "").toLowerCase().includes(search) ||
+      String(e.phone || "").toLowerCase().includes(search) ||
+      String(e.email || "").toLowerCase().includes(search)
+    );
+  }
+
+  if(rows.length === 0){
+    tbody.innerHTML = '<tr class="admin-empty-row"><td colspan="7">No enquiries match this view.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = rows.map(e => `
+    <tr data-id="${e.id}">
+      <td style="font-weight:700;">${escapeAdminHtml(e.name || "-")}</td>
+      <td class="admin-cell-muted">${escapeAdminHtml(e.phone || "-")}<br>${escapeAdminHtml(e.email || "")}</td>
+      <td class="admin-cell-muted">
+        ${e.projects ? escapeAdminHtml(e.projects.developer || "Listing") + "<br>" + escapeAdminHtml([e.projects.locality, e.projects.city].filter(Boolean).join(", ")) : "-"}
+      </td>
+      <td class="admin-cell-muted">${escapeAdminHtml((e.message || "").slice(0, 70))}${(e.message || "").length > 70 ? "..." : ""}</td>
+      <td class="admin-cell-muted">${adminFormatDate(e.created_at)}</td>
+      <td>
+        <select class="admin-select" data-role="status-select">
+          ${ENQUIRY_STATES.map(s => `<option value="${s}" ${s === (e.status || "new") ? "selected" : ""}>${s.charAt(0).toUpperCase() + s.slice(1)}</option>`).join("")}
+        </select>
+      </td>
+      <td>
+        <div class="admin-row-actions">
+          <button type="button" class="admin-btn admin-btn-primary" data-role="save-status">Save</button>
+          ${e.property_id ? `<a href="../projects/property-details.html?id=${e.property_id}" target="_blank" class="admin-btn">View</a>` : ""}
+        </div>
+      </td>
+    </tr>
+  `).join("");
+
+  tbody.querySelectorAll('[data-role="save-status"]').forEach(btn => {
+    btn.addEventListener("click", () => updateEnquiryStatus(btn));
+  });
+
+}
+
+async function updateEnquiryStatus(btn){
+
+  const row = btn.closest("tr");
+  const id = row.dataset.id;
+  const select = row.querySelector('[data-role="status-select"]');
+  const newStatus = select.value;
+
+  btn.disabled = true;
+  btn.textContent = "Saving...";
+
+  const { error } = await supabaseClient
+    .from("enquiries")
+    .update({ status: newStatus })
+    .eq("id", id);
+
+  btn.disabled = false;
+  btn.textContent = "Save";
+
+  if(error){
+    showAdminMessage("enqMessage", "Failed to update: " + error.message, "error");
+    return;
+  }
+
+  const local = allEnquiries.find(e => e.id === id);
+  if(local) local.status = newStatus;
+
+  showAdminMessage("enqMessage", "Enquiry updated.", "success");
+  renderTable();
+
+}
+
+</script>
+
+</body>
+</html>

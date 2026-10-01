@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b0f10">
+
+<title>Property Video Reels | Keys99</title>
+<meta name="description" content="Watch short video tours of verified properties across India. See real homes, layouts and neighbourhoods before you shortlist on Keys99.">
+<link rel="canonical" href="https://keys99.com/reels.html">
+<meta name="robots" content="index,follow,max-image-preview:large">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Keys99">
+<meta property="og:title" content="Property Video Reels | Keys99">
+<meta property="og:description" content="Watch short video tours of verified properties across India. See real homes, layouts and neighbourhoods before you shortlist on Keys99.">
+<meta property="og:url" content="https://keys99.com/reels.html">
+<meta property="og:image" content="https://keys99.com/assets/og-default.jpg">
+<meta property="og:locale" content="en_IN">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Property Video Reels | Keys99">
+<meta name="twitter:description" content="Watch short video tours of verified properties across India. See real homes, layouts and neighbourhoods before you shortlist on Keys99.">
+<meta name="twitter:image" content="https://keys99.com/assets/og-default.jpg">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/reels.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+
+<body>
+
+
+<!-- =======================================================
+     HEADER (desktop only - reels view is full-bleed on mobile)
+======================================================= -->
+
+<header class="header">
+
+  <div class="container nav">
+
+    <a class="logo logo-link" href="index.html">
+      <img src="assets/logo.png" alt="Keys99.com" class="header-logo">
+    </a>
+
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="projects/search.html?status=sale">Buy</a>
+      <a href="projects/search.html?status=rent">Rent</a>
+      <a class="active" href="reels.html">Reels</a>
+      <a href="index.html#why">About</a>
+      <a href="index.html#footer">Contact</a>
+    </nav>
+
+    <div class="nav-actions">
+      <button class="login-btn" id="loginBtn">♙ &nbsp; Login / Sign Up</button>
+      <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+    </div>
+
+  </div>
+
+</header>
+
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Home</a>
+  <a href="projects/search.html?status=sale">Buy Property</a>
+  <a href="projects/search.html?status=rent">Rent Property</a>
+  <a href="reels.html">Reels</a>
+  <a href="index.html#why">Why Keys99</a>
+  <a href="index.html#footer">Contact</a>
+</div>
+
+
+<!-- Mobile-only floating back button (immersive full-screen mode) -->
+
+<button class="reels-back-btn" id="reelsBackBtn" aria-label="Back">←</button>
+
+
+<main>
+
+
+<!-- =======================================================
+     REELS FEED
+======================================================= -->
+
+<h1 class="sr-only">Property Video Reels - Short Video Tours of Verified Properties in India</h1>
+
+<div class="reels-page-wrap">
+
+  <div class="reels-frame" id="reelsFrame">
+
+    <div class="reels-loading" id="reelsLoading">
+      <div class="reels-spinner"></div>
+      <p>Loading property reels...</p>
+    </div>
+
+    <div class="reels-empty" id="reelsEmpty" hidden>
+      <div class="reels-empty-icon">🎬</div>
+      <h3>No Property Reels Yet</h3>
+      <p>Sellers haven't uploaded any video walkthroughs yet. Check back soon, or browse listings instead.</p>
+      <a class="btn-primary" href="projects/search.html">Browse Properties</a>
+    </div>
+
+    <div class="reels-track" id="reelsTrack" hidden></div>
+
+  </div>
+
+  <div class="reels-desktop-controls" id="reelsDesktopControls">
+    <button type="button" class="reels-nav-btn" id="reelsUpBtn" aria-label="Previous reel">⌃</button>
+    <button type="button" class="reels-nav-btn" id="reelsDownBtn" aria-label="Next reel">⌄</button>
+  </div>
+
+</div>
+
+
+</main>
+
+
+<!-- =======================================================
+     FOOTER (desktop only)
+======================================================= -->
+
+<footer id="footer">
+
+  <div class="container">
+
+    <div class="footer-grid">
+
+      <div class="footer-col footer-brand">
+        <a class="logo logo-link" href="index.html">
+          <img src="assets/logo.png" alt="Keys99.com" class="header-logo">
+        </a>
+        <p style="margin-top:13px;max-width:230px">
+          A modern real estate platform to help you discover verified properties with confidence.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a href="index.html">Home</a>
+        <a href="projects/search.html?status=sale">Buy</a>
+        <a href="projects/search.html?status=rent">Rent</a>
+        <a href="reels.html">Reels</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="index.html#why">About Us</a>
+        <a href="index.html#footer">Contact Us</a>
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="terms.html">Terms &amp; Conditions</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Follow &amp; Contact</h4>
+        <div class="socials">
+          <a href="https://www.facebook.com/profile.php?id=100066632434187" aria-label="Keys99 on Facebook" target="_blank" rel="noopener">f</a>
+          <a href="https://www.instagram.com/keys99com/" aria-label="Keys99 on Instagram" target="_blank" rel="noopener">◎</a>
+          <a href="#" aria-label="Keys99 on LinkedIn">in</a>
+          <a href="https://www.youtube.com/@Keys99" aria-label="Keys99 on YouTube" target="_blank" rel="noopener">▶</a>
+        </div>
+        <p style="margin-top:12px">support@keys99.com</p>
+        <p>+91 98765 43210</p>
+        <p>India</p>
+      </div>
+
+    </div>
+
+    <div class="copyright">
+      <span>© 2026 Keys99.com. All rights reserved.</span>
+      <span>⌂ &nbsp; Your Key to a Better Tomorrow</span>
+    </div>
+
+  </div>
+
+</footer>
+
+
+<!-- MOBILE BOTTOM NAVIGATION (translucent overlay on the reel) -->
+
+<nav class="bottom-nav" id="bottomNav">
+
+  <button type="button" data-target="home">
+    <span class="bn-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 11.5 12 4l9 7.5"/>
+        <path d="M5.5 10v9a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-9"/>
+        <path d="M9.5 20v-6h5v6"/>
+      </svg>
+    </span>
+    <span class="bn-label">Home</span>
+  </button>
+
+  <button type="button" data-target="search">
+    <span class="bn-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="6.5"/>
+        <path d="m20 20-3.6-3.6"/>
+      </svg>
+    </span>
+    <span class="bn-label">Search</span>
+  </button>
+
+  <button type="button" data-target="reels">
+    <span class="bn-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3.5" y="3.5" width="17" height="17" rx="5"/>
+        <path d="M10 8.5v7l6-3.5-6-3.5Z" fill="currentColor" stroke="none"/>
+      </svg>
+    </span>
+    <span class="bn-label">Reels</span>
+  </button>
+
+  <button type="button" data-target="profile">
+    <span class="bn-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8" r="3.5"/>
+        <path d="M4.5 20c1.4-3.6 4.3-5.5 7.5-5.5s6.1 1.9 7.5 5.5"/>
+      </svg>
+    </span>
+    <span class="bn-label">Profile</span>
+  </button>
+
+</nav>
+
+
+<script src="js/config.js"></script>
+
+<script>
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function escapeHtml(value){
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+let toastTimer = null;
+
+function showToast(message){
+
+  let toast = document.getElementById("reelsToast");
+
+  if(!toast){
+    toast = document.createElement("div");
+    toast.id = "reelsToast";
+    toast.className = "reels-toast";
+    document.body.appendChild(toast);
+  }
+
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
+
+}
+
+function initMobileMenu(){
+
+  const menuBtn = document.getElementById("menuBtn");
+  const mobileMenu = document.getElementById("mobileMenu");
+
+  if(!menuBtn || !mobileMenu){
+    return;
+  }
+
+  menuBtn.addEventListener("click", () => {
+    mobileMenu.classList.toggle("open");
+    menuBtn.textContent = mobileMenu.classList.contains("open") ? "×" : "☰";
+  });
+
+  mobileMenu.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
+      mobileMenu.classList.remove("open");
+      menuBtn.textContent = "☰";
+    });
+  });
+
+}
+
+function initLoginButton(){
+  const loginBtn = document.getElementById("loginBtn");
+  if(loginBtn){
+    loginBtn.addEventListener("click", () => {
+      window.location.href = "profile.html";
+    });
+  }
+}
+
+function initBottomNav(activeTarget){
+
+  const bottomNav = document.getElementById("bottomNav");
+
+  if(!bottomNav){
+    return;
+  }
+
+  bottomNav.querySelectorAll("button").forEach(btn => {
+    btn.classList.toggle("bn-active", btn.dataset.target === activeTarget);
+  });
+
+  bottomNav.addEventListener("click", event => {
+
+    const button = event.target.closest("button");
+
+    if(!button){
+      return;
+    }
+
+    const target = button.dataset.target;
+
+    if(target === "home"){
+
+      window.location.href = "index.html";
+
+    }else if(target === "search"){
+
+      window.location.href = "projects/search.html";
+
+    }else if(target === "reels"){
+
+      document.getElementById("reelsTrack").scrollTo({ top:0, behavior:"smooth" });
+
+    }else if(target === "profile"){
+
+      window.location.href = "profile.html";
+
+    }
+
+  });
+
+}
+
+
+/* =========================================================
+   FAVORITES (localStorage, shared across the whole site)
+========================================================= */
+
+function getFavorites(){
+  try{
+    const favorites = JSON.parse(localStorage.getItem("keys99_favorites") || "[]");
+    return Array.isArray(favorites) ? favorites : [];
+  }catch(error){
+    return [];
+  }
+}
+
+function toggleFavoriteForReel(propertyId){
+
+  let favorites = getFavorites();
+  const isActive = favorites.includes(propertyId);
+
+  if(isActive){
+    favorites = favorites.filter(id => id !== propertyId);
+  }else{
+    favorites.push(propertyId);
+  }
+
+  localStorage.setItem("keys99_favorites", JSON.stringify(favorites));
+
+  document.querySelectorAll(`.reel-item[data-property-id="${propertyId}"]`).forEach(item => {
+    const btn = item.querySelector('[data-action="like"]');
+    if(!btn){
+      return;
+    }
+    const nowActive = !isActive;
+    btn.classList.toggle("active", nowActive);
+    btn.querySelector(".reel-action-icon").textContent = nowActive ? "♥" : "♡";
+  });
+
+  showToast(!isActive ? "Added to favorites" : "Removed from favorites");
+
+  return !isActive;
+
+}
+
+
+/* =========================================================
+   PROPERTY / FORMATTING HELPERS
+========================================================= */
+
+function getBhkOptions(property){
+  if(!property || !Array.isArray(property.bhk_options)){
+    return [];
+  }
+  return property.bhk_options.filter(option => option && typeof option === "object");
+}
+
+function getPropertyTypes(property){
+  return getBhkOptions(property).map(option => String(option.type || "").trim()).filter(Boolean);
+}
+
+function getBhkText(property){
+  const types = getPropertyTypes(property);
+  if(!types.length){
+    return "";
+  }
+  return [...new Set(types)].join(" / ");
+}
+
+function getCardTitle(property){
+  const bhk = getBhkText(property);
+  const developer = String(property.developer || "").trim();
+  if(bhk && developer){
+    return developer + " — " + bhk;
+  }
+  return bhk || developer || "Untitled Property";
+}
+
+function getNumericPrice(option){
+  if(!option){
+    return null;
+  }
+  const price = Number(option.price);
+  return (Number.isFinite(price) && price > 0) ? price : null;
+}
+
+function getMinPropertyPrice(property){
+  const prices = getBhkOptions(property).map(getNumericPrice).filter(price => price !== null);
+  return prices.length ? Math.min(...prices) : null;
+}
+
+function formatPrice(price){
+
+  if(price === null || price === undefined || !Number.isFinite(Number(price))){
+    return "";
+  }
+
+  price = Number(price);
+
+  if(price >= 10000000){
+    const crore = price / 10000000;
+    return "₹ " + crore.toFixed(crore % 1 === 0 ? 0 : 2).replace(/\.00$/, "") + " Cr";
+  }
+
+  if(price >= 100000){
+    const lakh = price / 100000;
+    return "₹ " + lakh.toFixed(lakh % 1 === 0 ? 0 : 2).replace(/\.00$/, "") + " Lakh";
+  }
+
+  if(price >= 1000){
+    const thousand = price / 1000;
+    return "₹ " + thousand.toFixed(thousand % 1 === 0 ? 0 : 1).replace(/\.0$/, "") + "K";
+  }
+
+  return "₹ " + price;
+
+}
+
+function getLocationText(property){
+
+  const parts = [property.locality, property.city, property.state];
+
+  const unique = parts
+    .map(value => String(value || "").trim())
+    .filter(Boolean)
+    .filter((value, index, array) => array.indexOf(value) === index);
+
+  if(unique.length){
+    return unique.join(", ");
+  }
+
+  return property.address || "";
+
+}
+
+function getStatusText(property){
+  const status = String(property.status || "").trim();
+  return status || "For Sale";
+}
+
+function getStatusClass(status){
+  const value = String(status || "").toLowerCase();
+  if(value.includes("rent") || value.includes("lease")){
+    return "rent";
+  }
+  if(value.includes("sold") || value.includes("closed")){
+    return "sold";
+  }
+  return "sale";
+}
+
+function getImageUrl(property){
+  const image = String(property.main_image || "").trim();
+  if(image){
+    return image;
+  }
+  return "/assets/property-placeholder.svg";
+}
+
+
+/* =========================================================
+   VIDEO SOURCE HELPERS
+   Reuses the exact same "reels" / "virtual_tour_video" logic
+   as property-details.js so any video a seller has uploaded
+   there also shows up here.
+========================================================= */
+
+function arrayValue(v){
+  return Array.isArray(v) ? v : (v ? [v] : []);
+}
+
+function directVideoUrls(v){
+  return arrayValue(v).filter(Boolean).map(x => typeof x === "string" ? x : (x && (x.url || x.video_url || x.src))).filter(Boolean);
+}
+
+function isDirectVideo(url){
+  return /\.(mp4|webm|ogg|mov)(\?|#|$)/i.test(url) || /supabase\.co\/storage\/v1\/object\/public\//i.test(url);
+}
+
+function getPropertyVideos(property){
+  const videos = [
+    ...directVideoUrls(property.reels),
+    ...directVideoUrls(property.virtual_tour_video)
+  ].filter(isDirectVideo).filter((url, index, arr) => arr.indexOf(url) === index);
+
+  return videos.slice(0, 4);
+}
+
+
+/* =========================================================
+   FETCH + BUILD REEL ITEMS
+========================================================= */
+
+const PROPERTIES_TABLE = "projects";
+
+let reelItems = [];
+let isMuted = true;
+let activeVideo = null;
+let observer = null;
+const trackedViews = new Set();
+const viewTimers = new Map();
+
+async function fetchReelProperties(){
+
+  const { data, error } = await supabaseClient
+    .from(PROPERTIES_TABLE)
+    .select(PROPERTY_SELECT_COLUMNS)
+    .order("created_at", { ascending:false })
+    .limit(60);
+
+  if(error){
+    console.error("Failed to load property reels:", error);
+    return [];
+  }
+
+  return Array.isArray(data) ? data : [];
+
+}
+
+function buildReelItems(properties){
+
+  const items = [];
+
+  properties.forEach(property => {
+    getPropertyVideos(property).forEach((videoUrl, index) => {
+      items.push({ id: property.id + "::" + index, videoUrl, property });
+    });
+  });
+
+  return items;
+
+}
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function renderReelItem(item, index){
+
+  const property = item.property;
+  const price = getMinPropertyPrice(property);
+  const priceText = price !== null ? formatPrice(price) : "Price on request";
+  const title = getCardTitle(property);
+  const location = getLocationText(property);
+  const statusClass = getStatusClass(property.status);
+  const statusLabel = statusClass === "rent" ? "For Rent" : statusClass === "sold" ? "Sold Out" : "For Sale";
+  const reraBadge = property.rera_id ? `<span class="reel-rera-badge">✓ RERA</span>` : "";
+  const isFav = getFavorites().includes(property.id);
+
+  const el = document.createElement("div");
+  el.className = "reel-item";
+  el.dataset.propertyId = property.id;
+  el.dataset.reelId = item.id;
+
+  el.innerHTML = `
+    <video class="reel-video" src="${escapeHtml(item.videoUrl)}" loop muted playsinline preload="metadata"></video>
+
+    <div class="reel-gradient reel-gradient-top"></div>
+    <div class="reel-gradient reel-gradient-bottom"></div>
+
+    <div class="reel-tap-layer" data-role="tap-layer"></div>
+
+    <div class="reel-heart-burst" data-role="heart-burst">♥</div>
+
+    ${index === 0 ? `<div class="reels-swipe-hint" data-role="swipe-hint"><span>⌄</span>Swipe for more properties</div>` : ""}
+
+    <div class="reel-top-bar">
+      <span class="reel-status-pill status-${statusClass}">${escapeHtml(statusLabel)}</span>
+      <button type="button" class="reel-mute-btn" data-role="mute-btn" aria-label="Toggle sound">${isMuted ? "🔇" : "🔊"}</button>
+    </div>
+
+    <div class="reel-side-actions">
+
+      <button type="button" class="reel-action-btn ${isFav ? "active" : ""}" data-action="like">
+        <span class="reel-action-icon">${isFav ? "♥" : "♡"}</span>
+        <span class="reel-action-count">Save</span>
+      </button>
+
+      <button type="button" class="reel-action-btn" data-action="share">
+        <span class="reel-action-icon">↗</span>
+        <span class="reel-action-count">Share</span>
+      </button>
+
+      <button type="button" class="reel-action-btn" data-action="enquire">
+        <span class="reel-action-icon">☎</span>
+        <span class="reel-action-count">Enquire</span>
+      </button>
+
+      <a class="reel-action-avatar" href="projects/property-details.html?id=${encodeURIComponent(property.id)}" aria-label="View property">
+        <img src="${escapeHtml(getImageUrl(property))}" alt="" loading="lazy">
+      </a>
+
+    </div>
+
+    <div class="reel-bottom-info">
+      <div class="reel-price-row">
+        <strong>${escapeHtml(priceText)}</strong>
+        ${reraBadge}
+      </div>
+      <div class="reel-dev-title">${escapeHtml(title)}</div>
+      ${location ? `<div class="reel-location">📍 ${escapeHtml(location)}</div>` : ""}
+      <a class="reel-cta-btn" href="projects/property-details.html?id=${encodeURIComponent(property.id)}">View Property Details</a>
+    </div>
+
+    <div class="reel-progress-track"><div class="reel-progress-fill" data-role="progress-fill"></div></div>
+  `;
+
+  return el;
+
+}
+
+
+/* =========================================================
+   PLAYBACK / OBSERVER
+========================================================= */
+
+function wireProgress(item, video){
+
+  const fill = item.querySelector('[data-role="progress-fill"]');
+
+  if(!fill || fill.dataset.wired){
+    return;
+  }
+
+  fill.dataset.wired = "1";
+
+  video.addEventListener("timeupdate", () => {
+    if(video.duration){
+      fill.style.width = ((video.currentTime / video.duration) * 100) + "%";
+    }
+  });
+
+}
+
+async function recordPropertyView(propertyId){
+  try{
+    await supabaseClient.rpc("increment_property_views", { target_id: propertyId });
+  }catch(error){
+    console.error("Failed to record reel view:", error);
+  }
+}
+
+function playReel(item, video){
+
+  if(activeVideo && activeVideo !== video){
+    activeVideo.pause();
+  }
+
+  video.muted = isMuted;
+  video.play().catch(() => {});
+  activeVideo = video;
+  item.classList.remove("paused");
+
+  wireProgress(item, video);
+
+  const propertyId = item.dataset.propertyId;
+
+  if(!trackedViews.has(propertyId) && !viewTimers.has(propertyId)){
+    const timer = setTimeout(() => {
+      trackedViews.add(propertyId);
+      viewTimers.delete(propertyId);
+      recordPropertyView(propertyId);
+    }, 2000);
+    viewTimers.set(propertyId, timer);
+  }
+
+  const hint = item.querySelector('[data-role="swipe-hint"]');
+  if(hint){
+    hint.classList.add("hide");
+  }
+
+}
+
+function pauseReel(item, video){
+
+  video.pause();
+
+  const propertyId = item.dataset.propertyId;
+
+  if(viewTimers.has(propertyId)){
+    clearTimeout(viewTimers.get(propertyId));
+    viewTimers.delete(propertyId);
+  }
+
+}
+
+function setupObserver(){
+
+  const track = document.getElementById("reelsTrack");
+
+  observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const item = entry.target;
+      const video = item.querySelector(".reel-video");
+      if(!video){
+        return;
+      }
+      if(entry.isIntersecting && entry.intersectionRatio >= 0.6){
+        playReel(item, video);
+      }else{
+        pauseReel(item, video);
+      }
+    });
+  }, { root:track, threshold:[0, 0.6, 1] });
+
+  track.querySelectorAll(".reel-item").forEach(item => observer.observe(item));
+
+}
+
+
+/* =========================================================
+   INTERACTIONS
+========================================================= */
+
+function burstHeart(item){
+  const burst = item.querySelector('[data-role="heart-burst"]');
+  if(!burst){
+    return;
+  }
+  burst.classList.remove("show");
+  void burst.offsetWidth;
+  burst.classList.add("show");
+}
+
+function shareProperty(property){
+
+  const url = new URL("projects/property-details.html?id=" + encodeURIComponent(property.id), window.location.href).href;
+  const title = getCardTitle(property);
+
+  if(navigator.share){
+    navigator.share({ title, text:`Check out this property on Keys99.com: ${title}`, url }).catch(() => {});
+    return;
+  }
+
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url)
+      .then(() => showToast("Link copied to clipboard!"))
+      .catch(() => showToast("Couldn't copy link."));
+    return;
+  }
+
+  showToast("Sharing isn't supported on this browser.");
+
+}
+
+function toggleGlobalMute(){
+
+  isMuted = !isMuted;
+
+  document.querySelectorAll(".reel-video").forEach(video => { video.muted = isMuted; });
+  document.querySelectorAll('[data-role="mute-btn"]').forEach(btn => { btn.textContent = isMuted ? "🔇" : "🔊"; });
+
+}
+
+function togglePlayPause(item){
+
+  const video = item.querySelector(".reel-video");
+  if(!video){
+    return;
+  }
+
+  if(video.paused){
+    video.play().catch(() => {});
+    item.classList.remove("paused");
+  }else{
+    video.pause();
+    item.classList.add("paused");
+  }
+
+}
+
+function findPropertyById(propertyId){
+  const match = reelItems.find(item => item.property.id === propertyId);
+  return match ? match.property : null;
+}
+
+function wireTrackInteractions(){
+
+  const track = document.getElementById("reelsTrack");
+
+  track.addEventListener("click", event => {
+
+    const item = event.target.closest(".reel-item");
+    if(!item){
+      return;
+    }
+
+    const propertyId = item.dataset.propertyId;
+
+    if(event.target.closest('[data-action="like"]')){
+      toggleFavoriteForReel(propertyId);
+      return;
+    }
+
+    if(event.target.closest('[data-action="share"]')){
+      const property = findPropertyById(propertyId);
+      if(property){
+        shareProperty(property);
+      }
+      return;
+    }
+
+    if(event.target.closest('[data-action="enquire"]')){
+      window.location.href = "projects/property-details.html?id=" + encodeURIComponent(propertyId) + "#enquiryWrap";
+      return;
+    }
+
+    if(event.target.closest('[data-role="mute-btn"]')){
+      toggleGlobalMute();
+      return;
+    }
+
+    if(event.target.closest('[data-role="tap-layer"]')){
+      togglePlayPause(item);
+      return;
+    }
+
+  });
+
+  track.addEventListener("dblclick", event => {
+
+    const item = event.target.closest(".reel-item");
+    if(!item || !event.target.closest('[data-role="tap-layer"]')){
+      return;
+    }
+
+    const propertyId = item.dataset.propertyId;
+
+    if(!getFavorites().includes(propertyId)){
+      toggleFavoriteForReel(propertyId);
+    }
+
+    burstHeart(item);
+
+  });
+
+  let hintDismissed = false;
+
+  track.addEventListener("scroll", () => {
+    if(hintDismissed){
+      return;
+    }
+    hintDismissed = true;
+    const hint = track.querySelector('[data-role="swipe-hint"]');
+    if(hint){
+      hint.classList.add("hide");
+    }
+  }, { passive:true });
+
+}
+
+function scrollByOneReel(direction){
+  const track = document.getElementById("reelsTrack");
+  track.scrollBy({ top: direction * track.clientHeight, behavior:"smooth" });
+}
+
+
+/* =========================================================
+   LOAD
+========================================================= */
+
+async function loadReels(){
+
+  const loading = document.getElementById("reelsLoading");
+  const empty = document.getElementById("reelsEmpty");
+  const track = document.getElementById("reelsTrack");
+
+  const properties = await fetchReelProperties();
+  reelItems = buildReelItems(properties);
+
+  loading.hidden = true;
+
+  if(!reelItems.length){
+    empty.hidden = false;
+    return;
+  }
+
+  reelItems.forEach((item, index) => {
+    track.appendChild(renderReelItem(item, index));
+  });
+
+  track.hidden = false;
+
+  wireTrackInteractions();
+  setupObserver();
+
+}
+
+
+/* =========================================================
+   INIT
+========================================================= */
+
+document.getElementById("reelsUpBtn").addEventListener("click", () => scrollByOneReel(-1));
+document.getElementById("reelsDownBtn").addEventListener("click", () => scrollByOneReel(1));
+
+document.addEventListener("keydown", event => {
+  if(event.key === "ArrowDown"){
+    event.preventDefault();
+    scrollByOneReel(1);
+  }else if(event.key === "ArrowUp"){
+    event.preventDefault();
+    scrollByOneReel(-1);
+  }
+});
+
+document.getElementById("reelsBackBtn").addEventListener("click", () => {
+  if(document.referrer && document.referrer.includes(window.location.host)){
+    history.back();
+  }else{
+    window.location.href = "index.html";
+  }
+});
+
+initMobileMenu();
+initLoginButton();
+initBottomNav("reels");
+loadReels();
+
+</script>
+
+
+</body>
+</html>

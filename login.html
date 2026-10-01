@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+
+<title>Sign In | Keys99</title>
+<meta name="description" content="Sign in to Keys99.">
+<link rel="canonical" href="https://keys99.com/login.html">
+<meta name="robots" content="noindex,follow">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Keys99">
+<meta property="og:title" content="Sign In | Keys99">
+<meta property="og:description" content="Sign in to Keys99.">
+<meta property="og:url" content="https://keys99.com/login.html">
+<meta property="og:image" content="https://keys99.com/assets/og-default.jpg">
+<meta property="og:locale" content="en_IN">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Sign In | Keys99">
+<meta name="twitter:description" content="Sign in to Keys99.">
+<meta name="twitter:image" content="https://keys99.com/assets/og-default.jpg">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/login.css">
+<link rel="stylesheet" href="css/chat-widget.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+
+<body>
+
+
+<header class="login-topbar">
+  <a class="logo logo-link" href="index.html">
+    <img src="assets/logo.png" alt="Keys99.com" class="header-logo">
+  </a>
+</header>
+
+
+<main class="login-main">
+
+  <div class="login-card">
+
+    <div class="login-intro">
+      <div class="section-kicker">Welcome Back</div>
+      <h1>Sign in to Keys99</h1>
+      <p>Save favorites, track enquiries and pick up right where you left off.</p>
+    </div>
+
+    <div class="login-tabs" role="tablist">
+      <button type="button" class="login-tab active" id="tabSignin" data-tab="signin">Sign In</button>
+      <button type="button" class="login-tab" id="tabSignup" data-tab="signup">Sign Up</button>
+    </div>
+
+    <div class="login-message" id="loginMessage" hidden></div>
+
+
+    <!-- SIGN IN -->
+
+    <form class="login-form" id="signinForm">
+
+      <label class="profile-field">
+        <span>Email</span>
+        <input type="email" id="signinEmail" required autocomplete="email" placeholder="you@example.com">
+      </label>
+
+      <label class="profile-field">
+        <span>Password</span>
+        <input type="password" id="signinPassword" required autocomplete="current-password" placeholder="Your password">
+      </label>
+
+      <button type="submit" class="btn-primary login-submit" id="signinSubmit">Sign In</button>
+
+    </form>
+
+
+    <!-- SIGN UP -->
+
+    <form class="login-form" id="signupForm" hidden>
+
+      <label class="profile-field">
+        <span>Full Name</span>
+        <input type="text" id="signupName" required autocomplete="name" placeholder="Your name">
+      </label>
+
+      <label class="profile-field">
+        <span>Email</span>
+        <input type="email" id="signupEmail" required autocomplete="email" placeholder="you@example.com">
+      </label>
+
+      <label class="profile-field">
+        <span>Password</span>
+        <input type="password" id="signupPassword" required autocomplete="new-password" minlength="6" placeholder="At least 6 characters">
+      </label>
+
+      <button type="submit" class="btn-primary login-submit" id="signupSubmit">Create Account</button>
+
+    </form>
+
+    <a class="login-skip" href="index.html">Continue browsing without an account &nbsp;→</a>
+
+  </div>
+
+</main>
+
+
+<script src="js/config.js"></script>
+<script src="js/chat-widget.js"></script>
+
+<script>
+
+/* =========================================================
+   KEYS99 - SIGN IN / SIGN UP
+========================================================= */
+
+const params = new URLSearchParams(window.location.search);
+const redirectTarget = params.get("redirect") || "profile.html";
+
+const tabs = document.querySelectorAll(".login-tab");
+const signinForm = document.getElementById("signinForm");
+const signupForm = document.getElementById("signupForm");
+const loginMessage = document.getElementById("loginMessage");
+
+
+/* =========================================================
+   TABS
+========================================================= */
+
+tabs.forEach(tab => {
+
+  tab.addEventListener("click", () => {
+
+    tabs.forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+
+    const isSignin = tab.dataset.tab === "signin";
+
+    signinForm.hidden = !isSignin;
+    signupForm.hidden = isSignin;
+
+    hideMessage();
+
+  });
+
+});
+
+
+/* =========================================================
+   MESSAGE BANNER
+========================================================= */
+
+function showMessage(text, type){
+  loginMessage.textContent = text;
+  loginMessage.className = "login-message login-message-" + (type || "error");
+  loginMessage.hidden = false;
+}
+
+function hideMessage(){
+  loginMessage.hidden = true;
+}
+
+
+/* =========================================================
+   IF ALREADY SIGNED IN, SKIP STRAIGHT TO THE DESTINATION
+========================================================= */
+
+(async () => {
+
+  const { data } = await supabaseClient.auth.getSession();
+
+  if(data && data.session){
+    window.location.href = redirectTarget;
+  }
+
+})();
+
+
+/* =========================================================
+   SIGN IN
+========================================================= */
+
+signinForm.addEventListener("submit", async event => {
+
+  event.preventDefault();
+  hideMessage();
+
+  const email = document.getElementById("signinEmail").value.trim();
+  const password = document.getElementById("signinPassword").value;
+
+  const submitBtn = document.getElementById("signinSubmit");
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Signing In...";
+
+  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+  submitBtn.disabled = false;
+  submitBtn.textContent = "Sign In";
+
+  if(error){
+    showMessage(error.message || "Unable to sign in. Please check your details.", "error");
+    return;
+  }
+
+  window.location.href = redirectTarget;
+
+});
+
+
+/* =========================================================
+   SIGN UP
+========================================================= */
+
+signupForm.addEventListener("submit", async event => {
+
+  event.preventDefault();
+  hideMessage();
+
+  const fullName = document.getElementById("signupName").value.trim();
+  const email = document.getElementById("signupEmail").value.trim();
+  const password = document.getElementById("signupPassword").value;
+
+  const submitBtn = document.getElementById("signupSubmit");
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Creating Account...";
+
+  const { data, error } = await supabaseClient.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { full_name: fullName }
+    }
+  });
+
+  submitBtn.disabled = false;
+  submitBtn.textContent = "Create Account";
+
+  if(error){
+    showMessage(error.message || "Unable to create your account. Please try again.", "error");
+    return;
+  }
+
+  if(data && data.session){
+    /* email confirmation is off for this project - the user is
+       already signed in, so go straight to the destination */
+    window.location.href = redirectTarget;
+    return;
+  }
+
+  showMessage("Account created! Check " + email + " to confirm your email, then sign in.", "success");
+
+  tabs.forEach(t => t.classList.remove("active"));
+  document.getElementById("tabSignin").classList.add("active");
+  signinForm.hidden = false;
+  signupForm.hidden = true;
+  document.getElementById("signinEmail").value = email;
+
+});
+
+</script>
+
+</body>
+</html>

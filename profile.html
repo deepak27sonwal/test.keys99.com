@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+
+<title>My Profile | Keys99</title>
+<meta name="description" content="Your Keys99 profile.">
+<link rel="canonical" href="https://keys99.com/profile.html">
+<meta name="robots" content="noindex,follow">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Keys99">
+<meta property="og:title" content="My Profile | Keys99">
+<meta property="og:description" content="Your Keys99 profile.">
+<meta property="og:url" content="https://keys99.com/profile.html">
+<meta property="og:image" content="https://keys99.com/assets/og-default.jpg">
+<meta property="og:locale" content="en_IN">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="My Profile | Keys99">
+<meta name="twitter:description" content="Your Keys99 profile.">
+<meta name="twitter:image" content="https://keys99.com/assets/og-default.jpg">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/profile.css">
+<link rel="stylesheet" href="css/chat-widget.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+
+<body>
+
+
+<!-- =======================================================
+     HEADER
+======================================================= -->
+
+<header class="header">
+
+  <div class="container nav">
+
+    <a class="logo logo-link" href="index.html">
+      <img src="assets/logo.png" alt="Keys99.com" class="header-logo">
+    </a>
+
+    <nav class="nav-links">
+
+      <a href="index.html">Home</a>
+      <a href="projects/search.html?status=sale">Buy</a>
+      <a href="projects/search.html?status=rent">Rent</a>
+      <a href="index.html#types">Projects</a>
+      <a href="index.html#why">About</a>
+      <a href="index.html#footer">Contact</a>
+
+    </nav>
+
+    <div class="nav-actions">
+
+      <button class="icon-btn" id="notifBtn" type="button" aria-label="Notifications">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9.5a6 6 0 0 1 12 0c0 4 1.5 5.5 1.5 5.5h-15S6 13.5 6 9.5Z"/>
+          <path d="M10 18.5a2 2 0 0 0 4 0"/>
+        </svg>
+        <span class="notif-dot"></span>
+      </button>
+
+      <button class="icon-btn" id="settingsBtn" type="button" aria-label="Account settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 13.5a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.04 1.56V19.5a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1.04-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1.04H4.5a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.56-1.04 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H10.5a1.7 1.7 0 0 0 1.04-1.56V4.5a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1.04 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V10.5a1.7 1.7 0 0 0 1.56 1.04h.09a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.56 1.04Z"/>
+        </svg>
+      </button>
+
+      <button class="menu-btn" id="menuBtn" aria-label="Menu">
+        ☰
+      </button>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<!-- MOBILE MENU -->
+
+<div class="mobile-menu" id="mobileMenu">
+
+  <a href="index.html">Home</a>
+  <a href="projects/search.html?status=sale">Buy Property</a>
+  <a href="projects/search.html?status=rent">Rent Property</a>
+  <a href="index.html#types">Projects</a>
+  <a href="index.html#why">Why Keys99</a>
+  <a href="index.html#footer">Contact</a>
+
+</div>
+
+
+
+<main>
+
+
+<!-- =======================================================
+     AUTH LOADING GATE - shown while we check the session so
+     the real page never flashes before a redirect to login.html
+======================================================= -->
+
+<div class="profile-loading-gate" id="profileLoadingGate">
+  <div class="profile-loading-spinner"></div>
+  <p>Loading your profile...</p>
+</div>
+
+
+<div id="profileContent" hidden>
+
+
+<!-- =======================================================
+     PROFILE HERO / CARD
+======================================================= -->
+
+<section class="profile-hero">
+
+  <div class="container">
+
+    <div class="breadcrumb">
+      <a href="index.html">Home</a> &nbsp;/&nbsp; My Profile
+    </div>
+
+    <div class="profile-card" id="profileCard">
+
+      <button class="edit-profile-btn" id="editProfileBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+        </svg>
+        <span>Edit Profile</span>
+      </button>
+
+      <div class="profile-main">
+
+        <div class="profile-avatar-wrap">
+
+          <img class="profile-avatar" id="profileAvatarImg" src="" alt="Profile photo">
+
+          <button class="avatar-edit-btn" id="avatarEditBtn" type="button" aria-label="Change photo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 8.5A1.5 1.5 0 0 1 5.5 7h2l1-2h7l1 2h2A1.5 1.5 0 0 1 20 8.5v9A1.5 1.5 0 0 1 18.5 19h-13A1.5 1.5 0 0 1 4 17.5Z"/>
+              <circle cx="12" cy="13" r="3.3"/>
+            </svg>
+          </button>
+
+          <input type="file" id="avatarInput" accept="image/*" hidden>
+
+        </div>
+
+        <div class="profile-info">
+
+          <!-- VIEW MODE -->
+
+          <div class="profile-view" id="profileView">
+
+            <div class="profile-name-row">
+              <h1 id="profileName">Aditi Sharma</h1>
+              <span class="verified-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 6 9 17l-5-5"/>
+                </svg>
+                Verified User
+              </span>
+            </div>
+
+            <p class="profile-contact-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16v13H4Z"/><path d="m4.5 6 7.5 6.5L19.5 6"/></svg>
+              <span id="profileEmail">aditi.sharma@gmail.com</span>
+            </p>
+
+            <p class="profile-contact-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5.5 5.5L16 13l4 1.5v3a2 2 0 0 1-2.2 2A17 17 0 0 1 4.5 6.2 2 2 0 0 1 6.5 4Z"/></svg>
+              <span id="profilePhone">+91 98765 43210</span>
+            </p>
+
+          </div>
+
+
+          <!-- EDIT MODE -->
+
+          <div class="profile-edit" id="profileEdit" hidden>
+
+            <label class="profile-field">
+              <span>Full Name</span>
+              <input type="text" id="editName" placeholder="Your name">
+            </label>
+
+            <div class="profile-field">
+              <span>Email</span>
+              <input type="email" id="editEmail" disabled>
+              <small class="profile-field-note">Contact support to change your login email.</small>
+            </div>
+
+            <label class="profile-field">
+              <span>Phone</span>
+              <input type="tel" id="editPhone" placeholder="+91 00000 00000">
+            </label>
+
+            <div class="profile-edit-actions">
+              <button type="button" class="btn-ghost" id="cancelEditBtn">Cancel</button>
+              <button type="button" class="btn-primary" id="saveEditBtn">Save Changes</button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =======================================================
+         STATS
+    ======================================================= -->
+
+    <div class="stats-card">
+
+      <div class="profile-stat">
+        <div class="profile-stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-9"/></svg>
+        </div>
+        <strong id="statViewed">0</strong>
+        <span>Properties Viewed</span>
+      </div>
+
+      <div class="profile-stat">
+        <div class="profile-stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7.5-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 5c-2 4.5-9.5 9-9.5 9Z"/></svg>
+        </div>
+        <strong id="statSaved">0</strong>
+        <span>Saved Properties</span>
+      </div>
+
+      <div class="profile-stat">
+        <div class="profile-stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h9l3 3v13H6Z"/><path d="M9 10h6M9 13.5h6M9 17h3.5"/></svg>
+        </div>
+        <strong id="statEnquiries">0</strong>
+        <span>Active Enquiries</span>
+      </div>
+
+      <div class="profile-stat">
+        <div class="profile-stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M2.5 19c1-3.2 3.6-5 6.5-5s5.5 1.8 6.5 5"/><path d="M16.5 4.3a3 3 0 0 1 0 5.9M20 19c-.5-2.3-1.7-3.9-3.3-4.7"/></svg>
+        </div>
+        <strong id="statListed">0</strong>
+        <span>Properties Listed</span>
+      </div>
+
+      <div class="profile-stat profile-stat-clickable" id="newEnquiriesStat" role="button" tabindex="0">
+        <div class="profile-stat-icon" id="newEnquiriesIcon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9.5a6 6 0 0 1 12 0c0 4 1.5 5.5 1.5 5.5h-15S6 13.5 6 9.5Z"/><path d="M10 18.5a2 2 0 0 0 4 0"/></svg>
+        </div>
+        <strong id="statNewEnquiries">0</strong>
+        <span>New Enquiries</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- =======================================================
+     ACCOUNT MENU
+======================================================= -->
+
+<section style="padding-top:0">
+
+  <div class="container">
+
+    <div class="menu-card">
+
+      <button class="menu-row" type="button" data-action="edit-profile">
+        <span class="menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c1.4-3.6 4.3-5.5 7.5-5.5s6.1 1.9 7.5 5.5"/></svg>
+        </span>
+        <span class="menu-text">
+          <strong>My Profile</strong>
+          <span>View and update your personal details</span>
+        </span>
+        <span class="menu-chevron">›</span>
+      </button>
+
+      <button class="menu-row" type="button" data-action="favorites">
+        <span class="menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7.5-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 5c-2 4.5-9.5 9-9.5 9Z"/></svg>
+        </span>
+        <span class="menu-text">
+          <strong>My Favorites</strong>
+          <span>Properties you have saved</span>
+        </span>
+        <span class="menu-chevron">›</span>
+      </button>
+
+      <button class="menu-row" type="button" data-action="enquiries">
+        <span class="menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h9l3 3v13H6Z"/><path d="M9 10h6M9 13.5h6M9 17h3.5"/></svg>
+        </span>
+        <span class="menu-text">
+          <strong>My Enquiries</strong>
+          <span>Track your property enquiries</span>
+        </span>
+        <span class="menu-badge" id="enquiriesBadge" hidden>0</span>
+        <span class="menu-chevron">›</span>
+      </button>
+
+      <button class="menu-row" type="button" data-action="post-property">
+        <span class="menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        </span>
+        <span class="menu-text">
+          <strong>Post a Property</strong>
+          <span>List a property for sale or rent</span>
+        </span>
+        <span class="menu-chevron">›</span>
+      </button>
+
+      <button class="menu-row" type="button" data-action="listed">
+        <span class="menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-9"/></svg>
+        </span>
+        <span class="menu-text">
+          <strong>My Properties</strong>
+          <span>Manage your listed properties</span>
+        </span>
+        <span class="menu-chevron">›</span>
+      </button>
+
+      <button class="menu-row" type="button" data-action="notifications">
+        <span class="menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9.5a6 6 0 0 1 12 0c0 4 1.5 5.5 1.5 5.5h-15S6 13.5 6 9.5Z"/><path d="M10 18.5a2 2 0 0 0 4 0"/></svg>
+        </span>
+        <span class="menu-text">
+          <strong>Notifications</strong>
+          <span>Stay updated with latest offers</span>
+        </span>
+        <span class="menu-chevron">›</span>
+      </button>
+
+      <button class="menu-row" type="button" data-action="support">
+        <span class="menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13.5v-2a8 8 0 0 1 16 0v2"/><path d="M4 13.5a2 2 0 0 1 2-2 2 2 0 0 1 2 2v1.5a2 2 0 0 1-2 2 2 2 0 0 1-2-2Z"/><path d="M16 13.5a2 2 0 0 1 2-2 2 2 0 0 1 2 2v1.5a2 2 0 0 1-2 2 2 2 0 0 1-2-2Z"/><path d="M18 17.5a4 4 0 0 1-4 3.5h-1.5"/></svg>
+        </span>
+        <span class="menu-text">
+          <strong>Help &amp; Support</strong>
+          <span>Get help or contact us</span>
+        </span>
+        <span class="menu-chevron">›</span>
+      </button>
+
+      <button class="menu-row menu-row-danger" type="button" data-action="logout">
+        <span class="menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"/><path d="M15 16l4-4-4-4M19 12H9"/></svg>
+        </span>
+        <span class="menu-text">
+          <strong>Log Out</strong>
+          <span>Sign out from your account</span>
+        </span>
+        <span class="menu-chevron">›</span>
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- =======================================================
+     SAVED PROPERTIES (My Favorites)
+======================================================= -->
+
+<section id="savedProperties" style="padding-top:0">
+
+  <div class="container">
+
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">My Favorites</div>
+        <h2 class="section-title">Saved Properties</h2>
+      </div>
+    </div>
+
+    <div id="savedLoading" class="property-state">Loading your saved properties...</div>
+
+    <div id="savedEmpty" class="property-state" style="display:none">
+      You haven't saved any properties yet. Tap the ♡ on a listing to save it here.
+    </div>
+
+    <div class="saved-grid" id="savedGrid"></div>
+
+  </div>
+
+</section>
+
+
+
+<!-- =======================================================
+     PROMO BANNER
+======================================================= -->
+
+<section style="padding-top:0">
+
+  <div class="container">
+
+    <div class="promo-banner">
+
+      <div>
+        <div class="section-kicker" style="margin-bottom:6px">Keep Exploring</div>
+        <h2>Your Dream Home is Just a Click Away!</h2>
+        <p>Explore thousands of verified properties across India.</p>
+      </div>
+
+      <a class="cta-btn" href="projects/search.html">Browse Now &nbsp; →</a>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+</div><!-- /#profileContent -->
+
+
+</main>
+
+
+
+<!-- =======================================================
+     FOOTER
+======================================================= -->
+
+<footer id="footer">
+
+  <div class="container">
+
+    <div class="footer-grid">
+
+      <div class="footer-col footer-brand">
+
+        <a class="logo logo-link" href="index.html">
+          <img src="assets/logo.png" alt="Keys99.com" class="header-logo">
+        </a>
+
+        <p style="margin-top:13px;max-width:230px">
+          A modern real estate platform to help you discover verified properties with confidence.
+        </p>
+
+      </div>
+
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a href="index.html">Home</a>
+        <a href="projects/search.html?status=sale">Buy</a>
+        <a href="projects/search.html?status=rent">Rent</a>
+        <a href="index.html#types">Projects</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="index.html#why">About Us</a>
+        <a href="index.html#footer">Contact Us</a>
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="terms.html">Terms &amp; Conditions</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Follow & Contact</h4>
+
+        <div class="socials">
+          <a href="https://www.facebook.com/profile.php?id=100066632434187" aria-label="Keys99 on Facebook" target="_blank" rel="noopener">f</a>
+          <a href="https://www.instagram.com/keys99com/" aria-label="Keys99 on Instagram" target="_blank" rel="noopener">◎</a>
+          <a href="#" aria-label="Keys99 on LinkedIn">in</a>
+          <a href="https://www.youtube.com/@Keys99" aria-label="Keys99 on YouTube" target="_blank" rel="noopener">▶</a>
+        </div>
+
+        <p style="margin-top:12px" id="supportEmail">support@keys99.com</p>
+        <p>+91 98765 43210</p>
+        <p>India</p>
+      </div>
+
+    </div>
+
+    <div class="copyright">
+      <span>© 2026 Keys99.com. All rights reserved.</span>
+      <span>⌂ &nbsp; Your Key to a Better Tomorrow</span>
+    </div>
+
+  </div>
+
+</footer>
+
+
+<!-- MOBILE BOTTOM NAVIGATION -->
+
+<nav class="bottom-nav" id="bottomNav">
+
+  <button type="button" data-target="home">
+    <span class="bn-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 11.5 12 4l9 7.5"/>
+        <path d="M5.5 10v9a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-9"/>
+        <path d="M9.5 20v-6h5v6"/>
+      </svg>
+    </span>
+    <span class="bn-label">Home</span>
+  </button>
+
+  <button type="button" data-target="search">
+    <span class="bn-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="6.5"/>
+        <path d="m20 20-3.6-3.6"/>
+      </svg>
+    </span>
+    <span class="bn-label">Search</span>
+  </button>
+
+  <button type="button" data-target="reels">
+    <span class="bn-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3.5" y="3.5" width="17" height="17" rx="5"/>
+        <path d="M10 8.5v7l6-3.5-6-3.5Z" fill="currentColor" stroke="none"/>
+      </svg>
+    </span>
+    <span class="bn-label">Reels</span>
+  </button>
+
+  <button type="button" data-target="profile">
+    <span class="bn-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8" r="3.5"/>
+        <path d="M4.5 20c1.4-3.6 4.3-5.5 7.5-5.5s6.1 1.9 7.5 5.5"/>
+      </svg>
+    </span>
+    <span class="bn-label">Profile</span>
+  </button>
+
+</nav>
+
+
+<script src="js/config.js"></script>
+<script src="js/chat-widget.js"></script>
+
+<script>
+
+/* =========================================================
+   FETCH HELPERS
+========================================================= */
+
+async function fetchAllProperties(){
+
+  const { data, error } = await supabaseClient
+    .from("projects")
+    .select(PROPERTY_SELECT_COLUMNS)
+    .order("created_at", { ascending:false });
+
+  if(error){
+    console.error("Supabase error:", error);
+    throw error;
+  }
+
+  return Array.isArray(data) ? data : [];
+
+}
+
+
+/* =========================================================
+   BHK / OPTION HELPERS
+========================================================= */
+
+function getBhkOptions(property){
+  if(!property || !Array.isArray(property.bhk_options)){
+    return [];
+  }
+  return property.bhk_options.filter(option => option && typeof option === "object");
+}
+
+function getPropertyTypes(property){
+  const options = getBhkOptions(property);
+  return options.map(option => String(option.type || "").trim()).filter(Boolean);
+}
+
+function getBhkText(property){
+  const types = getPropertyTypes(property);
+  if(!types.length){
+    return "";
+  }
+  const uniqueTypes = [...new Set(types)];
+  return uniqueTypes.join(" / ");
+}
+
+
+/* Card title, e.g. "1 BHK / 2 BHK Apartment" */
+
+const CATEGORY_LABELS = {
+  residential:"Apartment",
+  luxury:"Residence",
+  commercial:"Commercial Space",
+  plots:"Plot"
+};
+
+function getCardTitle(property){
+  const bhk = getBhkText(property);
+  const category = getCategory(property);
+  const label = CATEGORY_LABELS[category] || "Property";
+
+  if(!bhk){
+    return label;
+  }
+
+  return bhk + " " + label;
+}
+
+
+/* =========================================================
+   PRICE HELPERS
+========================================================= */
+
+function getNumericPrice(option){
+  if(!option){
+    return null;
+  }
+  const price = Number(option.price);
+  if(Number.isFinite(price) && price > 0){
+    return price;
+  }
+  return null;
+}
+
+function formatPrice(price){
+
+  if(price === null || price === undefined || !Number.isFinite(Number(price))){
+    return "";
+  }
+
+  price = Number(price);
+
+  if(price >= 10000000){
+    const crore = price / 10000000;
+    return "₹ " + crore.toFixed(crore % 1 === 0 ? 0 : 2).replace(/\.00$/, "") + " Cr";
+  }
+
+  if(price >= 100000){
+    const lakh = price / 100000;
+    return "₹ " + lakh.toFixed(lakh % 1 === 0 ? 0 : 2).replace(/\.00$/, "") + " Lakh";
+  }
+
+  if(price >= 1000){
+    const thousand = price / 1000;
+    return "₹ " + thousand.toFixed(thousand % 1 === 0 ? 0 : 1).replace(/\.0$/, "") + "K";
+  }
+
+  return "₹ " + price.toLocaleString("en-IN");
+
+}
+
+function getOptionPriceText(option){
+  const words = String((option && option.price_words) || "").trim();
+  if(words){
+    return words;
+  }
+  const numeric = getNumericPrice(option);
+  if(numeric === null){
+    return "On Request";
+  }
+  return formatPrice(numeric);
+}
+
+
+/* =========================================================
+   AREA HELPERS
+========================================================= */
+
+function getOptionAreaText(option){
+  const value = parseFloat(option && option.sqft);
+  if(!Number.isFinite(value)){
+    return "—";
+  }
+  const unit = (option && option.areaUnit) || "Sq.Ft";
+  return Number(value).toLocaleString("en-IN") + " " + unit;
+}
+
+/* Per-config availability (Available / Limited / Sold Out).
+   Reads option.availability or option.status if the data
+   provides it, otherwise defaults to "Available". */
+
+function getOptionAvailabilityText(option){
+  const raw = String((option && (option.availability || option.status)) || "").trim();
+  return raw || "Available";
+}
+
+function getOptionAvailabilityClass(text){
+  const value = String(text || "").toLowerCase();
+  if(value.includes("sold")){
+    return "sold";
+  }
+  if(value.includes("limited")){
+    return "limited";
+  }
+  return "available";
+}
+
+
+/* =========================================================
+   LOCATION / STATUS / CATEGORY
+========================================================= */
+
+function getLocationText(property){
+
+  const parts = [property.locality, property.city, property.state];
+
+  const unique = parts
+    .map(value => String(value || "").trim())
+    .filter(Boolean)
+    .filter((value,index,array) => array.indexOf(value) === index);
+
+  if(unique.length){
+    return unique.join(", ");
+  }
+
+  if(property.address){
+    return property.address;
+  }
+
+  return "Location not available";
+
+}
+
+function getStatusText(property){
+  const status = String(property.status || "").trim();
+  return status || "Available";
+}
+
+function getStatusClass(status){
+  const value = String(status || "").toLowerCase();
+  if(value.includes("rent") || value.includes("lease")){
+    return "rent";
+  }
+  if(value.includes("sold") || value.includes("closed")){
+    return "sold";
+  }
+  return "sale";
+}
+
+function getCategory(property){
+
+  const text = [
+    ...getPropertyTypes(property),
+    property.developer || "",
+    property.overview || ""
+  ].join(" ").toLowerCase();
+
+  if(text.includes("luxury") || text.includes("penthouse") || text.includes("villa") || text.includes("premium") || text.includes("bungalow")){
+    return "luxury";
+  }
+
+  if(text.includes("commercial") || text.includes("office") || text.includes("shop") || text.includes("warehouse") || text.includes("showroom") || text.includes("retail")){
+    return "commercial";
+  }
+
+  if(text.includes("plot") || text.includes("farmland") || text.includes("farm land") || text.includes("agricultural land")){
+    return "plots";
+  }
+
+  return "residential";
+
+}
+
+function getSearchText(property){
+  return [
+    getCardTitle(property),
+    property.developer,
+    property.address,
+    property.state,
+    property.city,
+    property.locality,
+    property.pincode,
+    property.status,
+    property.overview,
+    property.rera_id,
+    property.posted_by_name,
+    property.posted_by_user_code,
+    ...getPropertyTypes(property),
+    ...getBhkOptions(property).map(option => option.price_words || "")
+  ].filter(Boolean).join(" ").toLowerCase();
+}
+
+function getImageUrl(property){
+  const image = String(property.main_image || "").trim();
+  if(image){
+    return image;
+  }
+  return "/assets/property-placeholder.svg";
+}
+
+function escapeHtml(value){
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+
+/* =========================================================
+   CREATE PROPERTY CARD
+========================================================= */
+
+function createPropertyCard(property, badgeLabel, badgeClass){
+
+  const id = escapeHtml(property.id);
+  const title = getCardTitle(property);
+  const location = getLocationText(property);
+
+  const developer = String(property.developer || "").trim();
+
+  const status = badgeLabel || getStatusText(property);
+  const statusClass = badgeClass || getStatusClass(getStatusText(property));
+
+  const category = getCategory(property);
+
+  const image = getImageUrl(property);
+  const imageAlt = title + " " + location;
+
+  const searchText = getSearchText(property);
+
+  const options = getBhkOptions(property);
+
+  const firstOption = options[0];
+  const bhkValue = firstOption && firstOption.type ? String(firstOption.type).toLowerCase() : "";
+
+  const bhkChips = options.length
+    ? options.map(option => {
+
+        const availabilityText = getOptionAvailabilityText(option);
+        const availabilityClass = getOptionAvailabilityClass(availabilityText);
+
+        return `
+        <div class="bhk-chip">
+          <div class="bhk-stat">
+            <strong>${escapeHtml(option.type || "—")}</strong>
+            <span>Config</span>
+          </div>
+          <div class="bhk-stat">
+            <strong>${escapeHtml(getOptionAreaText(option))}</strong>
+            <span>Carpet Area</span>
+          </div>
+          <div class="bhk-stat price-stat">
+            <strong>${escapeHtml(getOptionPriceText(option))}</strong>
+            <span>Price</span>
+          </div>
+          <div class="bhk-stat status-stat status-${availabilityClass}">
+            <strong>${escapeHtml(availabilityText)}</strong>
+            <span>Status</span>
+          </div>
+        </div>
+      `;
+      }).join("")
+    : `
+        <div class="bhk-chip">
+          <div class="bhk-stat price-stat">
+            <strong>Price on Request</strong>
+            <span>Contact for details</span>
+          </div>
+        </div>
+      `;
+
+  return `
+
+    <article
+      class="property-card"
+      data-id="${id}"
+      data-search="${escapeHtml(searchText)}"
+      data-type="${escapeHtml(category)}"
+      data-bhk="${escapeHtml(bhkValue)}"
+    >
+
+      <div class="property-image">
+
+        <img
+          src="${escapeHtml(image)}"
+          alt="${escapeHtml(imageAlt)}"
+          loading="lazy"
+          onerror="this.src='/assets/property-placeholder.svg'"
+        >
+
+        <span class="badge ${statusClass}">${escapeHtml(status)}</span>
+
+        <button class="fav" aria-label="Add to favorites" data-property-id="${id}" type="button">♡</button>
+
+      </div>
+
+
+      <div class="property-body">
+
+        <h3>${escapeHtml(title)}</h3>
+
+        <p class="location">⌖ &nbsp; ${escapeHtml(location)}</p>
+
+        ${developer ? `<p class="developer">By &nbsp; ${escapeHtml(developer)}</p>` : ""}
+
+        ${property.rera_id ? `<span class="rera-badge">✓ RERA</span>` : ""}
+
+        <div class="bhk-scroll">
+          ${bhkChips}
+        </div>
+
+      </div>
+
+    </article>
+
+  `;
+
+}
+
+
+/* =========================================================
+   ATTACH CARD EVENTS (favorite + view details)
+========================================================= */
+
+function attachPropertyEvents(root){
+
+  root = root || document;
+
+  root.querySelectorAll(".fav").forEach(btn => {
+
+    const propertyId = btn.dataset.propertyId;
+
+    if(getFavorites().includes(propertyId)){
+      btn.classList.add("active");
+      btn.textContent = "♥";
+    }
+
+    btn.addEventListener("click", event => {
+      event.preventDefault();
+      event.stopPropagation();
+      toggleFavorite(propertyId, btn, root);
+    });
+
+  });
+
+  root.querySelectorAll(".property-card").forEach(card => {
+
+    card.style.cursor = "pointer";
+
+    card.addEventListener("click", () => {
+      const propertyId = card.dataset.id;
+      if(propertyId){
+        window.location.href = "projects/property-details.html?id=" + encodeURIComponent(propertyId);
+      }
+    });
+
+  });
+
+}
+
+
+/* =========================================================
+   FAVORITES - LOCAL STORAGE
+========================================================= */
+
+function getFavorites(){
+  try{
+    const favorites = JSON.parse(localStorage.getItem("keys99_favorites") || "[]");
+    return Array.isArray(favorites) ? favorites : [];
+  }catch(error){
+    return [];
+  }
+}
+
+function toggleFavorite(propertyId, button, root){
+
+  let favorites = getFavorites();
+
+  const isActive = favorites.includes(propertyId);
+
+  if(isActive){
+    favorites = favorites.filter(id => id !== propertyId);
+  }else{
+    favorites.push(propertyId);
+  }
+
+  localStorage.setItem("keys99_favorites", JSON.stringify(favorites));
+
+  document.querySelectorAll(`.fav[data-property-id="${CSS.escape(propertyId)}"]`).forEach(favBtn => {
+    favBtn.classList.toggle("active", !isActive);
+    favBtn.textContent = !isActive ? "♥" : "♡";
+  });
+
+  if(isActive){
+    /* a card just got unfavorited - drop it from this page's saved grid */
+    document.querySelectorAll(`.property-card[data-id="${CSS.escape(propertyId)}"]`).forEach(card => {
+      if(card.closest("#savedGrid")){
+        card.classList.add("hidden-property");
+      }
+    });
+  }
+
+  updateStatCounts();
+
+}
+
+function getRecentlyViewedIds(){
+  try{
+    const ids = JSON.parse(localStorage.getItem("keys99_recently_viewed") || "[]");
+    return Array.isArray(ids) ? ids : [];
+  }catch(error){
+    return [];
+  }
+}
+
+
+/* =========================================================
+   SHARED UI: MOBILE MENU / BOTTOM NAV
+========================================================= */
+
+function initMobileMenu(){
+
+  const menuBtn = document.getElementById("menuBtn");
+  const mobileMenu = document.getElementById("mobileMenu");
+
+  if(!menuBtn || !mobileMenu){
+    return;
+  }
+
+  menuBtn.addEventListener("click", () => {
+    mobileMenu.classList.toggle("open");
+    menuBtn.textContent = mobileMenu.classList.contains("open") ? "×" : "☰";
+  });
+
+  mobileMenu.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
+      mobileMenu.classList.remove("open");
+      menuBtn.textContent = "☰";
+    });
+  });
+
+}
+
+function initBottomNav(activeTarget){
+
+  const bottomNav = document.getElementById("bottomNav");
+
+  if(!bottomNav){
+    return;
+  }
+
+  bottomNav.querySelectorAll("button").forEach(btn => {
+    btn.classList.toggle("bn-active", btn.dataset.target === activeTarget);
+  });
+
+  bottomNav.addEventListener("click", event => {
+
+    const button = event.target.closest("button");
+
+    if(!button){
+      return;
+    }
+
+    const target = button.dataset.target;
+
+    if(target === "home"){
+
+      window.location.href = "index.html";
+
+    }else if(target === "search"){
+
+      window.location.href = "projects/search.html";
+
+    }else if(target === "reels"){
+
+      window.location.href = "reels.html";
+
+    }else if(target === "profile"){
+
+      window.scrollTo({ top:0, behavior:"smooth" });
+
+    }
+
+  });
+
+}
+
+
+/* =========================================================
+   KEYS99 - PROFILE PAGE
+   Backed by real Supabase Auth + a "profiles" table + a
+   "users-avatars" storage bucket. See supabase-setup.sql in
+   the project root for the table/bucket/policies this needs -
+   run it once in your Supabase project's SQL Editor.
+========================================================= */
+
+const DEFAULT_AVATAR = "/assets/property-placeholder.svg";
+const PROFILES_TABLE = "profiles";
+const AVATAR_BUCKET = "users-avatars";
+const PROPERTIES_TABLE = "projects";
+const ENQUIRIES_TABLE = "enquiries";
+const ENQUIRIES_SEEN_KEY = "keys99_enquiries_seen_at";
+
+let currentUser = null;
+let currentProfile = { full_name:"", phone:"", avatar_url:"" };
+
+
+/* Redirects to login.html if there's no active session.
+   Returns the signed-in user, or null (after redirecting). */
+
+async function requireSession(){
+
+  const { data, error } = await supabaseClient.auth.getSession();
+
+  if(error){
+    console.error("Failed to check session:", error);
+  }
+
+  const session = data && data.session;
+
+  if(!session){
+    window.location.href = "login.html?redirect=" + encodeURIComponent("profile.html");
+    return null;
+  }
+
+  return session.user;
+
+}
+
+
+/* Loads this user's profiles row, creating one on the fly
+   if it doesn't exist yet (e.g. the signup trigger in
+   supabase-setup.sql wasn't run). */
+
+async function fetchOrCreateProfileRow(user){
+
+  const { data, error } = await supabaseClient
+    .from(PROFILES_TABLE)
+    .select("id, full_name, phone, avatar_url")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if(error){
+    console.error("Failed to load profile:", error);
+  }
+
+  if(data){
+    return data;
+  }
+
+  const fallbackRow = {
+    id: user.id,
+    full_name: (user.user_metadata && user.user_metadata.full_name) || "",
+    phone: "",
+    avatar_url: ""
+  };
+
+  const { data: created, error: insertError } = await supabaseClient
+    .from(PROFILES_TABLE)
+    .upsert(fallbackRow)
+    .select("id, full_name, phone, avatar_url")
+    .single();
+
+  if(insertError){
+    console.error("Failed to create profile row:", insertError);
+    return fallbackRow;
+  }
+
+  return created;
+
+}
+
+function renderProfile(){
+
+  const displayName = currentProfile.full_name
+    || (currentUser.email ? currentUser.email.split("@")[0] : "Keys99 User");
+
+  document.getElementById("profileName").textContent = displayName;
+  document.getElementById("profileEmail").textContent = currentUser.email || "—";
+  document.getElementById("profilePhone").textContent = currentProfile.phone || "Add a phone number";
+  document.getElementById("profileAvatarImg").src = currentProfile.avatar_url || DEFAULT_AVATAR;
+  document.getElementById("supportEmail").textContent = "support@keys99.com";
+
+}
+
+
+/* =========================================================
+   EDIT MODE
+========================================================= */
+
+const profileCard = document.getElementById("profileCard");
+const profileView = document.getElementById("profileView");
+const profileEdit = document.getElementById("profileEdit");
+const editProfileBtn = document.getElementById("editProfileBtn");
+
+function enterEditMode(){
+
+  document.getElementById("editName").value = currentProfile.full_name || "";
+  document.getElementById("editEmail").value = currentUser.email || "";
+  document.getElementById("editPhone").value = currentProfile.phone || "";
+
+  profileView.hidden = true;
+  profileEdit.hidden = false;
+  editProfileBtn.hidden = true;
+  profileCard.classList.add("editing");
+
+}
+
+function exitEditMode(){
+  profileView.hidden = false;
+  profileEdit.hidden = true;
+  editProfileBtn.hidden = false;
+  profileCard.classList.remove("editing");
+}
+
+editProfileBtn.addEventListener("click", enterEditMode);
+
+document.getElementById("cancelEditBtn").addEventListener("click", exitEditMode);
+
+document.getElementById("saveEditBtn").addEventListener("click", async () => {
+
+  const name = document.getElementById("editName").value.trim();
+  const phone = document.getElementById("editPhone").value.trim();
+
+  const saveBtn = document.getElementById("saveEditBtn");
+  saveBtn.disabled = true;
+  saveBtn.textContent = "Saving...";
+
+  const { data, error } = await supabaseClient
+    .from(PROFILES_TABLE)
+    .update({ full_name: name, phone: phone })
+    .eq("id", currentUser.id)
+    .select("id, full_name, phone, avatar_url")
+    .single();
+
+  saveBtn.disabled = false;
+  saveBtn.textContent = "Save Changes";
+
+  if(error){
+    console.error("Failed to update profile:", error);
+    showToast("Couldn't save changes. Please try again.");
+    return;
+  }
+
+  currentProfile = data;
+  renderProfile();
+  exitEditMode();
+  showToast("Profile updated.");
+
+});
+
+
+/* =========================================================
+   AVATAR UPLOAD
+   Uploaded to the "users-avatars" Storage bucket under
+   "<user id>/avatar.<ext>" (upsert, so re-uploading replaces
+   the old file), then the public URL is saved on the
+   profiles row.
+========================================================= */
+
+document.getElementById("avatarEditBtn").addEventListener("click", () => {
+  document.getElementById("avatarInput").click();
+});
+
+document.getElementById("avatarInput").addEventListener("change", async event => {
+
+  const file = event.target.files && event.target.files[0];
+
+  if(!file){
+    return;
+  }
+
+  if(!file.type.startsWith("image/")){
+    showToast("Please choose an image file.");
+    return;
+  }
+
+  if(file.size > 5 * 1024 * 1024){
+    showToast("Image is too large - please choose one under 5MB.");
+    return;
+  }
+
+  const avatarEditBtn = document.getElementById("avatarEditBtn");
+  avatarEditBtn.disabled = true;
+
+  const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+  const path = `${currentUser.id}/avatar.${ext}`;
+
+  const { error: uploadError } = await supabaseClient
+    .storage
+    .from(AVATAR_BUCKET)
+    .upload(path, file, { upsert:true, contentType:file.type, cacheControl:"3600" });
+
+  if(uploadError){
+    console.error("Failed to upload avatar:", uploadError);
+    showToast("Couldn't upload photo. Please try again.");
+    avatarEditBtn.disabled = false;
+    event.target.value = "";
+    return;
+  }
+
+  const { data:urlData } = supabaseClient
+    .storage
+    .from(AVATAR_BUCKET)
+    .getPublicUrl(path);
+
+  const cleanUrl = urlData.publicUrl;
+
+  const { data, error } = await supabaseClient
+    .from(PROFILES_TABLE)
+    .update({ avatar_url: cleanUrl })
+    .eq("id", currentUser.id)
+    .select("id, full_name, phone, avatar_url")
+    .single();
+
+  avatarEditBtn.disabled = false;
+  event.target.value = "";
+
+  if(error){
+    console.error("Failed to save avatar URL:", error);
+    showToast("Photo uploaded, but couldn't save it to your profile.");
+    return;
+  }
+
+  currentProfile = data;
+  renderProfile();
+
+  /* cache-bust just this render so the new photo shows right
+     away, without changing the clean URL stored in the DB */
+  document.getElementById("profileAvatarImg").src = cleanUrl + "?t=" + Date.now();
+
+  showToast("Profile photo updated.");
+
+});
+
+
+/* =========================================================
+   STATS
+   "Active Enquiries" and "Properties Listed" come from the
+   real properties/enquiries tables for the signed-in owner.
+   "New Enquiries" tracks enquiries received since the last
+   time this browser viewed the My Enquiries page (stored in
+   localStorage) - clicking that card or the menu row resets it.
+========================================================= */
+
+async function fetchOwnerEnquiryStats(){
+
+  const { data: props, error: propsError } = await supabaseClient
+    .from(PROPERTIES_TABLE)
+    .select("id")
+    .eq("posted_by_user_id", currentUser.id);
+
+  if(propsError){
+    console.error("Failed to load your properties for stats:", propsError);
+  }
+
+  const propertyIds = Array.isArray(props) ? props.map(p => p.id) : [];
+
+  if(!propertyIds.length){
+    return { listed:0, active:0, newCount:0 };
+  }
+
+  const { data: enquiries, error: enquiriesError } = await supabaseClient
+    .from(ENQUIRIES_TABLE)
+    .select("id, status, created_at")
+    .in("property_id", propertyIds);
+
+  if(enquiriesError){
+    console.error("Failed to load enquiries for stats:", enquiriesError);
+    return { listed:propertyIds.length, active:0, newCount:0 };
+  }
+
+  const rows = Array.isArray(enquiries) ? enquiries : [];
+  const active = rows.filter(e => (e.status || "new") !== "closed").length;
+
+  const seenAt = localStorage.getItem(ENQUIRIES_SEEN_KEY);
+  const seenTime = seenAt ? new Date(seenAt).getTime() : 0;
+
+  const newCount = rows.filter(e => {
+    return (e.status || "new") === "new" && new Date(e.created_at).getTime() > seenTime;
+  }).length;
+
+  return { listed:propertyIds.length, active, newCount };
+
+}
+
+function renderNewEnquiriesUI(count){
+
+  document.getElementById("statNewEnquiries").textContent = count;
+
+  const card = document.getElementById("newEnquiriesStat");
+  card.classList.toggle("has-new", count > 0);
+
+  const badge = document.getElementById("enquiriesBadge");
+
+  if(count > 0){
+    badge.textContent = count;
+    badge.hidden = false;
+  }else{
+    badge.hidden = true;
+  }
+
+}
+
+function goToMyEnquiries(){
+  localStorage.setItem(ENQUIRIES_SEEN_KEY, new Date().toISOString());
+  window.location.href = "my-enquiries.html";
+}
+
+async function updateStatCounts(){
+
+  document.getElementById("statViewed").textContent = getRecentlyViewedIds().length;
+  document.getElementById("statSaved").textContent = getFavorites().length;
+
+  const { listed, active, newCount } = await fetchOwnerEnquiryStats();
+
+  document.getElementById("statListed").textContent = listed;
+  document.getElementById("statEnquiries").textContent = active;
+
+  renderNewEnquiriesUI(newCount);
+
+}
+
+document.getElementById("newEnquiriesStat").addEventListener("click", goToMyEnquiries);
+
+document.getElementById("newEnquiriesStat").addEventListener("keydown", event => {
+  if(event.key === "Enter" || event.key === " "){
+    event.preventDefault();
+    goToMyEnquiries();
+  }
+});
+
+
+/* =========================================================
+   SAVED PROPERTIES (My Favorites)
+========================================================= */
+
+async function loadSavedProperties(){
+
+  const savedLoading = document.getElementById("savedLoading");
+  const savedEmpty = document.getElementById("savedEmpty");
+  const savedGrid = document.getElementById("savedGrid");
+
+  const favoriteIds = getFavorites();
+
+  if(!favoriteIds.length){
+    savedLoading.style.display = "none";
+    savedEmpty.style.display = "block";
+    savedGrid.innerHTML = "";
+    return;
+  }
+
+  try{
+
+    const allProperties = await fetchAllProperties();
+
+    const byId = new Map(allProperties.map(property => [property.id, property]));
+
+    const items = favoriteIds.map(id => byId.get(id)).filter(Boolean);
+
+    savedLoading.style.display = "none";
+
+    if(!items.length){
+      savedEmpty.style.display = "block";
+      savedGrid.innerHTML = "";
+      return;
+    }
+
+    savedEmpty.style.display = "none";
+    savedGrid.innerHTML = items.map(p => createPropertyCard(p)).join("");
+    attachPropertyEvents(savedGrid);
+
+  }catch(error){
+    console.error("Failed to load saved properties:", error);
+    savedLoading.style.display = "none";
+    savedEmpty.style.display = "block";
+    savedEmpty.textContent = "Unable to load your saved properties right now.";
+  }
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer = null;
+
+function showToast(message){
+
+  let toast = document.getElementById("profileToast");
+
+  if(!toast){
+    toast = document.createElement("div");
+    toast.id = "profileToast";
+    toast.className = "profile-toast";
+    document.body.appendChild(toast);
+  }
+
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 2500);
+
+}
+
+
+/* =========================================================
+   MENU ROW ACTIONS
+========================================================= */
+
+document.querySelectorAll(".menu-row").forEach(row => {
+
+  row.addEventListener("click", async () => {
+
+    const action = row.dataset.action;
+
+    if(action === "edit-profile"){
+
+      document.getElementById("profileCard").scrollIntoView({ behavior:"smooth", block:"start" });
+      enterEditMode();
+
+    }else if(action === "post-property"){
+
+      window.location.href = "post-property.html";
+
+    }else if(action === "favorites"){
+
+      document.getElementById("savedProperties").scrollIntoView({ behavior:"smooth", block:"start" });
+
+    }else if(action === "enquiries"){
+
+      goToMyEnquiries();
+
+    }else if(action === "listed"){
+
+      window.location.href = "my-properties.html";
+
+    }else if(action === "notifications"){
+
+      showToast("You're all caught up - no new notifications.");
+
+    }else if(action === "support"){
+
+      window.location.href = "mailto:support@keys99.com";
+
+    }else if(action === "logout"){
+
+      if(confirm("Log out of your Keys99 account?")){
+        await supabaseClient.auth.signOut();
+        window.location.href = "index.html";
+      }
+
+    }
+
+  });
+
+});
+
+document.getElementById("notifBtn").addEventListener("click", () => {
+  document.querySelector('.menu-row[data-action="notifications"]').scrollIntoView({ behavior:"smooth", block:"center" });
+});
+
+document.getElementById("settingsBtn").addEventListener("click", () => {
+  document.getElementById("profileCard").scrollIntoView({ behavior:"smooth", block:"start" });
+  enterEditMode();
+});
+
+
+/* =========================================================
+   INIT
+========================================================= */
+
+initBottomNav("profile");
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+  initMobileMenu();
+
+  currentUser = await requireSession();
+
+  if(!currentUser){
+    /* requireSession() already redirected to login.html */
+    return;
+  }
+
+  currentProfile = await fetchOrCreateProfileRow(currentUser);
+
+  renderProfile();
+  updateStatCounts();
+  loadSavedProperties();
+
+  document.getElementById("profileLoadingGate").hidden = true;
+  document.getElementById("profileContent").hidden = false;
+
+});
+
+</script>
+
+</body>
+</html>

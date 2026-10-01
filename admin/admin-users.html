@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#06251f">
+
+<title>Users | Keys99 Admin</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin-users.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+
+<body>
+
+
+<div class="admin-shell">
+
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <main class="admin-main">
+
+    <div class="admin-topbar">
+      <div class="admin-title">
+        <h1>Users</h1>
+        <p>Everyone with a Keys99 account. Grant or revoke admin access here.</p>
+      </div>
+    </div>
+
+    <div class="admin-message" id="userMessage" hidden></div>
+
+    <div class="admin-panel">
+
+      <div class="admin-filters">
+        <input type="text" class="admin-search-input" id="userSearch" placeholder="Search by name or phone...">
+      </div>
+
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Joined</th>
+              <th>Listings</th>
+              <th>Role</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="userTableBody">
+            <tr class="admin-empty-row"><td colspan="6">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<script src="js/config.js"></script>
+<script src="js/admin-auth.js"></script>
+
+<script>
+
+/* =========================================================
+   KEYS99 - ADMIN USERS
+========================================================= */
+
+let allUsers = [];
+
+(async () => {
+
+  const user = await requireAdmin();
+  if(!user) return;
+
+  renderAdminSidebar("admin-users.html");
+
+  await loadUsers();
+
+  document.getElementById("userSearch").addEventListener("input", renderTable);
+
+})();
+
+
+async function loadUsers(){
+
+  const { data: profiles, error } = await supabaseClient
+    .from("profiles")
+    .select("id, full_name, phone, is_admin, created_at")
+    .order("created_at", { ascending: false });
+
+  if(error){
+    showAdminMessage("userMessage", "Failed to load users: " + error.message, "error");
+    return;
+  }
+
+  const { data: properties } = await supabaseClient
+    .from("projects")
+    .select("posted_by_user_id");
+
+  const listingCounts = {};
+  (properties || []).forEach(p => {
+    if(!p.posted_by_user_id) return;
+    listingCounts[p.posted_by_user_id] = (listingCounts[p.posted_by_user_id] || 0) + 1;
+  });
+
+  allUsers = (profiles || []).map(u => ({ ...u, listingCount: listingCounts[u.id] || 0 }));
+
+  renderTable();
+
+}
+
+function renderTable(){
+
+  const tbody = document.getElementById("userTableBody");
+  const search = document.getElementById("userSearch").value.trim().toLowerCase();
+
+  let rows = allUsers;
+
+  if(search){
+    rows = rows.filter(u =>
+      String(u.full_name || "").toLowerCase().includes(search) ||
+      String(u.phone || "").toLowerCase().includes(search)
+    );
+  }
+
+  if(rows.length === 0){
+    tbody.innerHTML = '<tr class="admin-empty-row"><td colspan="6">No users match this search.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = rows.map(u => `
+    <tr data-id="${u.id}">
+      <td style="font-weight:700;">${escapeAdminHtml(u.full_name || "Unnamed")}</td>
+      <td class="admin-cell-muted">${escapeAdminHtml(u.phone || "-")}</td>
+      <td class="admin-cell-muted">${adminFormatDate(u.created_at)}</td>
+      <td class="admin-cell-muted">${u.listingCount}</td>
+      <td>${u.is_admin ? '<span class="admin-badge badge-approved">Admin</span>' : '<span class="admin-badge badge-new">User</span>'}</td>
+      <td>
+        <button type="button" class="admin-btn ${u.is_admin ? "admin-btn-danger" : "admin-btn-primary"}" data-role="toggle-admin">
+          ${u.is_admin ? "Revoke Admin" : "Make Admin"}
+        </button>
+      </td>
+    </tr>
+  `).join("");
+
+  tbody.querySelectorAll('[data-role="toggle-admin"]').forEach(btn => {
+    btn.addEventListener("click", () => toggleAdmin(btn));
+  });
+
+}
+
+async function toggleAdmin(btn){
+
+  const row = btn.closest("tr");
+  const id = row.dataset.id;
+  const target = allUsers.find(u => u.id === id);
+  if(!target) return;
+
+  const nextValue = !target.is_admin;
+
+  if(id === adminCurrentUser.id && !nextValue){
+    if(!confirm("This will revoke YOUR OWN admin access and sign you out. Continue?")){
+      return;
+    }
+  }
+
+  btn.disabled = true;
+
+  const { error } = await supabaseClient
+    .from("profiles")
+    .update({ is_admin: nextValue })
+    .eq("id", id);
+
+  btn.disabled = false;
+
+  if(error){
+    showAdminMessage("userMessage", "Failed to update role: " + error.message, "error");
+    return;
+  }
+
+  target.is_admin = nextValue;
+  showAdminMessage("userMessage", "Role updated.", "success");
+  renderTable();
+
+  if(id === adminCurrentUser.id && !nextValue){
+    await supabaseClient.auth.signOut();
+    window.location.href = "admin-login.html";
+  }
+
+}
+
+</script>
+
+</body>
+</html>

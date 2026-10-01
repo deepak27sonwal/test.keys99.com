@@ -1,0 +1,2465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+
+<title>Post Your Property Free | Keys99</title>
+<meta name="description" content="List your flat, house or plot on Keys99 for free. Add photos, floor plans and pricing, and start receiving genuine buyer enquiries directly.">
+<link rel="canonical" href="https://keys99.com/post-property.html">
+<meta name="robots" content="index,follow,max-image-preview:large">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Keys99">
+<meta property="og:title" content="Post Your Property Free | Keys99">
+<meta property="og:description" content="List your flat, house or plot on Keys99 for free. Add photos, floor plans and pricing, and start receiving genuine buyer enquiries directly.">
+<meta property="og:url" content="https://keys99.com/post-property.html">
+<meta property="og:image" content="https://keys99.com/assets/og-default.jpg">
+<meta property="og:locale" content="en_IN">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Post Your Property Free | Keys99">
+<meta name="twitter:description" content="List your flat, house or plot on Keys99 for free. Add photos, floor plans and pricing, and start receiving genuine buyer enquiries directly.">
+<meta name="twitter:image" content="https://keys99.com/assets/og-default.jpg">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/post-property.css">
+<link rel="stylesheet" href="css/chat-widget.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+
+<body>
+
+
+<!-- =======================================================
+     HEADER
+======================================================= -->
+
+<header class="header">
+
+  <div class="container nav">
+
+    <a class="logo logo-link" href="index.html">
+      <img src="assets/logo.png" alt="Keys99.com" class="header-logo">
+    </a>
+
+    <nav class="nav-links">
+
+      <a href="index.html">Home</a>
+      <a href="projects/search.html?status=sale">Buy</a>
+      <a href="projects/search.html?status=rent">Rent</a>
+      <a href="index.html#types">Projects</a>
+      <a href="profile.html">My Profile</a>
+
+    </nav>
+
+    <div class="nav-actions">
+
+      <button class="menu-btn" id="menuBtn" aria-label="Menu">
+        ☰
+      </button>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<!-- MOBILE MENU -->
+
+<div class="mobile-menu" id="mobileMenu">
+
+  <a href="index.html">Home</a>
+  <a href="projects/search.html?status=sale">Buy Property</a>
+  <a href="projects/search.html?status=rent">Rent Property</a>
+  <a href="index.html#types">Projects</a>
+  <a href="profile.html">My Profile</a>
+
+</div>
+
+
+
+<main>
+
+
+<!-- =======================================================
+     AUTH LOADING GATE
+======================================================= -->
+
+<div class="page-loading-gate" id="pageLoadingGate">
+  <div class="page-loading-spinner"></div>
+  <p>Checking your session...</p>
+</div>
+
+
+<div id="postPropertyContent" hidden>
+
+
+  <!-- =======================================================
+       HERO
+  ======================================================= -->
+
+  <section class="post-hero">
+    <div class="container">
+
+      <div class="section-kicker" id="heroKicker">List With Keys99</div>
+      <h1 id="heroTitle">Post Your Property</h1>
+      <p id="heroSubtext">Share your project details once and reach thousands of verified buyers and tenants across India.</p>
+
+      <div class="posting-as-chip">
+        <img class="posting-as-avatar" id="postingAsAvatarImg" alt="" hidden>
+        <span class="posting-as-avatar" id="postingAsAvatarInitial"></span>
+        <span>Posting as &nbsp;<strong id="postingAsName">—</strong></span>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- =======================================================
+       WIZARD
+  ======================================================= -->
+
+  <section class="wizard-section">
+    <div class="container">
+
+      <div class="wizard-shell">
+
+        <!-- STEP INDICATOR (desktop) -->
+
+        <div class="step-indicator" id="stepIndicator">
+
+          <div class="step-dot" data-step="1">
+            <span class="step-num">1</span>
+            <span class="step-label">Basics</span>
+          </div>
+
+          <div class="step-dot" data-step="2">
+            <span class="step-num">2</span>
+            <span class="step-label">Location</span>
+          </div>
+
+          <div class="step-dot" data-step="3">
+            <span class="step-num">3</span>
+            <span class="step-label">Pricing</span>
+          </div>
+
+          <div class="step-dot" data-step="4">
+            <span class="step-num">4</span>
+            <span class="step-label">Amenities</span>
+          </div>
+
+          <div class="step-dot" data-step="5">
+            <span class="step-num">5</span>
+            <span class="step-label">Photos</span>
+          </div>
+
+          <div class="step-dot" data-step="6">
+            <span class="step-num">6</span>
+            <span class="step-label">Links</span>
+          </div>
+
+          <div class="step-dot" data-step="7">
+            <span class="step-num">7</span>
+            <span class="step-label">Title &amp; SEO</span>
+          </div>
+
+          <div class="step-dot" data-step="8">
+            <span class="step-num">8</span>
+            <span class="step-label">Review</span>
+          </div>
+
+        </div>
+
+        <!-- PROGRESS BAR (mobile) -->
+
+        <div class="progress-bar-mobile">
+          <div class="progress-bar-text">
+            <span>Step <strong id="progressStepNum">1</strong> of 8</span>
+            <span id="progressStepLabel">Basics</span>
+          </div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progressBarFill" style="width:12.5%"></div>
+          </div>
+        </div>
+
+
+        <form id="postPropertyForm" novalidate>
+
+
+          <!-- =====================================================
+               STEP 1 - BASIC DETAILS
+          ===================================================== -->
+
+          <div class="wizard-step" data-step="1">
+
+            <h2 class="step-title">Basic Details</h2>
+            <p class="step-sub">Tell us about the project and its developer.</p>
+
+            <div class="field-grid">
+
+              <div class="form-field">
+                <label for="fDeveloper">Developer / Builder Name</label>
+                <input type="text" id="fDeveloper" placeholder="e.g. Prestige Group">
+              </div>
+
+              <div class="form-field">
+                <label for="fStatus">Listing Status *</label>
+                <select id="fStatus">
+                  <option value="">Select status</option>
+                  <option value="New Launch">New Launch</option>
+                  <option value="Under Construction">Under Construction</option>
+                  <option value="Ready to Move">Ready to Move</option>
+                  <option value="For Rent">For Rent</option>
+                  <option value="Resale">Resale</option>
+                  <option value="Sold Out">Sold Out</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label for="fPossession">Possession Date</label>
+                <input type="date" id="fPossession">
+              </div>
+
+              <div class="form-field">
+                <label for="fReraId">RERA ID</label>
+                <input type="text" id="fReraId" placeholder="e.g. P51234567890">
+              </div>
+
+            </div>
+
+            <div class="form-field">
+              <label for="fOverview">Property Overview *</label>
+              <textarea id="fOverview" rows="5" placeholder="Describe the property - layout, highlights, connectivity, unique selling points..."></textarea>
+            </div>
+
+          </div>
+
+
+          <!-- =====================================================
+               STEP 2 - LOCATION
+          ===================================================== -->
+
+          <div class="wizard-step" data-step="2" hidden>
+
+            <h2 class="step-title">Location</h2>
+            <p class="step-sub">Where is this property located?</p>
+
+            <div class="form-field" style="margin-bottom:16px">
+              <label for="fAddress">Full Address *</label>
+              <textarea id="fAddress" rows="2" placeholder="Building / plot no., street, area"></textarea>
+            </div>
+
+            <div class="field-grid">
+
+              <div class="form-field">
+                <label for="fState">State *</label>
+                <input type="text" id="fState" placeholder="e.g. Maharashtra">
+              </div>
+
+              <div class="form-field">
+                <label for="fCity">City *</label>
+                <input type="text" id="fCity" placeholder="e.g. Mumbai">
+              </div>
+
+              <div class="form-field">
+                <label for="fLocality">Locality *</label>
+                <input type="text" id="fLocality" placeholder="e.g. Powai">
+              </div>
+
+              <div class="form-field">
+                <label for="fPincode">Pincode</label>
+                <input type="text" id="fPincode" inputmode="numeric" maxlength="6" placeholder="e.g. 400076">
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- =====================================================
+               STEP 3 - CONFIGURATIONS & PRICING
+          ===================================================== -->
+
+          <div class="wizard-step" data-step="3" hidden>
+
+            <h2 class="step-title">Configurations &amp; Pricing</h2>
+            <p class="step-sub">Add every BHK / unit type this property offers, with its size and price.</p>
+
+            <div id="bhkList"></div>
+
+            <button type="button" class="btn-add-row" id="addBhkBtn">+ Add Configuration</button>
+
+          </div>
+
+
+          <!-- =====================================================
+               STEP 4 - AMENITIES & FEATURES
+          ===================================================== -->
+
+          <div class="wizard-step" data-step="4" hidden>
+
+            <h2 class="step-title">Amenities &amp; Features</h2>
+            <p class="step-sub">Select the amenities this property offers.</p>
+
+            <div class="amenity-checklist" id="amenityChecklist"></div>
+
+            <div class="tag-input-row">
+              <input type="text" id="customAmenityInput" placeholder="Add another amenity">
+              <button type="button" id="addAmenityBtn">Add</button>
+            </div>
+
+            <div class="tag-list" id="amenityTagList"></div>
+
+
+            <div class="feature-toggle-group">
+
+              <div class="feature-toggle-head">
+                <h4>Interior</h4>
+                <div class="mode-toggle" data-target="interior">
+                  <button type="button" class="active" data-mode="text">Description</button>
+                  <button type="button" data-mode="image">Photo</button>
+                </div>
+              </div>
+
+              <textarea id="fInteriorText" rows="3" placeholder="Describe the interiors - flooring, fittings, finishes..."></textarea>
+
+              <div class="upload-box" id="interiorUploadBox" hidden>
+                <div class="upload-dropzone" id="interiorDropzone">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+                  <div>Click to upload an interior photo</div>
+                </div>
+                <div class="upload-preview" id="interiorPreview" hidden>
+                  <img id="interiorPreviewImg" alt="">
+                  <button type="button" class="upload-remove-btn" id="interiorRemoveBtn">✕</button>
+                </div>
+                <input type="file" id="interiorFileInput" accept="image/*" hidden>
+              </div>
+
+            </div>
+
+
+            <div class="feature-toggle-group">
+
+              <div class="feature-toggle-head">
+                <h4>Exterior</h4>
+                <div class="mode-toggle" data-target="exterior">
+                  <button type="button" class="active" data-mode="text">Description</button>
+                  <button type="button" data-mode="image">Photo</button>
+                </div>
+              </div>
+
+              <textarea id="fExteriorText" rows="3" placeholder="Describe the exteriors - facade, landscaping, common areas..."></textarea>
+
+              <div class="upload-box" id="exteriorUploadBox" hidden>
+                <div class="upload-dropzone" id="exteriorDropzone">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+                  <div>Click to upload an exterior photo</div>
+                </div>
+                <div class="upload-preview" id="exteriorPreview" hidden>
+                  <img id="exteriorPreviewImg" alt="">
+                  <button type="button" class="upload-remove-btn" id="exteriorRemoveBtn">✕</button>
+                </div>
+                <input type="file" id="exteriorFileInput" accept="image/*" hidden>
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- =====================================================
+               STEP 5 - PHOTOS & REELS
+          ===================================================== -->
+
+          <div class="wizard-step" data-step="5" hidden>
+
+            <h2 class="step-title">Photos &amp; Reels</h2>
+            <p class="step-sub">Add a cover photo, a few extra photos, and short video reels. Everything is compressed automatically so it uploads fast without losing quality.</p>
+
+            <div class="main-image-upload">
+
+              <div class="form-field" style="margin-bottom:8px">
+                <label>Cover Photo</label>
+              </div>
+
+              <div class="upload-dropzone" id="mainImageDropzone">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+                <div>Click to upload the main property photo (max 12MB)</div>
+              </div>
+
+              <div class="upload-preview" id="mainImagePreview" hidden>
+                <img id="mainImagePreviewImg" alt="">
+                <button type="button" class="upload-remove-btn" id="mainImageRemoveBtn">✕</button>
+              </div>
+
+              <input type="file" id="mainImageFileInput" accept="image/*" hidden>
+
+            </div>
+
+            <div class="gallery-upload">
+
+              <div class="form-field" style="margin-bottom:8px">
+                <label>Photo Gallery <span class="form-field-hint" style="display:inline">(add as many as you like)</span></label>
+              </div>
+
+              <div class="upload-dropzone" id="galleryDropzone">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+                <div>Click to add gallery photos (max 12MB each)</div>
+              </div>
+
+              <input type="file" id="galleryFileInput" accept="image/*" multiple hidden>
+
+              <div class="media-grid" id="galleryGrid"></div>
+              <p class="upload-progress-text" id="galleryProgressText" hidden></p>
+
+            </div>
+
+            <div class="reels-upload">
+
+              <div class="form-field" style="margin-bottom:8px">
+                <label>Property Reels <span class="form-field-hint" style="display:inline">(short video walkthroughs, up to 90s each)</span></label>
+              </div>
+
+              <div class="upload-dropzone" id="reelsDropzone">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+                <div>Click to add video reels (max 150MB each, auto-compressed)</div>
+              </div>
+
+              <input type="file" id="reelsFileInput" accept="video/*" multiple hidden>
+
+              <div class="media-grid" id="reelsGrid"></div>
+              <p class="upload-progress-text" id="reelsProgressText" hidden></p>
+
+            </div>
+
+          </div>
+
+
+          <!-- =====================================================
+               STEP 6 - LINKS & LANDMARKS
+          ===================================================== -->
+
+          <div class="wizard-step" data-step="6" hidden>
+
+            <h2 class="step-title">Links &amp; Nearby Landmarks</h2>
+            <p class="step-sub">Add contact details, video links and what's nearby.</p>
+
+            <div class="field-grid">
+
+              <div class="form-field">
+                <label for="fContact">Contact Number</label>
+                <input type="tel" id="fContact" placeholder="e.g. 9876543210">
+              </div>
+
+              <div class="form-field">
+                <label for="fVirtualTour">Virtual Tour Video URL</label>
+                <input type="url" id="fVirtualTour" placeholder="https://...">
+              </div>
+
+              <div class="form-field">
+                <label for="fYoutube">YouTube Link</label>
+                <input type="url" id="fYoutube" placeholder="https://youtube.com/...">
+              </div>
+
+              <div class="form-field">
+                <label for="fFacebook">Facebook Link</label>
+                <input type="url" id="fFacebook" placeholder="https://facebook.com/...">
+              </div>
+
+              <div class="form-field">
+                <label for="fInstagram">Instagram Link</label>
+                <input type="url" id="fInstagram" placeholder="https://instagram.com/...">
+              </div>
+
+            </div>
+
+            <div class="form-field">
+              <label>Nearby Landmarks</label>
+              <div class="tag-input-row">
+                <input type="text" id="landmarkInput" placeholder="e.g. City Hospital - 1.2 km">
+                <button type="button" id="addLandmarkBtn">Add</button>
+              </div>
+              <div class="tag-list" id="landmarkTagList"></div>
+            </div>
+
+          </div>
+
+
+          <!-- =====================================================
+               STEP 7 - REVIEW & SUBMIT
+          ===================================================== -->
+
+          <!-- =====================================================
+               STEP 7 - TITLE & SEO
+
+               Title and Description are the listing's own words.
+               Leave the two SEO fields empty and they are what
+               Google shows; fill them in to say something different
+               in search results than on the page.
+          ===================================================== -->
+
+          <div class="wizard-step" data-step="7" hidden>
+
+            <h2 class="step-title">Title &amp; SEO</h2>
+            <p class="step-sub">How this listing reads on the page and in Google search results.</p>
+
+            <div class="form-field">
+              <label for="fTitle">Listing Title</label>
+              <input type="text" id="fTitle" maxlength="120"
+                     placeholder="e.g. 2 &amp; 3 BHK Luxury Apartments at Lodha Dighi">
+              <p class="field-hint">
+                The heading on the listing page.
+                <span class="char-count" id="titleCount"></span>
+              </p>
+              <p class="field-hint field-hint-muted" id="titleFallback"></p>
+            </div>
+
+            <div class="form-field">
+              <label for="fDescription">Short Description</label>
+              <textarea id="fDescription" rows="3" maxlength="300"
+                        placeholder="One or two sentences a buyer would read in a search result."></textarea>
+              <p class="field-hint">
+                Used as the meta description unless you set an SEO description below.
+                <span class="char-count" id="descriptionCount"></span>
+              </p>
+            </div>
+
+            <div class="seo-divider">
+              <span>Search engine overrides — optional</span>
+            </div>
+
+            <div class="form-field">
+              <label for="fSeoTitle">SEO Title</label>
+              <input type="text" id="fSeoTitle" maxlength="120"
+                     placeholder="Leave empty to use the listing title">
+              <p class="field-hint">
+                Google usually shows about 60 characters.
+                <span class="char-count" id="seoTitleCount"></span>
+              </p>
+            </div>
+
+            <div class="form-field">
+              <label for="fSeoDescription">SEO Description</label>
+              <textarea id="fSeoDescription" rows="3" maxlength="300"
+                        placeholder="Leave empty to use the short description"></textarea>
+              <p class="field-hint">
+                Google usually shows about 155 characters.
+                <span class="char-count" id="seoDescriptionCount"></span>
+              </p>
+            </div>
+
+            <div class="seo-preview" id="seoPreview">
+              <span class="seo-preview-label">Google preview</span>
+              <div class="seo-preview-url">keys99.com › projects › <span id="seoPreviewSlug">your-listing</span></div>
+              <div class="seo-preview-title" id="seoPreviewTitle"></div>
+              <div class="seo-preview-desc" id="seoPreviewDesc"></div>
+            </div>
+
+          </div>
+
+
+          <!-- =====================================================
+               STEP 8 - REVIEW & SUBMIT
+          ===================================================== -->
+
+          <div class="wizard-step" data-step="8" hidden>
+
+            <h2 class="step-title">Review &amp; Submit</h2>
+            <p class="step-sub">Double-check everything before you publish this listing.</p>
+
+            <div class="posted-by-card">
+              <img class="posted-by-avatar" id="postedByAvatarImg" alt="" hidden>
+              <span class="posted-by-avatar" id="postedByAvatarInitial"></span>
+              <div class="posted-by-info" style="flex:1">
+                <span>Listed by</span>
+                <input type="text" id="fPostedByName" style="border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:13px;font-weight:700;width:100%;margin-top:4px;background:#fff">
+              </div>
+            </div>
+
+            <div class="review-summary" id="reviewSummary"></div>
+
+            <label class="terms-row">
+              <input type="checkbox" id="agreeTerms">
+              <span>I confirm the information provided is accurate and I have the right to list this property on Keys99.com.</span>
+            </label>
+
+          </div>
+
+
+          <!-- WIZARD NAV -->
+
+          <div class="wizard-nav">
+            <button type="button" class="btn-ghost" id="prevStepBtn" hidden>← Back</button>
+            <button type="button" class="btn-primary" id="nextStepBtn">Continue →</button>
+            <button type="submit" class="btn-primary" id="submitPropertyBtn" hidden>Submit Property ✓</button>
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- =======================================================
+       FOOTER
+  ======================================================= -->
+
+  <footer id="footer">
+
+    <div class="container">
+
+      <div class="footer-grid">
+
+        <div class="footer-col footer-brand">
+          <a class="logo logo-link" href="index.html">
+            <img src="assets/logo.png" alt="Keys99.com" class="header-logo">
+          </a>
+          <p style="margin-top:13px;max-width:230px">
+            A modern real estate platform to help you discover verified properties with confidence.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <a href="index.html">Home</a>
+          <a href="projects/search.html?status=sale">Buy</a>
+          <a href="projects/search.html?status=rent">Rent</a>
+          <a href="index.html#types">Projects</a>
+        </div>
+
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="index.html#why">About Us</a>
+          <a href="index.html#footer">Contact Us</a>
+          <a href="privacy-policy.html">Privacy Policy</a>
+          <a href="terms.html">Terms &amp; Conditions</a>
+        </div>
+
+        <div class="footer-col">
+          <h4>Follow &amp; Contact</h4>
+          <div class="socials">
+            <a href="https://www.facebook.com/profile.php?id=100066632434187" aria-label="Keys99 on Facebook" target="_blank" rel="noopener">f</a>
+            <a href="https://www.instagram.com/keys99com/" aria-label="Keys99 on Instagram" target="_blank" rel="noopener">◎</a>
+            <a href="#" aria-label="Keys99 on LinkedIn">in</a>
+            <a href="https://www.youtube.com/@Keys99" aria-label="Keys99 on YouTube" target="_blank" rel="noopener">▶</a>
+          </div>
+          <p style="margin-top:12px">support@keys99.com</p>
+          <p>+91 98765 43210</p>
+          <p>India</p>
+        </div>
+
+      </div>
+
+      <div class="copyright">
+        <span>© 2026 Keys99.com. All rights reserved.</span>
+        <span>⌂ &nbsp; Your Key to a Better Tomorrow</span>
+      </div>
+
+    </div>
+
+  </footer>
+
+
+  <!-- MOBILE BOTTOM NAVIGATION -->
+
+  <nav class="bottom-nav" id="bottomNav">
+
+    <button type="button" data-target="home">
+      <span class="bn-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 11.5 12 4l9 7.5"/>
+          <path d="M5.5 10v9a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-9"/>
+          <path d="M9.5 20v-6h5v6"/>
+        </svg>
+      </span>
+      <span class="bn-label">Home</span>
+    </button>
+
+    <button type="button" data-target="search">
+      <span class="bn-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="6.5"/>
+          <path d="m20 20-3.6-3.6"/>
+        </svg>
+      </span>
+      <span class="bn-label">Search</span>
+    </button>
+
+    <button type="button" data-target="reels">
+      <span class="bn-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3.5" y="3.5" width="17" height="17" rx="5"/>
+          <path d="M10 8.5v7l6-3.5-6-3.5Z" fill="currentColor" stroke="none"/>
+        </svg>
+      </span>
+      <span class="bn-label">Reels</span>
+    </button>
+
+    <button type="button" data-target="profile">
+      <span class="bn-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="3.5"/>
+          <path d="M4.5 20c1.4-3.6 4.3-5.5 7.5-5.5s6.1 1.9 7.5 5.5"/>
+        </svg>
+      </span>
+      <span class="bn-label">Profile</span>
+    </button>
+
+  </nav>
+
+
+</div><!-- /#postPropertyContent -->
+
+
+<!-- =======================================================
+     SUCCESS OVERLAY
+======================================================= -->
+
+<div class="success-overlay" id="successOverlay" hidden>
+  <div class="success-card">
+
+    <div class="success-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+    </div>
+
+    <h3 id="successTitle">Property Submitted!</h3>
+    <p id="successText">Your listing is now live on Keys99.com. Thanks for posting with us.</p>
+
+    <div class="success-actions">
+      <button type="button" class="btn-ghost" id="postAnotherBtn">Post Another</button>
+      <button type="button" class="btn-primary" id="viewListingBtn">View Listing</button>
+    </div>
+
+  </div>
+</div>
+
+
+</main>
+
+
+<script src="js/config.js"></script>
+<script src="js/chat-widget.js"></script>
+
+<script>
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function escapeHtml(value){
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+let toastTimer = null;
+
+function showToast(message){
+
+  let toast = document.getElementById("postToast");
+
+  if(!toast){
+    toast = document.createElement("div");
+    toast.id = "postToast";
+    toast.className = "post-toast";
+    document.body.appendChild(toast);
+  }
+
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 2800);
+
+}
+
+function initMobileMenu(){
+
+  const menuBtn = document.getElementById("menuBtn");
+  const mobileMenu = document.getElementById("mobileMenu");
+
+  if(!menuBtn || !mobileMenu){
+    return;
+  }
+
+  menuBtn.addEventListener("click", () => {
+    mobileMenu.classList.toggle("open");
+    menuBtn.textContent = mobileMenu.classList.contains("open") ? "×" : "☰";
+  });
+
+  mobileMenu.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
+      mobileMenu.classList.remove("open");
+      menuBtn.textContent = "☰";
+    });
+  });
+
+}
+
+function initBottomNav(activeTarget){
+
+  const bottomNav = document.getElementById("bottomNav");
+
+  if(!bottomNav){
+    return;
+  }
+
+  bottomNav.querySelectorAll("button").forEach(btn => {
+    btn.classList.toggle("bn-active", btn.dataset.target === activeTarget);
+  });
+
+  bottomNav.addEventListener("click", event => {
+
+    const button = event.target.closest("button");
+
+    if(!button){
+      return;
+    }
+
+    const target = button.dataset.target;
+
+    if(target === "home"){
+      window.location.href = "index.html";
+    }else if(target === "search"){
+      window.location.href = "projects/search.html";
+    }else if(target === "reels"){
+      window.location.href = "reels.html";
+    }else if(target === "profile"){
+      window.location.href = "profile.html";
+    }
+
+  });
+
+}
+
+
+/* =========================================================
+   SESSION / PROFILE
+========================================================= */
+
+const PROFILES_TABLE = "profiles";
+const AVATAR_BUCKET = "users-avatars";
+const PROPERTY_IMAGE_BUCKET = "property-images";
+const PROPERTY_REEL_BUCKET = "property-reels";
+const PROPERTIES_TABLE = "projects";
+
+/* =========================================================
+   SEO SLUG
+   The slug becomes the listing's public URL
+   (/projects/property/<slug>/), so it is generated once when
+   the listing is created and never touched on edit - changing
+   it after Google has indexed the page loses that ranking.
+========================================================= */
+
+function makeSlug(value){
+  return String(value == null ? "" : value)
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-");
+}
+
+/* The slug column has no unique constraint, so check what is already
+   taken and add a numeric suffix rather than colliding with it. */
+async function buildUniqueSlug(parts){
+  const base = makeSlug(parts.filter(Boolean).join("-")) || "property";
+
+  const { data, error } = await supabaseClient
+    .from(PROPERTIES_TABLE)
+    .select("slug")
+    .like("slug", base + "%");
+
+  if(error){
+    console.error("Slug uniqueness check failed:", error);
+    return base + "-" + Date.now().toString(36).slice(-5);
+  }
+
+  const taken = new Set((data || []).map(row => row.slug).filter(Boolean));
+  if(!taken.has(base)) return base;
+
+  for(let n = 2; n < 100; n++){
+    if(!taken.has(base + "-" + n)) return base + "-" + n;
+  }
+  return base + "-" + Date.now().toString(36).slice(-5);
+}
+
+let currentUser = null;
+let currentProfile = { full_name:"", phone:"", avatar_url:"" };
+let postedByUserCode = "";
+let editPropertyId = new URLSearchParams(window.location.search).get("id") || null;
+
+function looksLikeUrl(value){
+  return /^https?:\/\//i.test(String(value || "").trim());
+}
+
+/* Loads an existing listing owned by the signed-in user for
+   editing. Redirects to my-properties.html if it doesn't
+   exist or belongs to someone else (RLS would also block the
+   later update, but this avoids editing a listing you can't
+   see the real data for). */
+
+async function loadPropertyForEdit(id){
+
+  const { data, error } = await supabaseClient
+    .from(PROPERTIES_TABLE)
+    .select(PROPERTY_SELECT_COLUMNS)
+    .eq("id", id)
+    .eq("posted_by_user_id", currentUser.id)
+    .maybeSingle();
+
+  if(error){
+    console.error("Failed to load property for editing:", error);
+  }
+
+  if(!data){
+    window.location.href = "my-properties.html";
+    return null;
+  }
+
+  return data;
+
+}
+
+function toArray(value){
+  if(Array.isArray(value)){
+    return value;
+  }
+  return [];
+}
+
+function prefillFormFromProperty(property){
+
+  document.getElementById("heroKicker").textContent = "Edit Listing";
+  document.getElementById("heroTitle").textContent = "Edit Your Property";
+  document.getElementById("heroSubtext").textContent = "Update your listing details below and save your changes.";
+
+  document.getElementById("fDeveloper").value = property.developer || "";
+  document.getElementById("fStatus").value = property.status || "";
+  document.getElementById("fPossession").value = property.possession || "";
+  document.getElementById("fReraId").value = property.rera_id || "";
+  document.getElementById("fOverview").value = property.overview || "";
+
+  document.getElementById("fTitle").value = property.title || "";
+  document.getElementById("fDescription").value = property.description || "";
+  document.getElementById("fSeoTitle").value = property.seo_title || "";
+  document.getElementById("fSeoDescription").value = property.seo_description || "";
+
+  document.getElementById("fAddress").value = property.address || "";
+  document.getElementById("fState").value = property.state || "";
+  document.getElementById("fCity").value = property.city || "";
+  document.getElementById("fLocality").value = property.locality || "";
+  document.getElementById("fPincode").value = property.pincode || "";
+
+  const rows = toArray(property.bhk_options).filter(row => row && typeof row === "object");
+  bhkOptions = rows.length ? rows.map(row => ({
+    type: row.type || "",
+    sqft: row.sqft ?? "",
+    areaUnit: row.areaUnit || "Sq.Ft",
+    price: row.price ?? "",
+    priceWords: row.price_words || "",
+    availability: row.availability || "Available"
+  })) : [newBhkRow()];
+  renderBhkRows();
+
+  selectedAmenities = toArray(property.amenities).map(item => String(item)).filter(Boolean);
+  renderAmenityChecklist();
+  renderAmenityTags();
+
+  landmarks = toArray(property.nearby_landmarks).map(item => String(item)).filter(Boolean);
+  renderLandmarkTags();
+
+  const interiorEntry = toArray(property.interior)[0] || "";
+  if(interiorEntry && looksLikeUrl(interiorEntry)){
+    interiorImageUrl = interiorEntry;
+    document.getElementById("interiorPreviewImg").src = interiorEntry;
+    document.getElementById("interiorPreview").hidden = false;
+    document.getElementById("interiorDropzone").hidden = true;
+    setFeatureMode("interior", "image");
+  }else if(interiorEntry){
+    document.getElementById("fInteriorText").value = interiorEntry;
+  }
+
+  const exteriorEntry = toArray(property.exterior)[0] || "";
+  if(exteriorEntry && looksLikeUrl(exteriorEntry)){
+    exteriorImageUrl = exteriorEntry;
+    document.getElementById("exteriorPreviewImg").src = exteriorEntry;
+    document.getElementById("exteriorPreview").hidden = false;
+    document.getElementById("exteriorDropzone").hidden = true;
+    setFeatureMode("exterior", "image");
+  }else if(exteriorEntry){
+    document.getElementById("fExteriorText").value = exteriorEntry;
+  }
+
+  if(property.main_image){
+    mainImageUrl = property.main_image;
+    document.getElementById("mainImagePreviewImg").src = property.main_image;
+    document.getElementById("mainImagePreview").hidden = false;
+    document.getElementById("mainImageDropzone").hidden = true;
+  }
+
+  galleryImages = toArray(property.gallery_images).map(item => String(item)).filter(Boolean);
+  renderGalleryGrid();
+
+  reelsList = toArray(property.reels).map(item => String(item)).filter(Boolean);
+  renderReelsGrid();
+
+  document.getElementById("fContact").value = property.contact_number ? String(property.contact_number) : "";
+  document.getElementById("fVirtualTour").value = property.virtual_tour_video || "";
+  document.getElementById("fYoutube").value = property.youtube_link || "";
+  document.getElementById("fFacebook").value = property.facebook_link || "";
+  document.getElementById("fInstagram").value = property.instagram_link || "";
+
+  document.getElementById("fPostedByName").value = property.posted_by_name || document.getElementById("fPostedByName").value;
+
+  document.getElementById("submitPropertyBtn").textContent = "Save Changes ✓";
+  document.getElementById("successTitle").textContent = "Property Updated!";
+  document.getElementById("successText").textContent = "Your changes are now live on Keys99.com.";
+  document.getElementById("postAnotherBtn").textContent = "Back to My Properties";
+
+}
+
+async function requireSession(){
+
+  const { data, error } = await supabaseClient.auth.getSession();
+
+  if(error){
+    console.error("Failed to check session:", error);
+  }
+
+  const session = data && data.session;
+
+  if(!session){
+    window.location.href = "login.html?redirect=" + encodeURIComponent("post-property.html");
+    return null;
+  }
+
+  return session.user;
+
+}
+
+async function fetchOrCreateProfileRow(user){
+
+  const { data, error } = await supabaseClient
+    .from(PROFILES_TABLE)
+    .select("id, full_name, phone, avatar_url")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if(error){
+    console.error("Failed to load profile:", error);
+  }
+
+  if(data){
+    return data;
+  }
+
+  const fallbackRow = {
+    id: user.id,
+    full_name: (user.user_metadata && user.user_metadata.full_name) || "",
+    phone: "",
+    avatar_url: ""
+  };
+
+  const { data: created, error: insertError } = await supabaseClient
+    .from(PROFILES_TABLE)
+    .upsert(fallbackRow)
+    .select("id, full_name, phone, avatar_url")
+    .single();
+
+  if(insertError){
+    console.error("Failed to create profile row:", insertError);
+    return fallbackRow;
+  }
+
+  return created;
+
+}
+
+function getInitial(name, email){
+  const source = (name || "").trim() || (email || "").trim();
+  return source ? source.charAt(0).toUpperCase() : "K";
+}
+
+function renderPostingAsChip(){
+
+  const displayName = currentProfile.full_name
+    || (currentUser.email ? currentUser.email.split("@")[0] : "Keys99 User");
+
+  document.getElementById("postingAsName").textContent = displayName;
+  document.getElementById("fPostedByName").value = displayName;
+
+  const initial = getInitial(currentProfile.full_name, currentUser.email);
+
+  [
+    ["postingAsAvatarImg", "postingAsAvatarInitial"],
+    ["postedByAvatarImg", "postedByAvatarInitial"]
+  ].forEach(([imgId, initialId]) => {
+
+    const img = document.getElementById(imgId);
+    const initialSpan = document.getElementById(initialId);
+
+    if(currentProfile.avatar_url){
+      img.src = currentProfile.avatar_url;
+      img.hidden = false;
+      initialSpan.hidden = true;
+    }else{
+      initialSpan.textContent = initial;
+      initialSpan.hidden = false;
+      img.hidden = true;
+    }
+
+  });
+
+}
+
+
+/* =========================================================
+   WIZARD STATE / NAVIGATION
+========================================================= */
+
+const TOTAL_STEPS = 8;
+const SEO_STEP = 7;
+const STEP_LABELS = ["Basics","Location","Pricing","Amenities","Photos","Links","Title & SEO","Review"];
+let currentStep = 1;
+
+function showStep(step){
+
+  currentStep = step;
+
+  document.querySelectorAll(".wizard-step").forEach(panel => {
+    panel.hidden = Number(panel.dataset.step) !== step;
+  });
+
+  document.querySelectorAll(".step-dot").forEach(dot => {
+    const dotStep = Number(dot.dataset.step);
+    dot.classList.toggle("active", dotStep === step);
+    dot.classList.toggle("completed", dotStep < step);
+  });
+
+  document.getElementById("progressStepNum").textContent = step;
+  document.getElementById("progressStepLabel").textContent = STEP_LABELS[step - 1];
+  document.getElementById("progressBarFill").style.width = (step / TOTAL_STEPS * 100) + "%";
+
+  document.getElementById("prevStepBtn").hidden = step === 1;
+  document.getElementById("nextStepBtn").hidden = step === TOTAL_STEPS;
+  document.getElementById("submitPropertyBtn").hidden = step !== TOTAL_STEPS;
+
+  /* Refreshed on arrival, not just on typing: the fallbacks and the
+     preview are built from developer, locality, city and the BHK rows,
+     which were filled in on earlier steps. */
+  if(step === SEO_STEP){
+    updateSeoStep();
+  }
+
+  if(step === TOTAL_STEPS){
+    buildReviewSummary();
+  }
+
+  document.querySelector(".wizard-shell").scrollIntoView({ behavior:"smooth", block:"start" });
+
+}
+
+function validateStep(step){
+
+  if(step === 1){
+    if(!document.getElementById("fStatus").value){
+      return "Please select a listing status.";
+    }
+    if(!document.getElementById("fOverview").value.trim()){
+      return "Please add a short property overview.";
+    }
+  }
+
+  if(step === 2){
+    if(!document.getElementById("fAddress").value.trim()){
+      return "Please add the full address.";
+    }
+    if(!document.getElementById("fState").value.trim() || !document.getElementById("fCity").value.trim() || !document.getElementById("fLocality").value.trim()){
+      return "Please fill in state, city and locality.";
+    }
+
+    /* Optional, but a half-typed one is worse than none - it reaches
+       the listing page and the structured data as a real value. */
+    const pincode = digitsOnly(document.getElementById("fPincode").value);
+    if(document.getElementById("fPincode").value.trim() && pincode.length !== 6){
+      return "A pincode is six digits, for example 411057.";
+    }
+  }
+
+  if(step === 3){
+    const hasValidRow = bhkOptions.some(row => row.type.trim() && (row.price.toString().trim() || row.priceWords.trim()));
+    if(!hasValidRow){
+      return "Add at least one configuration with a type and a price.";
+    }
+  }
+
+  if(step === 6){
+    /* contact_number is stored as a number, so "98765" would be saved
+       as 98765 and shown to buyers as a phone number. */
+    const contact = digitsOnly(document.getElementById("fContact").value);
+    if(document.getElementById("fContact").value.trim() && contact.length !== 10){
+      return "An Indian mobile number is ten digits, for example 9876543210.";
+    }
+  }
+
+  return null;
+
+}
+
+document.getElementById("nextStepBtn").addEventListener("click", () => {
+
+  const error = validateStep(currentStep);
+
+  if(error){
+    showToast(error);
+    return;
+  }
+
+  if(currentStep < TOTAL_STEPS){
+    showStep(currentStep + 1);
+  }
+
+});
+
+document.getElementById("prevStepBtn").addEventListener("click", () => {
+  if(currentStep > 1){
+    showStep(currentStep - 1);
+  }
+});
+
+
+/* =========================================================
+   BHK CONFIGURATION ROWS
+========================================================= */
+
+let bhkOptions = [];
+
+function newBhkRow(){
+  return { type:"", sqft:"", areaUnit:"Sq.Ft", price:"", priceWords:"", availability:"Available" };
+}
+
+function renderBhkRows(){
+
+  const list = document.getElementById("bhkList");
+
+  list.innerHTML = bhkOptions.map((row, index) => `
+    <div class="bhk-row-card" data-index="${index}">
+
+      <div class="bhk-row-head">
+        <h4>Configuration ${index + 1}</h4>
+        <button type="button" class="btn-icon-remove" data-action="remove-bhk" data-index="${index}" ${bhkOptions.length <= 1 ? "disabled" : ""}>✕</button>
+      </div>
+
+      <div class="bhk-row-grid">
+
+        <div class="form-field">
+          <label>Type *</label>
+          <input type="text" data-field="type" data-index="${index}" value="${escapeHtml(row.type)}" placeholder="e.g. 2 BHK">
+        </div>
+
+        <div class="form-field">
+          <label>Area</label>
+          <input type="number" min="0" data-field="sqft" data-index="${index}" value="${escapeHtml(row.sqft)}" placeholder="e.g. 950">
+        </div>
+
+        <div class="form-field">
+          <label>Unit</label>
+          <select data-field="areaUnit" data-index="${index}">
+            ${["Sq.Ft","Sq.M","Sq.Yd","Acres"].map(unit => `<option value="${unit}" ${row.areaUnit === unit ? "selected" : ""}>${unit}</option>`).join("")}
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label>Price (₹) *</label>
+          <input type="number" min="0" data-field="price" data-index="${index}" value="${escapeHtml(row.price)}" placeholder="e.g. 7500000">
+        </div>
+
+        <div class="form-field">
+          <label>Availability</label>
+          <select data-field="availability" data-index="${index}">
+            ${["Available","Limited","Sold Out"].map(status => `<option value="${status}" ${row.availability === status ? "selected" : ""}>${status}</option>`).join("")}
+          </select>
+        </div>
+
+      </div>
+
+      <div class="form-field" style="margin-bottom:16px">
+        <label>Price Display Text (optional)</label>
+        <input type="text" data-field="priceWords" data-index="${index}" value="${escapeHtml(row.priceWords)}" placeholder="e.g. ₹75 Lakh onwards, or On Request">
+      </div>
+
+    </div>
+  `).join("");
+
+}
+
+document.getElementById("addBhkBtn").addEventListener("click", () => {
+  bhkOptions.push(newBhkRow());
+  renderBhkRows();
+});
+
+document.getElementById("bhkList").addEventListener("click", event => {
+
+  const button = event.target.closest("[data-action='remove-bhk']");
+
+  if(!button || button.disabled){
+    return;
+  }
+
+  const index = Number(button.dataset.index);
+  bhkOptions.splice(index, 1);
+  renderBhkRows();
+
+});
+
+document.getElementById("bhkList").addEventListener("input", event => {
+
+  const field = event.target.dataset.field;
+  const index = Number(event.target.dataset.index);
+
+  if(!field || Number.isNaN(index) || !bhkOptions[index]){
+    return;
+  }
+
+  bhkOptions[index][field] = event.target.value;
+
+});
+
+document.getElementById("bhkList").addEventListener("change", event => {
+
+  const field = event.target.dataset.field;
+  const index = Number(event.target.dataset.index);
+
+  if(!field || Number.isNaN(index) || !bhkOptions[index]){
+    return;
+  }
+
+  bhkOptions[index][field] = event.target.value;
+
+});
+
+
+/* =========================================================
+   AMENITIES
+========================================================= */
+
+const AMENITY_PRESETS = [
+  "Swimming Pool","Gymnasium","Clubhouse","Children's Play Area",
+  "24x7 Security","Power Backup","Covered Parking","Landscaped Garden",
+  "Indoor Games Room","Jogging Track","Rainwater Harvesting","CCTV Surveillance",
+  "Intercom Facility","Fire Safety","Lift / Elevator","Community Hall"
+];
+
+let selectedAmenities = [];
+
+function renderAmenityChecklist(){
+
+  const grid = document.getElementById("amenityChecklist");
+
+  grid.innerHTML = AMENITY_PRESETS.map(item => {
+    const checked = selectedAmenities.includes(item);
+    return `
+      <label class="amenity-check-item ${checked ? "checked" : ""}">
+        <input type="checkbox" data-amenity="${escapeHtml(item)}" ${checked ? "checked" : ""}>
+        ${escapeHtml(item)}
+      </label>
+    `;
+  }).join("");
+
+}
+
+function renderAmenityTags(){
+
+  const list = document.getElementById("amenityTagList");
+
+  list.innerHTML = selectedAmenities.map(item => `
+    <span class="tag-chip">
+      ${escapeHtml(item)}
+      <button type="button" data-remove-amenity="${escapeHtml(item)}">✕</button>
+    </span>
+  `).join("");
+
+}
+
+function toggleAmenity(item, on){
+
+  const index = selectedAmenities.indexOf(item);
+
+  if(on && index === -1){
+    selectedAmenities.push(item);
+  }else if(!on && index !== -1){
+    selectedAmenities.splice(index, 1);
+  }
+
+  renderAmenityChecklist();
+  renderAmenityTags();
+
+}
+
+document.getElementById("amenityChecklist").addEventListener("change", event => {
+  if(event.target.dataset.amenity){
+    toggleAmenity(event.target.dataset.amenity, event.target.checked);
+  }
+});
+
+document.getElementById("amenityTagList").addEventListener("click", event => {
+  const button = event.target.closest("[data-remove-amenity]");
+  if(button){
+    toggleAmenity(button.dataset.removeAmenity, false);
+  }
+});
+
+document.getElementById("addAmenityBtn").addEventListener("click", () => {
+
+  const input = document.getElementById("customAmenityInput");
+  const value = input.value.trim();
+
+  if(!value){
+    return;
+  }
+
+  if(!selectedAmenities.includes(value)){
+    selectedAmenities.push(value);
+    renderAmenityChecklist();
+    renderAmenityTags();
+  }
+
+  input.value = "";
+
+});
+
+document.getElementById("customAmenityInput").addEventListener("keydown", event => {
+  if(event.key === "Enter"){
+    event.preventDefault();
+    document.getElementById("addAmenityBtn").click();
+  }
+});
+
+
+/* =========================================================
+   NEARBY LANDMARKS
+========================================================= */
+
+let landmarks = [];
+
+function renderLandmarkTags(){
+
+  const list = document.getElementById("landmarkTagList");
+
+  list.innerHTML = landmarks.map((item, index) => `
+    <span class="tag-chip">
+      ${escapeHtml(item)}
+      <button type="button" data-remove-landmark="${index}">✕</button>
+    </span>
+  `).join("");
+
+}
+
+document.getElementById("addLandmarkBtn").addEventListener("click", () => {
+
+  const input = document.getElementById("landmarkInput");
+  const value = input.value.trim();
+
+  if(!value){
+    return;
+  }
+
+  landmarks.push(value);
+  renderLandmarkTags();
+  input.value = "";
+
+});
+
+document.getElementById("landmarkInput").addEventListener("keydown", event => {
+  if(event.key === "Enter"){
+    event.preventDefault();
+    document.getElementById("addLandmarkBtn").click();
+  }
+});
+
+document.getElementById("landmarkTagList").addEventListener("click", event => {
+
+  const button = event.target.closest("[data-remove-landmark]");
+
+  if(!button){
+    return;
+  }
+
+  landmarks.splice(Number(button.dataset.removeLandmark), 1);
+  renderLandmarkTags();
+
+});
+
+
+/* =========================================================
+   INTERIOR / EXTERIOR MODE TOGGLE
+========================================================= */
+
+let interiorImageUrl = "";
+let exteriorImageUrl = "";
+
+function setFeatureMode(which, mode){
+
+  const toggleGroup = document.querySelector(`.mode-toggle[data-target="${which}"]`);
+
+  toggleGroup.querySelectorAll("button").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.mode === mode);
+  });
+
+  const textArea = document.getElementById(which === "interior" ? "fInteriorText" : "fExteriorText");
+  const uploadBox = document.getElementById(which === "interior" ? "interiorUploadBox" : "exteriorUploadBox");
+
+  textArea.hidden = mode === "image";
+  uploadBox.hidden = mode !== "image";
+
+}
+
+document.querySelectorAll(".mode-toggle").forEach(group => {
+  group.addEventListener("click", event => {
+    const button = event.target.closest("button[data-mode]");
+    if(button){
+      setFeatureMode(group.dataset.target, button.dataset.mode);
+    }
+  });
+});
+
+
+/* =========================================================
+   COMPRESSION HELPERS
+   Images: redrawn through a canvas, capped at 1920px on the
+   long edge, re-encoded as JPEG. Videos: redrawn frame-by-
+   frame through a canvas + re-encoded with MediaRecorder,
+   capped at 720p. Both are native browser APIs - no extra
+   libraries. If a browser can't do it, we silently fall back
+   to uploading the original file so nothing ever gets stuck.
+========================================================= */
+
+function fileExtension(file){
+  const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
+  return ext || "jpg";
+}
+
+function compressImageFile(file, maxDim, quality){
+
+  maxDim = maxDim || 1920;
+  quality = quality || 0.82;
+
+  return new Promise(resolve => {
+
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+
+    img.onload = () => {
+
+      URL.revokeObjectURL(objectUrl);
+
+      let width = img.naturalWidth;
+      let height = img.naturalHeight;
+
+      if(!width || !height){
+        resolve(file);
+        return;
+      }
+
+      if(width > maxDim || height > maxDim){
+        if(width >= height){
+          height = Math.round(height * (maxDim / width));
+          width = maxDim;
+        }else{
+          width = Math.round(width * (maxDim / height));
+          height = maxDim;
+        }
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, width, height);
+
+      canvas.toBlob(blob => {
+        resolve(blob || file);
+      }, "image/jpeg", quality);
+
+    };
+
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(file);
+    };
+
+    img.src = objectUrl;
+
+  });
+
+}
+
+async function uploadPropertyImage(file){
+
+  if(!file.type.startsWith("image/")){
+    showToast("Please choose an image file.");
+    return null;
+  }
+
+  if(file.size > 12 * 1024 * 1024){
+    showToast("Image is too large - please choose one under 12MB.");
+    return null;
+  }
+
+  const compressed = await compressImageFile(file);
+  const wasCompressed = compressed !== file;
+  const ext = wasCompressed ? "jpg" : fileExtension(file);
+  const contentType = wasCompressed ? "image/jpeg" : file.type;
+
+  const path = `${currentUser.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+  const { error: uploadError } = await supabaseClient.storage
+    .from(PROPERTY_IMAGE_BUCKET)
+    .upload(path, compressed, { upsert:true, contentType, cacheControl:"3600" });
+
+  if(uploadError){
+    console.error("Failed to upload image:", uploadError);
+    showToast("Couldn't upload the image. Please try again.");
+    return null;
+  }
+
+  const { data } = supabaseClient.storage.from(PROPERTY_IMAGE_BUCKET).getPublicUrl(path);
+  return data.publicUrl;
+
+}
+
+function supportsVideoCompression(){
+  return typeof MediaRecorder !== "undefined"
+    && typeof HTMLCanvasElement !== "undefined"
+    && typeof HTMLCanvasElement.prototype.captureStream === "function";
+}
+
+function probeVideoDuration(file){
+  return new Promise(resolve => {
+    const video = document.createElement("video");
+    const objectUrl = URL.createObjectURL(file);
+    video.preload = "metadata";
+    video.onloadedmetadata = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(video.duration);
+    };
+    video.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(0);
+    };
+    video.src = objectUrl;
+  });
+}
+
+/* Re-encodes a video at a lower resolution/bitrate by playing
+   it into a hidden <video>, drawing each frame onto a canvas,
+   and recording the canvas (+ original audio, routed through
+   the Web Audio API so it never plays out loud) with
+   MediaRecorder. Resolves to a smaller webm Blob, or the
+   original File if the browser can't do this / anything
+   about the source file trips up mid-way. */
+
+function compressVideoFile(file, maxHeight, videoBitsPerSecond){
+
+  maxHeight = maxHeight || 720;
+  videoBitsPerSecond = videoBitsPerSecond || 2200000;
+
+  return new Promise(resolve => {
+
+    if(!supportsVideoCompression()){
+      resolve(file);
+      return;
+    }
+
+    const video = document.createElement("video");
+    video.muted = true;
+    video.playsInline = true;
+
+    const objectUrl = URL.createObjectURL(file);
+    video.src = objectUrl;
+
+    let settled = false;
+    function finish(result){
+      if(settled){ return; }
+      settled = true;
+      URL.revokeObjectURL(objectUrl);
+      resolve(result);
+    }
+
+    video.onloadedmetadata = () => {
+
+      let width = video.videoWidth;
+      let height = video.videoHeight;
+
+      if(!width || !height){
+        finish(file);
+        return;
+      }
+
+      if(height > maxHeight){
+        width = Math.round(width * (maxHeight / height));
+        height = maxHeight;
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+
+      let audioTracks = [];
+      try{
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const audioContext = new AudioCtx();
+        const sourceNode = audioContext.createMediaElementSource(video);
+        const destNode = audioContext.createMediaStreamDestination();
+        sourceNode.connect(destNode);
+        audioContext.resume().catch(() => {});
+        audioTracks = destNode.stream.getAudioTracks();
+      }catch(e){
+        audioTracks = [];
+      }
+
+      const canvasStream = canvas.captureStream(30);
+      const combinedStream = new MediaStream([
+        ...canvasStream.getVideoTracks(),
+        ...audioTracks
+      ]);
+
+      let recorder;
+      try{
+        recorder = new MediaRecorder(combinedStream, {
+          mimeType:"video/webm;codecs=vp8,opus",
+          videoBitsPerSecond
+        });
+      }catch(e){
+        finish(file);
+        return;
+      }
+
+      const chunks = [];
+      recorder.ondataavailable = event => {
+        if(event.data && event.data.size){
+          chunks.push(event.data);
+        }
+      };
+
+      let drawing = true;
+
+      function drawFrame(){
+        if(!drawing){
+          return;
+        }
+        ctx.drawImage(video, 0, 0, width, height);
+        requestAnimationFrame(drawFrame);
+      }
+
+      recorder.onstop = () => {
+        drawing = false;
+        const blob = new Blob(chunks, { type:"video/webm" });
+        finish(blob.size > 0 ? blob : file);
+      };
+
+      video.onended = () => {
+        if(recorder.state !== "inactive"){
+          recorder.stop();
+        }
+      };
+
+      video.play().then(() => {
+        recorder.start();
+        drawFrame();
+      }).catch(() => {
+        finish(file);
+      });
+
+    };
+
+    video.onerror = () => {
+      finish(file);
+    };
+
+  });
+
+}
+
+async function uploadPropertyVideo(file, onProgress){
+
+  if(!file.type.startsWith("video/")){
+    showToast("Please choose a video file.");
+    return null;
+  }
+
+  if(file.size > 150 * 1024 * 1024){
+    showToast("Video is too large - please choose one under 150MB.");
+    return null;
+  }
+
+  const duration = await probeVideoDuration(file);
+  if(Number.isFinite(duration) && duration > 90){
+    showToast("Reels should be 90 seconds or shorter - please trim your video and try again.");
+    return null;
+  }
+
+  if(onProgress){ onProgress("Compressing..."); }
+  const compressed = await compressVideoFile(file);
+  const wasCompressed = compressed !== file;
+
+  const ext = wasCompressed ? "webm" : fileExtension(file);
+  const contentType = wasCompressed ? "video/webm" : file.type;
+
+  const path = `${currentUser.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+  if(onProgress){ onProgress("Uploading..."); }
+
+  const { error: uploadError } = await supabaseClient.storage
+    .from(PROPERTY_REEL_BUCKET)
+    .upload(path, compressed, { upsert:true, contentType, cacheControl:"3600" });
+
+  if(uploadError){
+    console.error("Failed to upload video:", uploadError);
+    showToast("Couldn't upload this video. Please try again.");
+    return null;
+  }
+
+  const { data } = supabaseClient.storage.from(PROPERTY_REEL_BUCKET).getPublicUrl(path);
+  return data.publicUrl;
+
+}
+
+/* Main image */
+
+let mainImageUrl = "";
+
+document.getElementById("mainImageDropzone").addEventListener("click", () => {
+  document.getElementById("mainImageFileInput").click();
+});
+
+document.getElementById("mainImageFileInput").addEventListener("change", async event => {
+
+  const file = event.target.files && event.target.files[0];
+
+  if(!file){
+    return;
+  }
+
+  const url = await uploadPropertyImage(file);
+  event.target.value = "";
+
+  if(!url){
+    return;
+  }
+
+  mainImageUrl = url;
+  document.getElementById("mainImagePreviewImg").src = url;
+  document.getElementById("mainImagePreview").hidden = false;
+  document.getElementById("mainImageDropzone").hidden = true;
+
+});
+
+document.getElementById("mainImageRemoveBtn").addEventListener("click", () => {
+  mainImageUrl = "";
+  document.getElementById("mainImagePreview").hidden = true;
+  document.getElementById("mainImageDropzone").hidden = false;
+});
+
+/* Interior / exterior images */
+
+function wireFeatureUpload(which){
+
+  const dropzone = document.getElementById(which + "Dropzone");
+  const fileInput = document.getElementById(which + "FileInput");
+  const preview = document.getElementById(which + "Preview");
+  const previewImg = document.getElementById(which + "PreviewImg");
+  const removeBtn = document.getElementById(which + "RemoveBtn");
+
+  dropzone.addEventListener("click", () => fileInput.click());
+
+  fileInput.addEventListener("change", async event => {
+
+    const file = event.target.files && event.target.files[0];
+
+    if(!file){
+      return;
+    }
+
+    const url = await uploadPropertyImage(file);
+    event.target.value = "";
+
+    if(!url){
+      return;
+    }
+
+    if(which === "interior"){
+      interiorImageUrl = url;
+    }else{
+      exteriorImageUrl = url;
+    }
+
+    previewImg.src = url;
+    preview.hidden = false;
+    dropzone.hidden = true;
+
+  });
+
+  removeBtn.addEventListener("click", () => {
+
+    if(which === "interior"){
+      interiorImageUrl = "";
+    }else{
+      exteriorImageUrl = "";
+    }
+
+    preview.hidden = true;
+    dropzone.hidden = false;
+
+  });
+
+}
+
+wireFeatureUpload("interior");
+wireFeatureUpload("exterior");
+
+
+/* =========================================================
+   PHOTO GALLERY (multiple images)
+========================================================= */
+
+let galleryImages = [];
+
+function renderGalleryGrid(){
+
+  document.getElementById("galleryGrid").innerHTML = galleryImages.map((url, index) => `
+    <div class="media-tile">
+      <img src="${escapeHtml(url)}" alt="">
+      <button type="button" class="media-remove-btn" data-remove-gallery="${index}">✕</button>
+    </div>
+  `).join("");
+
+}
+
+document.getElementById("galleryDropzone").addEventListener("click", () => {
+  document.getElementById("galleryFileInput").click();
+});
+
+document.getElementById("galleryFileInput").addEventListener("change", async event => {
+
+  const files = Array.from(event.target.files || []);
+  event.target.value = "";
+
+  if(!files.length){
+    return;
+  }
+
+  const progressText = document.getElementById("galleryProgressText");
+  progressText.hidden = false;
+
+  for(let i = 0; i < files.length; i++){
+    progressText.textContent = `Uploading photo ${i + 1} of ${files.length}...`;
+    const url = await uploadPropertyImage(files[i]);
+    if(url){
+      galleryImages.push(url);
+      renderGalleryGrid();
+    }
+  }
+
+  progressText.hidden = true;
+
+});
+
+document.getElementById("galleryGrid").addEventListener("click", event => {
+  const button = event.target.closest("[data-remove-gallery]");
+  if(!button){
+    return;
+  }
+  galleryImages.splice(Number(button.dataset.removeGallery), 1);
+  renderGalleryGrid();
+});
+
+
+/* =========================================================
+   PROPERTY REELS (multiple videos)
+========================================================= */
+
+let reelsList = [];
+
+function renderReelsGrid(){
+
+  document.getElementById("reelsGrid").innerHTML = reelsList.map((url, index) => `
+    <div class="media-tile media-tile-video">
+      <video src="${escapeHtml(url)}" muted playsinline preload="metadata"></video>
+      <span class="media-play-badge">▶</span>
+      <button type="button" class="media-remove-btn" data-remove-reel="${index}">✕</button>
+    </div>
+  `).join("");
+
+}
+
+document.getElementById("reelsDropzone").addEventListener("click", () => {
+  document.getElementById("reelsFileInput").click();
+});
+
+document.getElementById("reelsFileInput").addEventListener("change", async event => {
+
+  const files = Array.from(event.target.files || []);
+  event.target.value = "";
+
+  if(!files.length){
+    return;
+  }
+
+  const progressText = document.getElementById("reelsProgressText");
+  progressText.hidden = false;
+
+  for(let i = 0; i < files.length; i++){
+    const url = await uploadPropertyVideo(files[i], message => {
+      progressText.textContent = `Reel ${i + 1} of ${files.length}: ${message}`;
+    });
+    if(url){
+      reelsList.push(url);
+      renderReelsGrid();
+    }
+  }
+
+  progressText.hidden = true;
+
+});
+
+document.getElementById("reelsGrid").addEventListener("click", event => {
+  const button = event.target.closest("[data-remove-reel]");
+  if(!button){
+    return;
+  }
+  reelsList.splice(Number(button.dataset.removeReel), 1);
+  renderReelsGrid();
+});
+
+
+/* =========================================================
+   REVIEW SUMMARY
+========================================================= */
+
+function reviewRow(label, value, fullWidth){
+  const text = String(value ?? "").trim();
+  return `
+    <div class="review-row ${fullWidth ? "full-width" : ""}">
+      <span class="review-label">${escapeHtml(label)}</span>
+      <span class="review-value ${text ? "" : "muted"}">${text ? escapeHtml(text) : "Not provided"}</span>
+    </div>
+  `;
+}
+
+function buildReviewSummary(){
+
+  const location = [
+    document.getElementById("fLocality").value,
+    document.getElementById("fCity").value,
+    document.getElementById("fState").value
+  ].filter(v => v.trim()).join(", ");
+
+  const validRows = bhkOptions.filter(row => row.type.trim());
+  const configText = validRows.length
+    ? validRows.map(row => row.type.trim()).join(", ")
+    : "";
+
+  const prices = validRows.map(row => Number(row.price)).filter(p => Number.isFinite(p) && p > 0);
+  const priceText = prices.length
+    ? "₹ " + Math.min(...prices).toLocaleString("en-IN") + (prices.length > 1 ? " onwards" : "")
+    : "";
+
+  const summary = document.getElementById("reviewSummary");
+
+  const photoCount = (mainImageUrl ? 1 : 0) + galleryImages.length;
+
+  summary.innerHTML = [
+    reviewRow("Developer", document.getElementById("fDeveloper").value),
+    reviewRow("Listing Status", document.getElementById("fStatus").value),
+    reviewRow("Location", location),
+    reviewRow("Pincode", document.getElementById("fPincode").value),
+    reviewRow("Configurations", configText),
+    reviewRow("Starting Price", priceText),
+    reviewRow("Amenities Selected", selectedAmenities.length ? selectedAmenities.length + " selected" : ""),
+    reviewRow("Gallery Photos", photoCount ? photoCount + " photo(s)" : ""),
+    reviewRow("Property Reels", reelsList.length ? reelsList.length + " video(s)" : ""),
+    reviewRow("Nearby Landmarks", landmarks.length ? landmarks.length + " added" : ""),
+    reviewRow("Contact Number", document.getElementById("fContact").value),
+    reviewRow("Overview", document.getElementById("fOverview").value, true),
+
+    /* Shown resolved rather than raw, so the review says what will
+       actually appear in search results - including the generated
+       fallback when the fields were left empty. */
+    reviewRow("Listing Title",
+      document.getElementById("fTitle").value.trim() || previewAutoTitle() + "  (auto)", true),
+    reviewRow("Search Title",
+      document.getElementById("fSeoTitle").value.trim()
+        || (document.getElementById("fTitle").value.trim() || previewAutoTitle()) + "  (inherited)", true),
+    reviewRow("Search Description",
+      document.getElementById("fSeoDescription").value.trim()
+        || (document.getElementById("fDescription").value.trim() || previewAutoDescription()) + "  (inherited)", true)
+  ].join("");
+
+}
+
+
+/* =========================================================
+   TITLE & SEO STEP
+
+   Nothing here is required. Left empty, a listing keeps the
+   title and description the build generates from its own
+   attributes, exactly as before these fields existed.
+
+   The chain is: seo_title -> title -> generated, and
+   seo_description -> description -> generated. Each field's
+   placeholder shows what it would inherit, so it is obvious
+   what filling one in actually changes.
+========================================================= */
+
+/* Mirrors what build/seo.js produces, closely enough to preview.
+   Only ever shown as a hint in this form - the real title is built
+   at build time - so the two drifting costs nothing but accuracy
+   of the preview. */
+function previewAutoTitle(){
+  const bhk = [...new Set(
+    bhkOptions.map(row => normaliseBhkType(row.type)).filter(Boolean)
+  )].join(" / ");
+
+  const where = [
+    normalisePlaceName(document.getElementById("fLocality").value),
+    normalisePlaceName(document.getElementById("fCity").value)
+  ].filter(Boolean).join(", ");
+
+  const developer = normalisePlaceName(document.getElementById("fDeveloper").value);
+  const status = document.getElementById("fStatus").value;
+  const forWhat = status === "For Rent" ? "for Rent" : "for Sale";
+
+  return [
+    bhk ? bhk + " Flat" : "Property",
+    forWhat,
+    where ? "in " + where : "",
+    developer ? "- " + developer : "",
+    "| Keys99"
+  ].filter(Boolean).join(" ");
+}
+
+function previewAutoDescription(){
+  const where = [
+    normalisePlaceName(document.getElementById("fLocality").value),
+    normalisePlaceName(document.getElementById("fCity").value)
+  ].filter(Boolean).join(", ");
+
+  return `Property${where ? " in " + where : ""}. Photos, floor plans, amenities and contact details on Keys99.`;
+}
+
+/* Google truncates rather than rejects, so going over is a warning,
+   not an error. The numbers are where it usually cuts. */
+const SEO_FIELDS = [
+  { input: "fTitle",          counter: "titleCount",          limit: 60  },
+  { input: "fDescription",    counter: "descriptionCount",    limit: 155 },
+  { input: "fSeoTitle",       counter: "seoTitleCount",       limit: 60  },
+  { input: "fSeoDescription", counter: "seoDescriptionCount", limit: 155 }
+];
+
+function updateSeoStep(){
+
+  const value = id => document.getElementById(id).value.trim();
+
+  SEO_FIELDS.forEach(({ input, counter, limit }) => {
+    const el = document.getElementById(counter);
+    const length = value(input).length;
+    el.textContent = length ? `${length} / ${limit}` : "";
+    el.classList.toggle("over", length > limit);
+  });
+
+  /* What the title will fall back to if left blank. */
+  const fallback = document.getElementById("titleFallback");
+  if(fallback){
+    fallback.textContent = value("fTitle")
+      ? ""
+      : "Left empty, this listing will be titled: " + previewAutoTitle();
+  }
+
+  document.getElementById("fSeoTitle").placeholder =
+    value("fTitle") || "Leave empty to use the listing title";
+
+  document.getElementById("fSeoDescription").placeholder =
+    value("fDescription") || "Leave empty to use the short description";
+
+  /* Google preview - resolves the same chain the build will. */
+  const shownTitle = value("fSeoTitle") || value("fTitle") || previewAutoTitle();
+  const shownDesc  = value("fSeoDescription") || value("fDescription") || previewAutoDescription();
+
+  const clip = (text, limit) => text.length > limit ? text.slice(0, limit - 1).trimEnd() + "…" : text;
+
+  document.getElementById("seoPreviewTitle").textContent = clip(shownTitle, 60);
+  document.getElementById("seoPreviewDesc").textContent = clip(shownDesc, 155);
+
+  const slugSource = value("fDeveloper") || value("fLocality") || "your-listing";
+  document.getElementById("seoPreviewSlug").textContent =
+    makeSlug([slugSource, value("fLocality"), value("fCity")].filter(Boolean).join(" ")) || "your-listing";
+
+}
+
+["fTitle","fDescription","fSeoTitle","fSeoDescription"].forEach(id => {
+  document.getElementById(id).addEventListener("input", updateSeoStep);
+});
+
+
+/* =========================================================
+   SUBMIT
+========================================================= */
+
+function digitsOnly(value){
+  return String(value || "").replace(/\D/g, "");
+}
+
+
+/* ---------------------------------------------------------
+   NORMALISING WHAT PEOPLE TYPE
+
+   These fields are free text, so the same place arrives spelled
+   several ways - "DIGHI", "dighi", "Dighi" - and the same
+   configuration as "2 bhk", "2BHK" and "3BhK". They are printed
+   as headings on the public pages and read by search engines
+   exactly as stored, so they are cleaned here, on the way in,
+   rather than papered over on the way out.
+
+   Deliberately conservative: a value that is already mixed case
+   was typed that way on purpose and is left alone. That keeps
+   "L&T Realty" and "Navi Mumbai" intact while still fixing
+   "lodha" and "MAHARASHTRA". Short all-caps words like DLF and
+   RERA survive either way.
+--------------------------------------------------------- */
+
+function titleCaseWords(value){
+  return String(value == null ? "" : value)
+    .trim()
+    .replace(/\s+/g, " ")
+    .split(" ")
+    .map(word => word.length <= 3 && word === word.toUpperCase() && /^[A-Z]+$/.test(word)
+      ? word
+      : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+}
+
+function normalisePlaceName(value){
+  const text = String(value == null ? "" : value).trim().replace(/\s+/g, " ");
+  if(!text) return "";
+
+  const letters = text.replace(/[^A-Za-z]/g, "");
+  const allOneCase = letters && (letters === letters.toUpperCase() || letters === letters.toLowerCase());
+
+  return allOneCase ? titleCaseWords(text) : text;
+}
+
+/* "2 bhk", "2BHK" and "3BhK" all mean one thing. Anything that is
+   not a <number> BHK - "Villa", "Studio" - is left as typed. */
+function normaliseBhkType(value){
+  const text = String(value == null ? "" : value).trim().replace(/\s+/g, " ");
+  if(!text) return "";
+
+  const bhk = text.match(/^(\d+(?:\.\d+)?)\s*bhk$/i);
+  return bhk ? bhk[1] + " BHK" : text;
+}
+
+document.getElementById("postPropertyForm").addEventListener("submit", async event => {
+
+  event.preventDefault();
+
+  if(currentStep !== TOTAL_STEPS){
+    return;
+  }
+
+  /* Every step, not just the first three. The wizard is linear so each
+     one was checked on the way through, but submit is the last gate -
+     and a rule added to a later step would otherwise never run here. */
+  for(let step = 1; step <= TOTAL_STEPS; step++){
+    const error = validateStep(step);
+    if(error){
+      showToast(error);
+      showStep(step);
+      return;
+    }
+  }
+
+  if(!document.getElementById("agreeTerms").checked){
+    showToast("Please confirm the accuracy of your listing before submitting.");
+    return;
+  }
+
+  const submitBtn = document.getElementById("submitPropertyBtn");
+  const originalSubmitLabel = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = editPropertyId ? "Saving..." : "Submitting...";
+
+  const contactDigits = digitsOnly(document.getElementById("fContact").value);
+
+  const cleanedBhkOptions = bhkOptions
+    .filter(row => row.type.trim())
+    .map(row => ({
+      type: normaliseBhkType(row.type),
+      sqft: row.sqft.toString().trim() ? Number(row.sqft) : null,
+      areaUnit: row.areaUnit,
+      price: row.price.toString().trim() ? Number(row.price) : null,
+      price_words: row.priceWords.trim() || null,
+      availability: row.availability
+    }));
+
+  const interiorMode = document.querySelector('.mode-toggle[data-target="interior"] button.active').dataset.mode;
+  const exteriorMode = document.querySelector('.mode-toggle[data-target="exterior"] button.active').dataset.mode;
+
+  const interiorValue = interiorMode === "image"
+    ? (interiorImageUrl ? [interiorImageUrl] : [])
+    : (document.getElementById("fInteriorText").value.trim() ? [document.getElementById("fInteriorText").value.trim()] : []);
+
+  const exteriorValue = exteriorMode === "image"
+    ? (exteriorImageUrl ? [exteriorImageUrl] : [])
+    : (document.getElementById("fExteriorText").value.trim() ? [document.getElementById("fExteriorText").value.trim()] : []);
+
+  const payload = {
+    title: document.getElementById("fTitle").value.trim() || null,
+    description: document.getElementById("fDescription").value.trim() || null,
+    seo_title: document.getElementById("fSeoTitle").value.trim() || null,
+    seo_description: document.getElementById("fSeoDescription").value.trim() || null,
+    developer: normalisePlaceName(document.getElementById("fDeveloper").value) || null,
+    address: document.getElementById("fAddress").value.trim() || null,
+    state: normalisePlaceName(document.getElementById("fState").value) || null,
+    city: normalisePlaceName(document.getElementById("fCity").value) || null,
+    locality: normalisePlaceName(document.getElementById("fLocality").value) || null,
+    pincode: document.getElementById("fPincode").value.trim() || null,
+    status: document.getElementById("fStatus").value || null,
+    possession: document.getElementById("fPossession").value || null,
+    overview: document.getElementById("fOverview").value.trim() || null,
+    main_image: mainImageUrl || null,
+    gallery_images: galleryImages,
+    reels: reelsList,
+    bhk_options: cleanedBhkOptions,
+    amenities: selectedAmenities,
+    nearby_landmarks: landmarks,
+    interior: interiorValue,
+    exterior: exteriorValue,
+    rera_id: document.getElementById("fReraId").value.trim() || null,
+    contact_number: contactDigits ? Number(contactDigits) : null,
+    youtube_link: document.getElementById("fYoutube").value.trim() || null,
+    facebook_link: document.getElementById("fFacebook").value.trim() || null,
+    instagram_link: document.getElementById("fInstagram").value.trim() || null,
+    posted_by_user_id: currentUser.id,
+    posted_by_user_code: postedByUserCode,
+    posted_by_name: document.getElementById("fPostedByName").value.trim() || null,
+    virtual_tour_video: document.getElementById("fVirtualTour").value.trim() || null
+  };
+
+  /* New listings get a slug; an existing one keeps the URL it was
+     indexed under. */
+  if(!editPropertyId){
+    payload.slug = await buildUniqueSlug([
+      document.getElementById("fDeveloper").value.trim(),
+      document.getElementById("fLocality").value.trim(),
+      document.getElementById("fCity").value.trim()
+    ]);
+  }
+
+  const { data, error } = editPropertyId
+    ? await supabaseClient
+        .from(PROPERTIES_TABLE)
+        .update(payload)
+        .eq("id", editPropertyId)
+        .eq("posted_by_user_id", currentUser.id)
+        .select("id")
+        .single()
+    : await supabaseClient
+        .from(PROPERTIES_TABLE)
+        .insert(payload)
+        .select("id")
+        .single();
+
+  submitBtn.disabled = false;
+  submitBtn.textContent = originalSubmitLabel;
+
+  if(error){
+    console.error("Failed to submit property:", error);
+    showToast(editPropertyId ? "Couldn't save your changes. Please try again." : "Couldn't submit your property. Please try again.");
+    return;
+  }
+
+  document.getElementById("viewListingBtn").onclick = () => {
+    window.location.href = "projects/property-details.html?id=" + encodeURIComponent(data.id);
+  };
+
+  document.getElementById("successOverlay").hidden = false;
+
+});
+
+document.getElementById("postAnotherBtn").addEventListener("click", () => {
+  if(editPropertyId){
+    window.location.href = "my-properties.html";
+  }else{
+    window.location.reload();
+  }
+});
+
+
+/* =========================================================
+   INIT
+========================================================= */
+
+initBottomNav(null);
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+  initMobileMenu();
+
+  currentUser = await requireSession();
+
+  if(!currentUser){
+    return;
+  }
+
+  currentProfile = await fetchOrCreateProfileRow(currentUser);
+  postedByUserCode = "U-" + currentUser.id.slice(0, 8).toUpperCase();
+
+  renderPostingAsChip();
+
+  bhkOptions = [newBhkRow()];
+  renderBhkRows();
+
+  renderAmenityChecklist();
+  renderAmenityTags();
+  renderLandmarkTags();
+
+  if(editPropertyId){
+    const property = await loadPropertyForEdit(editPropertyId);
+    if(!property){
+      return;
+    }
+    prefillFormFromProperty(property);
+  }
+
+  showStep(1);
+
+  document.getElementById("pageLoadingGate").hidden = true;
+  document.getElementById("postPropertyContent").hidden = false;
+
+});
+
+</script>
+
+
+</body>
+</html>

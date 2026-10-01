@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#06251f">
+
+<title>Cities | Keys99 Admin</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin-cities.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+
+<body>
+
+
+<div class="admin-shell">
+
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <main class="admin-main">
+
+    <div class="admin-topbar">
+      <div class="admin-title">
+        <h1>Cities</h1>
+        <p>Curated city list used for locality grouping.</p>
+      </div>
+      <button type="button" class="admin-btn admin-btn-primary" id="addCityBtn">+ Add City</button>
+    </div>
+
+    <div class="admin-message" id="cityMessage" hidden></div>
+
+    <div class="admin-panel">
+
+      <div class="admin-filters">
+        <input type="text" class="admin-search-input" id="citySearch" placeholder="Search cities...">
+      </div>
+
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>City</th>
+              <th>State</th>
+              <th>Localities</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="cityTableBody">
+            <tr class="admin-empty-row"><td colspan="5">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<div class="admin-modal-backdrop" id="cityModalBackdrop" hidden>
+  <div class="admin-modal">
+    <h3 id="cityModalTitle">Add City</h3>
+    <form id="cityForm">
+      <input type="hidden" id="cityId">
+      <label class="admin-field">
+        <span>City Name *</span>
+        <input type="text" id="cityName" required>
+      </label>
+      <label class="admin-field">
+        <span>State</span>
+        <input type="text" id="cityState">
+      </label>
+      <div class="admin-modal-actions">
+        <button type="button" class="admin-btn" id="cityCancelBtn">Cancel</button>
+        <button type="submit" class="admin-btn admin-btn-primary" id="citySaveBtn">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<script src="js/config.js"></script>
+<script src="js/admin-auth.js"></script>
+
+<script>
+
+/* =========================================================
+   KEYS99 - ADMIN CITIES
+========================================================= */
+
+let allCities = [];
+
+(async () => {
+
+  const user = await requireAdmin();
+  if(!user) return;
+
+  renderAdminSidebar("admin-cities.html");
+
+  await loadCities();
+
+  document.getElementById("citySearch").addEventListener("input", renderTable);
+  document.getElementById("addCityBtn").addEventListener("click", () => openModal(null));
+  document.getElementById("cityCancelBtn").addEventListener("click", closeModal);
+  document.getElementById("cityForm").addEventListener("submit", saveCity);
+
+})();
+
+
+async function loadCities(){
+
+  const [{ data: cities, error }, { data: localities }] = await Promise.all([
+    supabaseClient.from("cities").select("*").order("name", { ascending: true }),
+    supabaseClient.from("localities").select("city_id")
+  ]);
+
+  if(error){
+    showAdminMessage("cityMessage", "Failed to load cities: " + error.message, "error");
+    return;
+  }
+
+  const localityCounts = {};
+  (localities || []).forEach(l => {
+    localityCounts[l.city_id] = (localityCounts[l.city_id] || 0) + 1;
+  });
+
+  allCities = (cities || []).map(c => ({ ...c, localityCount: localityCounts[c.id] || 0 }));
+
+  renderTable();
+
+}
+
+function renderTable(){
+
+  const tbody = document.getElementById("cityTableBody");
+  const search = document.getElementById("citySearch").value.trim().toLowerCase();
+
+  let rows = allCities;
+
+  if(search){
+    rows = rows.filter(c => String(c.name || "").toLowerCase().includes(search));
+  }
+
+  if(rows.length === 0){
+    tbody.innerHTML = '<tr class="admin-empty-row"><td colspan="5">No cities yet. Add your first one.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = rows.map(c => `
+    <tr data-id="${c.id}">
+      <td style="font-weight:700;">${escapeAdminHtml(c.name)}</td>
+      <td class="admin-cell-muted">${escapeAdminHtml(c.state || "-")}</td>
+      <td class="admin-cell-muted">${c.localityCount}</td>
+      <td>${c.is_active ? '<span class="admin-badge badge-active">Active</span>' : '<span class="admin-badge badge-suspended">Inactive</span>'}</td>
+      <td>
+        <div class="admin-row-actions">
+          <button type="button" class="admin-btn" data-role="edit">Edit</button>
+          <button type="button" class="admin-btn" data-role="toggle-active">${c.is_active ? "Deactivate" : "Activate"}</button>
+          <button type="button" class="admin-btn admin-btn-danger" data-role="delete">Delete</button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
+
+  tbody.querySelectorAll('[data-role="edit"]').forEach(btn => {
+    btn.addEventListener("click", () => openModal(btn.closest("tr").dataset.id));
+  });
+  tbody.querySelectorAll('[data-role="toggle-active"]').forEach(btn => {
+    btn.addEventListener("click", () => toggleActive(btn.closest("tr").dataset.id));
+  });
+  tbody.querySelectorAll('[data-role="delete"]').forEach(btn => {
+    btn.addEventListener("click", () => deleteCity(btn.closest("tr").dataset.id));
+  });
+
+}
+
+function openModal(id){
+
+  const city = id ? allCities.find(c => c.id === id) : null;
+
+  document.getElementById("cityModalTitle").textContent = city ? "Edit City" : "Add City";
+  document.getElementById("cityId").value = city ? city.id : "";
+  document.getElementById("cityName").value = city ? city.name || "" : "";
+  document.getElementById("cityState").value = city ? city.state || "" : "";
+
+  document.getElementById("cityModalBackdrop").hidden = false;
+
+}
+
+function closeModal(){
+  document.getElementById("cityModalBackdrop").hidden = true;
+}
+
+async function saveCity(event){
+
+  event.preventDefault();
+
+  const id = document.getElementById("cityId").value;
+
+  const payload = {
+    name: document.getElementById("cityName").value.trim(),
+    state: document.getElementById("cityState").value.trim() || null
+  };
+
+  const saveBtn = document.getElementById("citySaveBtn");
+  saveBtn.disabled = true;
+  saveBtn.textContent = "Saving...";
+
+  const { error } = id
+    ? await supabaseClient.from("cities").update(payload).eq("id", id)
+    : await supabaseClient.from("cities").insert(payload);
+
+  saveBtn.disabled = false;
+  saveBtn.textContent = "Save";
+
+  if(error){
+    showAdminMessage("cityMessage", "Failed to save: " + error.message, "error");
+    return;
+  }
+
+  closeModal();
+  showAdminMessage("cityMessage", id ? "City updated." : "City added.", "success");
+  await loadCities();
+
+}
+
+async function toggleActive(id){
+
+  const city = allCities.find(c => c.id === id);
+  if(!city) return;
+
+  const { error } = await supabaseClient
+    .from("cities")
+    .update({ is_active: !city.is_active })
+    .eq("id", id);
+
+  if(error){
+    showAdminMessage("cityMessage", "Failed to update: " + error.message, "error");
+    return;
+  }
+
+  city.is_active = !city.is_active;
+  renderTable();
+
+}
+
+async function deleteCity(id){
+
+  if(!confirm("Delete this city? Its localities will be deleted too. This can't be undone.")) return;
+
+  const { error } = await supabaseClient.from("cities").delete().eq("id", id);
+
+  if(error){
+    showAdminMessage("cityMessage", "Failed to delete: " + error.message, "error");
+    return;
+  }
+
+  allCities = allCities.filter(c => c.id !== id);
+  showAdminMessage("cityMessage", "City deleted.", "success");
+  renderTable();
+
+}
+
+</script>
+
+</body>
+</html>

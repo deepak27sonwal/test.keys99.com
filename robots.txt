@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Admin panel and signed-in areas carry no search value
+Disallow: /admin/
+Disallow: /login.html
+Disallow: /profile.html
+Disallow: /my-properties.html
+Disallow: /my-enquiries.html
+
+# Superseded by the generated /projects/<slug>/ pages
+Disallow: /projects/property-details.html
+
+Sitemap: https://keys99.com/sitemap.xml

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#06251f">
+
+<title>Settings | Keys99 Admin</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin-settings.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+
+<body>
+
+
+<div class="admin-shell">
+
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <main class="admin-main">
+
+    <div class="admin-topbar">
+      <div class="admin-title">
+        <h1>Settings</h1>
+        <p>Your admin account.</p>
+      </div>
+    </div>
+
+    <div class="admin-message" id="settingsMessage" hidden></div>
+
+    <div class="admin-panel">
+      <div class="admin-panel-head"><h2>Account</h2></div>
+      <div style="padding:20px;">
+
+        <form id="profileForm">
+          <div class="admin-field-row">
+            <label class="admin-field">
+              <span>Full Name</span>
+              <input type="text" id="settingsFullName">
+            </label>
+            <label class="admin-field">
+              <span>Email</span>
+              <input type="email" id="settingsEmail" disabled>
+            </label>
+          </div>
+          <button type="submit" class="admin-btn admin-btn-primary" id="profileSaveBtn">Save Name</button>
+        </form>
+
+      </div>
+    </div>
+
+    <div class="admin-panel">
+      <div class="admin-panel-head"><h2>Change Password</h2></div>
+      <div style="padding:20px;max-width:420px;">
+
+        <form id="passwordForm">
+          <label class="admin-field">
+            <span>New Password</span>
+            <input type="password" id="newPassword" minlength="6" required placeholder="At least 6 characters">
+          </label>
+          <label class="admin-field">
+            <span>Confirm New Password</span>
+            <input type="password" id="confirmPassword" minlength="6" required>
+          </label>
+          <button type="submit" class="admin-btn admin-btn-primary" id="passwordSaveBtn">Update Password</button>
+        </form>
+
+      </div>
+    </div>
+
+    <div class="admin-panel">
+      <div class="admin-panel-head">
+        <h2>Manage Other Admins</h2>
+        <a href="admin-users.html" class="admin-btn">Go to Users</a>
+      </div>
+      <div style="padding:20px;">
+        <p class="admin-cell-muted">Grant or revoke admin access for any account from the Users page.</p>
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+
+<script src="js/config.js"></script>
+<script src="js/admin-auth.js"></script>
+
+<script>
+
+/* =========================================================
+   KEYS99 - ADMIN SETTINGS
+========================================================= */
+
+(async () => {
+
+  const user = await requireAdmin();
+  if(!user) return;
+
+  renderAdminSidebar("admin-settings.html");
+
+  document.getElementById("settingsFullName").value = user.full_name || "";
+  document.getElementById("settingsEmail").value = user.email || "";
+
+  document.getElementById("profileForm").addEventListener("submit", saveProfile);
+  document.getElementById("passwordForm").addEventListener("submit", savePassword);
+
+})();
+
+
+async function saveProfile(event){
+
+  event.preventDefault();
+  hideAdminMessage("settingsMessage");
+
+  const fullName = document.getElementById("settingsFullName").value.trim();
+  const saveBtn = document.getElementById("profileSaveBtn");
+
+  saveBtn.disabled = true;
+  saveBtn.textContent = "Saving...";
+
+  const { error } = await supabaseClient
+    .from("profiles")
+    .update({ full_name: fullName })
+    .eq("id", adminCurrentUser.id);
+
+  saveBtn.disabled = false;
+  saveBtn.textContent = "Save Name";
+
+  if(error){
+    showAdminMessage("settingsMessage", "Failed to save: " + error.message, "error");
+    return;
+  }
+
+  showAdminMessage("settingsMessage", "Name updated.", "success");
+
+}
+
+async function savePassword(event){
+
+  event.preventDefault();
+  hideAdminMessage("settingsMessage");
+
+  const newPassword = document.getElementById("newPassword").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+
+  if(newPassword !== confirmPassword){
+    showAdminMessage("settingsMessage", "Passwords don't match.", "error");
+    return;
+  }
+
+  const saveBtn = document.getElementById("passwordSaveBtn");
+  saveBtn.disabled = true;
+  saveBtn.textContent = "Updating...";
+
+  const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+
+  saveBtn.disabled = false;
+  saveBtn.textContent = "Update Password";
+
+  if(error){
+    showAdminMessage("settingsMessage", "Failed to update password: " + error.message, "error");
+    return;
+  }
+
+  document.getElementById("passwordForm").reset();
+  showAdminMessage("settingsMessage", "Password updated.", "success");
+
+}
+
+</script>
+
+</body>
+</html>

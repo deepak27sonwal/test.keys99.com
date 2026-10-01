@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#06251f">
+
+<title>Properties | Keys99 Admin</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin-properties.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+
+<body>
+
+
+<div class="admin-shell">
+
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <main class="admin-main">
+
+    <div class="admin-topbar">
+      <div class="admin-title">
+        <h1>Properties</h1>
+        <p>Moderate every listing posted on Keys99.</p>
+      </div>
+    </div>
+
+    <div class="admin-message" id="propMessage" hidden></div>
+
+    <div class="admin-panel">
+
+      <div class="admin-filters" id="statusFilters">
+        <button type="button" class="admin-filter-btn active" data-filter="all">All</button>
+        <button type="button" class="admin-filter-btn" data-filter="pending">Pending</button>
+        <button type="button" class="admin-filter-btn" data-filter="approved">Approved</button>
+        <button type="button" class="admin-filter-btn" data-filter="rejected">Rejected</button>
+        <button type="button" class="admin-filter-btn" data-filter="suspended">Suspended</button>
+        <button type="button" class="admin-filter-btn" data-filter="sold">Sold</button>
+        <button type="button" class="admin-filter-btn" data-filter="expired">Expired</button>
+        <input type="text" class="admin-search-input" id="propSearch" placeholder="Search title, developer, city, locality...">
+      </div>
+
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Listing</th>
+              <th>City / Locality</th>
+              <th>SEO Slug</th>
+              <th>Listing Status</th>
+              <th>Posted</th>
+              <th>Views</th>
+              <th>Moderation</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="propTableBody">
+            <tr class="admin-empty-row"><td colspan="8">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<script src="js/config.js"></script>
+<script src="js/admin-auth.js"></script>
+
+<script>
+
+/* =========================================================
+   KEYS99 - ADMIN PROPERTIES / MODERATION
+========================================================= */
+
+const MODERATION_STATES = ["pending","approved","rejected","suspended","sold","expired"];
+
+let allProperties = [];
+let activeFilter = "all";
+
+(async () => {
+
+  const user = await requireAdmin();
+  if(!user) return;
+
+  renderAdminSidebar("admin-properties.html");
+
+  const urlFilter = new URLSearchParams(window.location.search).get("filter");
+  if(urlFilter && MODERATION_STATES.includes(urlFilter)){
+    activeFilter = urlFilter;
+    document.querySelectorAll(".admin-filter-btn").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.filter === urlFilter);
+    });
+  }
+
+  await loadProperties();
+
+  document.querySelectorAll(".admin-filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".admin-filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      activeFilter = btn.dataset.filter;
+      renderTable();
+    });
+  });
+
+  document.getElementById("propSearch").addEventListener("input", renderTable);
+
+})();
+
+
+async function loadProperties(){
+
+  const { data, error } = await supabaseClient
+    .from("projects")
+    .select("id, developer, city, locality, status, moderation_status, created_at, views, main_image, slug, title, description, seo_title, seo_description")
+    .order("created_at", { ascending: false });
+
+  if(error){
+    showAdminMessage("propMessage", "Failed to load properties: " + error.message, "error");
+    return;
+  }
+
+  allProperties = data || [];
+  renderTable();
+
+}
+
+function renderTable(){
+
+  const tbody = document.getElementById("propTableBody");
+  const search = document.getElementById("propSearch").value.trim().toLowerCase();
+
+  let rows = allProperties;
+
+  if(activeFilter !== "all"){
+    rows = rows.filter(p => p.moderation_status === activeFilter);
+  }
+
+  if(search){
+    rows = rows.filter(p =>
+      String(p.title || "").toLowerCase().includes(search) ||
+      String(p.developer || "").toLowerCase().includes(search) ||
+      String(p.city || "").toLowerCase().includes(search) ||
+      String(p.locality || "").toLowerCase().includes(search)
+    );
+  }
+
+  if(rows.length === 0){
+    tbody.innerHTML = '<tr class="admin-empty-row"><td colspan="8">No properties match this view.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = rows.map(p => `
+    <tr data-id="${p.id}">
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          ${p.main_image ? `<img src="${escapeAdminHtml(p.main_image)}" alt="" style="width:42px;height:42px;border-radius:8px;object-fit:cover;flex-shrink:0;">` : ""}
+          <div>
+            <div style="font-weight:700;" data-role="listing-name">${escapeAdminHtml(p.title || p.developer || "Untitled listing")}</div>
+            <div class="admin-cell-muted">${p.title && p.developer ? escapeAdminHtml(p.developer) + " &middot; " : ""}${escapeAdminHtml(p.id.slice(0, 8))}</div>
+          </div>
+        </div>
+      </td>
+      <td class="admin-cell-muted">${escapeAdminHtml(p.locality || "-")}${p.city ? ", " + escapeAdminHtml(p.city) : ""}</td>
+      <td>
+        <input type="text" class="admin-search-input" data-role="slug-input"
+               style="min-width:190px;font-size:12px;"
+               value="${escapeAdminHtml(p.slug || "")}"
+               placeholder="auto-generated on save">
+      </td>
+      <td>${p.status ? escapeAdminHtml(p.status) : '<span class="admin-cell-muted">-</span>'}</td>
+      <td class="admin-cell-muted">${adminFormatDate(p.created_at)}</td>
+      <td class="admin-cell-muted">${(p.views || 0).toLocaleString("en-IN")}</td>
+      <td>${adminBadge(p.moderation_status)}</td>
+      <td>
+        <div class="admin-row-actions">
+          <select class="admin-select" data-role="status-select">
+            ${MODERATION_STATES.map(s => `<option value="${s}" ${s === p.moderation_status ? "selected" : ""}>${s.charAt(0).toUpperCase() + s.slice(1)}</option>`).join("")}
+          </select>
+          <button type="button" class="admin-btn admin-btn-primary" data-role="save-status">Save</button>
+          <button type="button" class="admin-btn" data-role="save-slug">Save Slug</button>
+          <button type="button" class="admin-btn" data-role="toggle-seo">SEO ${seoFlag(p)}</button>
+          <a href="../projects/property-details.html?id=${p.id}" target="_blank" class="admin-btn">View</a>
+        </div>
+      </td>
+    </tr>
+
+    <!-- Opened by the SEO button above. A moderator approving a listing
+         is approving what will appear in Google, so the text has to be
+         visible and correctable here, not only in the poster's form. -->
+    <tr class="admin-seo-row" data-seo-for="${p.id}" hidden>
+      <td colspan="8">
+        <div class="admin-seo-panel">
+
+          <div class="admin-seo-grid">
+
+            <label class="admin-seo-field">
+              <span>Listing Title <em>the page heading</em></span>
+              <input type="text" class="admin-search-input" data-seo="title"
+                     value="${escapeAdminHtml(p.title || "")}"
+                     placeholder="Empty - generated from BHK, locality and developer">
+            </label>
+
+            <label class="admin-seo-field">
+              <span>SEO Title <em>search results only</em></span>
+              <input type="text" class="admin-search-input" data-seo="seo_title"
+                     value="${escapeAdminHtml(p.seo_title || "")}"
+                     placeholder="Empty - inherits the listing title">
+            </label>
+
+            <label class="admin-seo-field">
+              <span>Short Description <em>meta description</em></span>
+              <textarea class="admin-search-input" rows="2" data-seo="description"
+                        placeholder="Empty - generated from the listing's details">${escapeAdminHtml(p.description || "")}</textarea>
+            </label>
+
+            <label class="admin-seo-field">
+              <span>SEO Description <em>overrides the above</em></span>
+              <textarea class="admin-search-input" rows="2" data-seo="seo_description"
+                        placeholder="Empty - inherits the short description">${escapeAdminHtml(p.seo_description || "")}</textarea>
+            </label>
+
+          </div>
+
+          <div class="admin-seo-foot">
+            <span class="admin-cell-muted" data-role="seo-note">
+              Blank fields fall back to the text the build generates. Changes show on the site after the next rebuild.
+            </span>
+            <button type="button" class="admin-btn admin-btn-primary" data-role="save-seo">Save SEO</button>
+          </div>
+
+        </div>
+      </td>
+    </tr>
+  `).join("");
+
+  tbody.querySelectorAll('[data-role="save-status"]').forEach(btn => {
+    btn.addEventListener("click", () => updateModerationStatus(btn));
+  });
+
+  tbody.querySelectorAll('[data-role="save-slug"]').forEach(btn => {
+    btn.addEventListener("click", () => updateSlug(btn));
+  });
+
+  tbody.querySelectorAll('[data-role="toggle-seo"]').forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.closest("tr").dataset.id;
+      const panel = tbody.querySelector(`[data-seo-for="${CSS.escape(id)}"]`);
+      panel.hidden = !panel.hidden;
+      if(!panel.hidden) panel.querySelector('[data-seo="title"]').focus();
+    });
+  });
+
+  tbody.querySelectorAll('[data-role="save-seo"]').forEach(btn => {
+    btn.addEventListener("click", () => updateSeoFields(btn));
+  });
+
+}
+
+/* A dot when any of the four are filled in, so a moderator can see at a
+   glance which listings still run on generated text. */
+function seoFlag(property){
+  const set = ["title","description","seo_title","seo_description"]
+    .filter(key => String(property[key] || "").trim()).length;
+  return set ? `<span class="admin-seo-dot" title="${set} of 4 set">&bull;</span>` : "";
+}
+
+
+/* Unlike the slug, these carry no ranking history - changing a title or
+   description is safe and takes effect on the next rebuild. So they save
+   without a confirmation, and an emptied field is stored as NULL so the
+   generated fallback takes over again. */
+async function updateSeoFields(btn){
+
+  const row = btn.closest("tr");
+  const id = row.dataset.seoFor;
+  const note = row.querySelector('[data-role="seo-note"]');
+
+  const payload = {};
+  row.querySelectorAll("[data-seo]").forEach(field => {
+    payload[field.dataset.seo] = field.value.trim() || null;
+  });
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  btn.textContent = "Saving...";
+
+  const { error } = await supabaseClient
+    .from("projects")
+    .update(payload)
+    .eq("id", id);
+
+  btn.disabled = false;
+  btn.textContent = originalLabel;
+
+  if(error){
+    note.textContent = "Could not save: " + error.message;
+    note.classList.add("admin-seo-error");
+    return;
+  }
+
+  note.classList.remove("admin-seo-error");
+  note.textContent = "Saved. It appears on the site after the next rebuild.";
+
+  /* Keep the in-memory copy in step so the listing cell and the dot
+     redraw correctly without another round trip. */
+  const cached = allProperties.find(p => p.id === id);
+  if(cached) Object.assign(cached, payload);
+
+  const listingCell = document.querySelector(`tr[data-id="${CSS.escape(id)}"] [data-role="listing-name"]`);
+  if(listingCell) listingCell.textContent = payload.title || (cached && cached.developer) || "Untitled listing";
+
+  const flag = document.querySelector(`tr[data-id="${CSS.escape(id)}"] [data-role="toggle-seo"]`);
+  if(flag) flag.innerHTML = "SEO " + seoFlag(cached || payload);
+
+}
+
+/* The slug is the listing's public URL. Editing one that Google has already
+   indexed loses that page's ranking unless a redirect is added, so the change
+   is confirmed rather than applied silently. */
+async function updateSlug(btn){
+
+  const row = btn.closest("tr");
+  const id = row.dataset.id;
+  const input = row.querySelector('[data-role="slug-input"]');
+
+  const cleaned = String(input.value || "")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-");
+
+  if(!cleaned){
+    showAdminMessage("propMessage", "Slug can't be empty. Clear it in the database if you want one auto-derived.", "error");
+    return;
+  }
+
+  const local = allProperties.find(p => p.id === id);
+  const previous = local ? local.slug : "";
+
+  if(previous && previous !== cleaned){
+    const ok = confirm(
+      "This listing is already published at:\n\n  /projects/property/" + previous + "/\n\n" +
+      "Changing the slug moves it to:\n\n  /projects/property/" + cleaned + "/\n\n" +
+      "Any Google ranking on the old URL is lost unless you add a redirect. Continue?"
+    );
+    if(!ok){
+      input.value = previous;
+      return;
+    }
+  }
+
+  const { data: clash } = await supabaseClient
+    .from("projects")
+    .select("id")
+    .eq("slug", cleaned)
+    .neq("id", id)
+    .maybeSingle();
+
+  if(clash){
+    showAdminMessage("propMessage", "That slug is already used by another listing. Pick a different one.", "error");
+    input.value = previous || "";
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "Saving...";
+
+  const { error } = await supabaseClient
+    .from("projects")
+    .update({ slug: cleaned })
+    .eq("id", id);
+
+  btn.disabled = false;
+  btn.textContent = "Save Slug";
+
+  if(error){
+    showAdminMessage("propMessage", "Failed to save slug: " + error.message, "error");
+    return;
+  }
+
+  if(local) local.slug = cleaned;
+  input.value = cleaned;
+  showAdminMessage("propMessage", "Slug updated. Rebuild the site for the new URL to go live.", "success");
+
+}
+
+async function updateModerationStatus(btn){
+
+  const row = btn.closest("tr");
+  const id = row.dataset.id;
+  const select = row.querySelector('[data-role="status-select"]');
+  const newStatus = select.value;
+
+  btn.disabled = true;
+  btn.textContent = "Saving...";
+
+  const { error } = await supabaseClient
+    .from("projects")
+    .update({ moderation_status: newStatus })
+    .eq("id", id);
+
+  btn.disabled = false;
+  btn.textContent = "Save";
+
+  if(error){
+    showAdminMessage("propMessage", "Failed to update: " + error.message, "error");
+    return;
+  }
+
+  const local = allProperties.find(p => p.id === id);
+  if(local) local.moderation_status = newStatus;
+
+  showAdminMessage("propMessage", "Listing status updated.", "success");
+  renderTable();
+
+}
+
+</script>
+
+</body>
+</html>

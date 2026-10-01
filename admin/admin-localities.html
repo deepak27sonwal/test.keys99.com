@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#06251f">
+
+<title>Localities | Keys99 Admin</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin-localities.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+
+<body>
+
+
+<div class="admin-shell">
+
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <main class="admin-main">
+
+    <div class="admin-topbar">
+      <div class="admin-title">
+        <h1>Localities</h1>
+        <p>Neighborhoods grouped under each city.</p>
+      </div>
+      <button type="button" class="admin-btn admin-btn-primary" id="addLocalityBtn">+ Add Locality</button>
+    </div>
+
+    <div class="admin-message" id="localityMessage" hidden></div>
+
+    <div class="admin-panel">
+
+      <div class="admin-filters">
+        <select class="admin-select" id="cityFilter">
+          <option value="all">All cities</option>
+        </select>
+        <input type="text" class="admin-search-input" id="localitySearch" placeholder="Search localities...">
+      </div>
+
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Locality</th>
+              <th>City</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="localityTableBody">
+            <tr class="admin-empty-row"><td colspan="4">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<div class="admin-modal-backdrop" id="localityModalBackdrop" hidden>
+  <div class="admin-modal">
+    <h3 id="localityModalTitle">Add Locality</h3>
+    <form id="localityForm">
+      <input type="hidden" id="localityId">
+      <label class="admin-field">
+        <span>City *</span>
+        <select id="localityCityId" required></select>
+      </label>
+      <label class="admin-field">
+        <span>Locality Name *</span>
+        <input type="text" id="localityName" required>
+      </label>
+      <div class="admin-modal-actions">
+        <button type="button" class="admin-btn" id="localityCancelBtn">Cancel</button>
+        <button type="submit" class="admin-btn admin-btn-primary" id="localitySaveBtn">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<script src="js/config.js"></script>
+<script src="js/admin-auth.js"></script>
+
+<script>
+
+/* =========================================================
+   KEYS99 - ADMIN LOCALITIES
+========================================================= */
+
+let allLocalities = [];
+let allCitiesForLocalities = [];
+let cityFilterValue = "all";
+
+(async () => {
+
+  const user = await requireAdmin();
+  if(!user) return;
+
+  renderAdminSidebar("admin-localities.html");
+
+  await loadCities();
+  await loadLocalities();
+
+  document.getElementById("localitySearch").addEventListener("input", renderTable);
+  document.getElementById("cityFilter").addEventListener("change", event => {
+    cityFilterValue = event.target.value;
+    renderTable();
+  });
+  document.getElementById("addLocalityBtn").addEventListener("click", () => openModal(null));
+  document.getElementById("localityCancelBtn").addEventListener("click", closeModal);
+  document.getElementById("localityForm").addEventListener("submit", saveLocality);
+
+})();
+
+
+async function loadCities(){
+
+  const { data, error } = await supabaseClient
+    .from("cities")
+    .select("id, name")
+    .order("name", { ascending: true });
+
+  if(error){
+    showAdminMessage("localityMessage", "Failed to load cities: " + error.message, "error");
+    return;
+  }
+
+  allCitiesForLocalities = data || [];
+
+  const cityFilter = document.getElementById("cityFilter");
+  const cityPicker = document.getElementById("localityCityId");
+
+  allCitiesForLocalities.forEach(c => {
+    cityFilter.insertAdjacentHTML("beforeend", `<option value="${c.id}">${escapeAdminHtml(c.name)}</option>`);
+    cityPicker.insertAdjacentHTML("beforeend", `<option value="${c.id}">${escapeAdminHtml(c.name)}</option>`);
+  });
+
+  if(allCitiesForLocalities.length === 0){
+    showAdminMessage("localityMessage", "Add at least one city first, then come back to add localities.", "error");
+  }
+
+}
+
+async function loadLocalities(){
+
+  const { data, error } = await supabaseClient
+    .from("localities")
+    .select("*, cities(name)")
+    .order("name", { ascending: true });
+
+  if(error){
+    showAdminMessage("localityMessage", "Failed to load localities: " + error.message, "error");
+    return;
+  }
+
+  allLocalities = data || [];
+  renderTable();
+
+}
+
+function renderTable(){
+
+  const tbody = document.getElementById("localityTableBody");
+  const search = document.getElementById("localitySearch").value.trim().toLowerCase();
+
+  let rows = allLocalities;
+
+  if(cityFilterValue !== "all"){
+    rows = rows.filter(l => l.city_id === cityFilterValue);
+  }
+
+  if(search){
+    rows = rows.filter(l => String(l.name || "").toLowerCase().includes(search));
+  }
+
+  if(rows.length === 0){
+    tbody.innerHTML = '<tr class="admin-empty-row"><td colspan="4">No localities match this view.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = rows.map(l => `
+    <tr data-id="${l.id}">
+      <td style="font-weight:700;">${escapeAdminHtml(l.name)}</td>
+      <td class="admin-cell-muted">${escapeAdminHtml(l.cities ? l.cities.name : "-")}</td>
+      <td>${l.is_active ? '<span class="admin-badge badge-active">Active</span>' : '<span class="admin-badge badge-suspended">Inactive</span>'}</td>
+      <td>
+        <div class="admin-row-actions">
+          <button type="button" class="admin-btn" data-role="edit">Edit</button>
+          <button type="button" class="admin-btn" data-role="toggle-active">${l.is_active ? "Deactivate" : "Activate"}</button>
+          <button type="button" class="admin-btn admin-btn-danger" data-role="delete">Delete</button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
+
+  tbody.querySelectorAll('[data-role="edit"]').forEach(btn => {
+    btn.addEventListener("click", () => openModal(btn.closest("tr").dataset.id));
+  });
+  tbody.querySelectorAll('[data-role="toggle-active"]').forEach(btn => {
+    btn.addEventListener("click", () => toggleActive(btn.closest("tr").dataset.id));
+  });
+  tbody.querySelectorAll('[data-role="delete"]').forEach(btn => {
+    btn.addEventListener("click", () => deleteLocality(btn.closest("tr").dataset.id));
+  });
+
+}
+
+function openModal(id){
+
+  const locality = id ? allLocalities.find(l => l.id === id) : null;
+
+  document.getElementById("localityModalTitle").textContent = locality ? "Edit Locality" : "Add Locality";
+  document.getElementById("localityId").value = locality ? locality.id : "";
+  document.getElementById("localityCityId").value = locality ? locality.city_id : (allCitiesForLocalities[0] ? allCitiesForLocalities[0].id : "");
+  document.getElementById("localityName").value = locality ? locality.name || "" : "";
+
+  document.getElementById("localityModalBackdrop").hidden = false;
+
+}
+
+function closeModal(){
+  document.getElementById("localityModalBackdrop").hidden = true;
+}
+
+async function saveLocality(event){
+
+  event.preventDefault();
+
+  const id = document.getElementById("localityId").value;
+
+  const payload = {
+    city_id: document.getElementById("localityCityId").value,
+    name: document.getElementById("localityName").value.trim()
+  };
+
+  const saveBtn = document.getElementById("localitySaveBtn");
+  saveBtn.disabled = true;
+  saveBtn.textContent = "Saving...";
+
+  const { error } = id
+    ? await supabaseClient.from("localities").update(payload).eq("id", id)
+    : await supabaseClient.from("localities").insert(payload);
+
+  saveBtn.disabled = false;
+  saveBtn.textContent = "Save";
+
+  if(error){
+    showAdminMessage("localityMessage", "Failed to save: " + error.message, "error");
+    return;
+  }
+
+  closeModal();
+  showAdminMessage("localityMessage", id ? "Locality updated." : "Locality added.", "success");
+  await loadLocalities();
+
+}
+
+async function toggleActive(id){
+
+  const locality = allLocalities.find(l => l.id === id);
+  if(!locality) return;
+
+  const { error } = await supabaseClient
+    .from("localities")
+    .update({ is_active: !locality.is_active })
+    .eq("id", id);
+
+  if(error){
+    showAdminMessage("localityMessage", "Failed to update: " + error.message, "error");
+    return;
+  }
+
+  locality.is_active = !locality.is_active;
+  renderTable();
+
+}
+
+async function deleteLocality(id){
+
+  if(!confirm("Delete this locality? This can't be undone.")) return;
+
+  const { error } = await supabaseClient.from("localities").delete().eq("id", id);
+
+  if(error){
+    showAdminMessage("localityMessage", "Failed to delete: " + error.message, "error");
+    return;
+  }
+
+  allLocalities = allLocalities.filter(l => l.id !== id);
+  showAdminMessage("localityMessage", "Locality deleted.", "success");
+  renderTable();
+
+}
+
+</script>
+
+</body>
+</html>

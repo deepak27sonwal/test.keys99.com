@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#06251f">
+
+<title>Admin Sign In | Keys99.com</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin-login.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+
+<body>
+
+
+<header class="login-topbar">
+  <a class="logo logo-link" href="../index.html">
+    <img src="../assets/logo.png" alt="Keys99.com" class="header-logo">
+  </a>
+</header>
+
+
+<main class="login-main">
+
+  <div class="login-card">
+
+    <div class="login-intro">
+      <div class="section-kicker">Admin Panel</div>
+      <h1>Admin Sign In</h1>
+      <p>Restricted access. Sign in with an admin account to manage listings, users and enquiries.</p>
+    </div>
+
+    <div class="login-message" id="loginMessage" hidden></div>
+
+    <form class="login-form" id="adminSigninForm">
+
+      <label class="profile-field">
+        <span>Email</span>
+        <input type="email" id="signinEmail" required autocomplete="email" placeholder="admin@example.com">
+      </label>
+
+      <label class="profile-field">
+        <span>Password</span>
+        <input type="password" id="signinPassword" required autocomplete="current-password" placeholder="Your password">
+      </label>
+
+      <button type="submit" class="btn-primary login-submit" id="signinSubmit">Sign In</button>
+
+    </form>
+
+    <a class="login-skip" href="../index.html">&larr; Back to Keys99.com</a>
+
+  </div>
+
+</main>
+
+
+<script src="js/config.js"></script>
+
+<script>
+
+/* =========================================================
+   KEYS99 - ADMIN SIGN IN
+========================================================= */
+
+const params = new URLSearchParams(window.location.search);
+const redirectTarget = params.get("redirect") || "admin-dashboard.html";
+
+const adminSigninForm = document.getElementById("adminSigninForm");
+const loginMessage = document.getElementById("loginMessage");
+
+
+function showMessage(text, type){
+  loginMessage.textContent = text;
+  loginMessage.className = "login-message login-message-" + (type || "error");
+  loginMessage.hidden = false;
+}
+
+function hideMessage(){
+  loginMessage.hidden = true;
+}
+
+if(params.get("denied") === "1"){
+  showMessage("That account doesn't have admin access.", "error");
+}
+
+
+/* =========================================================
+   IF ALREADY SIGNED IN AS AN ADMIN, SKIP STRAIGHT TO THE
+   DESTINATION. If signed in but NOT an admin, sign out so the
+   form is ready for a real admin account.
+========================================================= */
+
+(async () => {
+
+  const { data } = await supabaseClient.auth.getSession();
+
+  if(!data || !data.session) return;
+
+  const { data: profile } = await supabaseClient
+    .from("profiles")
+    .select("is_admin")
+    .eq("id", data.session.user.id)
+    .maybeSingle();
+
+  if(profile && profile.is_admin){
+    window.location.href = redirectTarget;
+  }else{
+    await supabaseClient.auth.signOut();
+  }
+
+})();
+
+
+/* =========================================================
+   SIGN IN
+========================================================= */
+
+adminSigninForm.addEventListener("submit", async event => {
+
+  event.preventDefault();
+  hideMessage();
+
+  const email = document.getElementById("signinEmail").value.trim();
+  const password = document.getElementById("signinPassword").value;
+
+  const submitBtn = document.getElementById("signinSubmit");
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Signing In...";
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+  if(error){
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Sign In";
+    showMessage(error.message || "Unable to sign in. Please check your details.", "error");
+    return;
+  }
+
+  const { data: profile, error: profileError } = await supabaseClient
+    .from("profiles")
+    .select("is_admin")
+    .eq("id", data.user.id)
+    .maybeSingle();
+
+  submitBtn.disabled = false;
+  submitBtn.textContent = "Sign In";
+
+  if(profileError || !profile || !profile.is_admin){
+    await supabaseClient.auth.signOut();
+    showMessage("That account doesn't have admin access.", "error");
+    return;
+  }
+
+  window.location.href = redirectTarget;
+
+});
+
+</script>
+
+</body>
+</html>

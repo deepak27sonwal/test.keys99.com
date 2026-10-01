@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+
+<title>My Properties | Keys99</title>
+<meta name="description" content="Your listings on Keys99.">
+<link rel="canonical" href="https://keys99.com/my-properties.html">
+<meta name="robots" content="noindex,follow">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Keys99">
+<meta property="og:title" content="My Properties | Keys99">
+<meta property="og:description" content="Your listings on Keys99.">
+<meta property="og:url" content="https://keys99.com/my-properties.html">
+<meta property="og:image" content="https://keys99.com/assets/og-default.jpg">
+<meta property="og:locale" content="en_IN">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="My Properties | Keys99">
+<meta name="twitter:description" content="Your listings on Keys99.">
+<meta name="twitter:image" content="https://keys99.com/assets/og-default.jpg">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/my-properties.css">
+<link rel="stylesheet" href="css/chat-widget.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+
+<body>
+
+
+<!-- =======================================================
+     HEADER
+======================================================= -->
+
+<header class="header">
+
+  <div class="container nav">
+
+    <a class="logo logo-link" href="index.html">
+      <img src="assets/logo.png" alt="Keys99.com" class="header-logo">
+    </a>
+
+    <nav class="nav-links">
+
+      <a href="index.html">Home</a>
+      <a href="projects/search.html?status=sale">Buy</a>
+      <a href="projects/search.html?status=rent">Rent</a>
+      <a href="index.html#types">Projects</a>
+      <a href="profile.html">My Profile</a>
+
+    </nav>
+
+    <div class="nav-actions">
+
+      <button class="menu-btn" id="menuBtn" aria-label="Menu">
+        ☰
+      </button>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<!-- MOBILE MENU -->
+
+<div class="mobile-menu" id="mobileMenu">
+
+  <a href="index.html">Home</a>
+  <a href="projects/search.html?status=sale">Buy Property</a>
+  <a href="projects/search.html?status=rent">Rent Property</a>
+  <a href="index.html#types">Projects</a>
+  <a href="profile.html">My Profile</a>
+
+</div>
+
+
+
+<main>
+
+
+<!-- =======================================================
+     AUTH LOADING GATE
+======================================================= -->
+
+<div class="page-loading-gate" id="pageLoadingGate">
+  <div class="page-loading-spinner"></div>
+  <p>Checking your session...</p>
+</div>
+
+
+<div id="myPropertiesContent" hidden>
+
+
+  <!-- =======================================================
+       HERO
+  ======================================================= -->
+
+  <section class="mp-hero">
+    <div class="container">
+
+      <div class="mp-hero-row">
+
+        <div>
+          <div class="section-kicker">Manage Listings</div>
+          <h1>My Properties</h1>
+          <p>Every property you've listed on Keys99, in one place.</p>
+        </div>
+
+        <a class="btn-primary" href="post-property.html">+ Post a Property</a>
+
+      </div>
+
+      <div class="stats-row" id="statsRow" hidden>
+        <div class="stat-pill">
+          <strong id="statTotal">0</strong>
+          <span>Total Listings</span>
+        </div>
+        <div class="stat-pill">
+          <strong id="statActive">0</strong>
+          <span>Active</span>
+        </div>
+        <div class="stat-pill">
+          <strong id="statSold">0</strong>
+          <span>Sold / Rented</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- =======================================================
+       LISTINGS
+  ======================================================= -->
+
+  <section class="listings-section">
+    <div class="container">
+
+      <div class="listings-grid" id="listingsGrid"></div>
+
+      <div class="empty-state" id="emptyState" hidden>
+        <div class="empty-state-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-9"/></svg>
+        </div>
+        <h3>You haven't listed any properties yet</h3>
+        <p>Post your first property and reach thousands of verified buyers and tenants.</p>
+        <a class="btn-primary" href="post-property.html">+ Post a Property</a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- =======================================================
+       FOOTER
+  ======================================================= -->
+
+  <footer id="footer">
+
+    <div class="container">
+
+      <div class="footer-grid">
+
+        <div class="footer-col footer-brand">
+          <a class="logo logo-link" href="index.html">
+            <img src="assets/logo.png" alt="Keys99.com" class="header-logo">
+          </a>
+          <p style="margin-top:13px;max-width:230px">
+            A modern real estate platform to help you discover verified properties with confidence.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <a href="index.html">Home</a>
+          <a href="projects/search.html?status=sale">Buy</a>
+          <a href="projects/search.html?status=rent">Rent</a>
+          <a href="index.html#types">Projects</a>
+        </div>
+
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="index.html#why">About Us</a>
+          <a href="index.html#footer">Contact Us</a>
+          <a href="privacy-policy.html">Privacy Policy</a>
+          <a href="terms.html">Terms &amp; Conditions</a>
+        </div>
+
+        <div class="footer-col">
+          <h4>Follow &amp; Contact</h4>
+          <div class="socials">
+            <a href="https://www.facebook.com/profile.php?id=100066632434187" aria-label="Keys99 on Facebook" target="_blank" rel="noopener">f</a>
+            <a href="https://www.instagram.com/keys99com/" aria-label="Keys99 on Instagram" target="_blank" rel="noopener">◎</a>
+            <a href="#" aria-label="Keys99 on LinkedIn">in</a>
+            <a href="https://www.youtube.com/@Keys99" aria-label="Keys99 on YouTube" target="_blank" rel="noopener">▶</a>
+          </div>
+          <p style="margin-top:12px">support@keys99.com</p>
+          <p>+91 98765 43210</p>
+          <p>India</p>
+        </div>
+
+      </div>
+
+      <div class="copyright">
+        <span>© 2026 Keys99.com. All rights reserved.</span>
+        <span>⌂ &nbsp; Your Key to a Better Tomorrow</span>
+      </div>
+
+    </div>
+
+  </footer>
+
+
+  <!-- MOBILE BOTTOM NAVIGATION -->
+
+  <nav class="bottom-nav" id="bottomNav">
+
+    <button type="button" data-target="home">
+      <span class="bn-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 11.5 12 4l9 7.5"/>
+          <path d="M5.5 10v9a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-9"/>
+          <path d="M9.5 20v-6h5v6"/>
+        </svg>
+      </span>
+      <span class="bn-label">Home</span>
+    </button>
+
+    <button type="button" data-target="search">
+      <span class="bn-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="6.5"/>
+          <path d="m20 20-3.6-3.6"/>
+        </svg>
+      </span>
+      <span class="bn-label">Search</span>
+    </button>
+
+    <button type="button" data-target="reels">
+      <span class="bn-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3.5" y="3.5" width="17" height="17" rx="5"/>
+          <path d="M10 8.5v7l6-3.5-6-3.5Z" fill="currentColor" stroke="none"/>
+        </svg>
+      </span>
+      <span class="bn-label">Reels</span>
+    </button>
+
+    <button type="button" data-target="profile">
+      <span class="bn-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="3.5"/>
+          <path d="M4.5 20c1.4-3.6 4.3-5.5 7.5-5.5s6.1 1.9 7.5 5.5"/>
+        </svg>
+      </span>
+      <span class="bn-label">Profile</span>
+    </button>
+
+  </nav>
+
+
+</div><!-- /#myPropertiesContent -->
+
+
+</main>
+
+
+<script src="js/config.js"></script>
+<script src="js/chat-widget.js"></script>
+
+<script>
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function escapeHtml(value){
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+let toastTimer = null;
+
+function showToast(message){
+
+  let toast = document.getElementById("mpToast");
+
+  if(!toast){
+    toast = document.createElement("div");
+    toast.id = "mpToast";
+    toast.className = "mp-toast";
+    document.body.appendChild(toast);
+  }
+
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 2800);
+
+}
+
+function initMobileMenu(){
+
+  const menuBtn = document.getElementById("menuBtn");
+  const mobileMenu = document.getElementById("mobileMenu");
+
+  if(!menuBtn || !mobileMenu){
+    return;
+  }
+
+  menuBtn.addEventListener("click", () => {
+    mobileMenu.classList.toggle("open");
+    menuBtn.textContent = mobileMenu.classList.contains("open") ? "×" : "☰";
+  });
+
+  mobileMenu.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
+      mobileMenu.classList.remove("open");
+      menuBtn.textContent = "☰";
+    });
+  });
+
+}
+
+function initBottomNav(activeTarget){
+
+  const bottomNav = document.getElementById("bottomNav");
+
+  if(!bottomNav){
+    return;
+  }
+
+  bottomNav.querySelectorAll("button").forEach(btn => {
+    btn.classList.toggle("bn-active", btn.dataset.target === activeTarget);
+  });
+
+  bottomNav.addEventListener("click", event => {
+
+    const button = event.target.closest("button");
+
+    if(!button){
+      return;
+    }
+
+    const target = button.dataset.target;
+
+    if(target === "home"){
+      window.location.href = "index.html";
+    }else if(target === "search"){
+      window.location.href = "projects/search.html";
+    }else if(target === "reels"){
+      window.location.href = "reels.html";
+    }else if(target === "profile"){
+      window.location.href = "profile.html";
+    }
+
+  });
+
+}
+
+
+/* =========================================================
+   SESSION
+========================================================= */
+
+const PROPERTIES_TABLE = "projects";
+
+let currentUser = null;
+
+async function requireSession(){
+
+  const { data, error } = await supabaseClient.auth.getSession();
+
+  if(error){
+    console.error("Failed to check session:", error);
+  }
+
+  const session = data && data.session;
+
+  if(!session){
+    window.location.href = "login.html?redirect=" + encodeURIComponent("my-properties.html");
+    return null;
+  }
+
+  return session.user;
+
+}
+
+
+/* =========================================================
+   PROPERTY / BHK HELPERS
+   (duplicated per-page, same logic as property-details.html)
+========================================================= */
+
+function getBhkOptions(property){
+  if(!property || !Array.isArray(property.bhk_options)){
+    return [];
+  }
+  return property.bhk_options.filter(option => option && typeof option === "object");
+}
+
+function getPropertyTypes(property){
+  const options = getBhkOptions(property);
+  return options.map(option => String(option.type || "").trim()).filter(Boolean);
+}
+
+function getBhkText(property){
+  const types = getPropertyTypes(property);
+  if(!types.length){
+    return "";
+  }
+  const uniqueTypes = [...new Set(types)];
+  return uniqueTypes.join(" / ");
+}
+
+function getCardTitle(property){
+  const bhk = getBhkText(property);
+  const developer = String(property.developer || "").trim();
+  if(bhk && developer){
+    return developer + " — " + bhk;
+  }
+  return bhk || developer || "Untitled Property";
+}
+
+function getNumericPrice(option){
+  if(!option){
+    return null;
+  }
+  const price = Number(option.price);
+  if(Number.isFinite(price) && price > 0){
+    return price;
+  }
+  return null;
+}
+
+function formatPrice(price){
+
+  if(price === null || price === undefined || !Number.isFinite(Number(price))){
+    return "";
+  }
+
+  price = Number(price);
+
+  if(price >= 10000000){
+    const crore = price / 10000000;
+    return "₹ " + crore.toFixed(crore % 1 === 0 ? 0 : 2).replace(/\.00$/, "") + " Cr";
+  }
+
+  if(price >= 100000){
+    const lakh = price / 100000;
+    return "₹ " + lakh.toFixed(lakh % 1 === 0 ? 0 : 2).replace(/\.00$/, "") + " Lakh";
+  }
+
+  if(price >= 1000){
+    const thousand = price / 1000;
+    return "₹ " + thousand.toFixed(thousand % 1 === 0 ? 0 : 1).replace(/\.0$/, "") + "K";
+  }
+
+  return "₹ " + price.toLocaleString("en-IN");
+
+}
+
+function getMinPropertyPrice(property){
+
+  const options = getBhkOptions(property);
+
+  const prices = options
+    .map(getNumericPrice)
+    .filter(price => price !== null);
+
+  if(!prices.length){
+    return null;
+  }
+
+  return Math.min(...prices);
+
+}
+
+function getLocationText(property){
+
+  const parts = [property.locality, property.city, property.state];
+
+  const unique = parts
+    .map(value => String(value || "").trim())
+    .filter(Boolean)
+    .filter((value, index, array) => array.indexOf(value) === index);
+
+  if(unique.length){
+    return unique.join(", ");
+  }
+
+  return property.address || "Location not available";
+
+}
+
+function getStatusText(property){
+  const status = String(property.status || "").trim();
+  return status || "Available";
+}
+
+function getStatusClass(status){
+  const value = String(status || "").toLowerCase();
+  if(value.includes("rent") || value.includes("lease")){
+    return "rent";
+  }
+  if(value.includes("sold") || value.includes("closed")){
+    return "sold";
+  }
+  return "sale";
+}
+
+function getImageUrl(property){
+  const image = String(property.main_image || "").trim();
+  if(image){
+    return image;
+  }
+  return "/assets/property-placeholder.svg";
+}
+
+function formatDate(value){
+  if(!value){
+    return "";
+  }
+  const date = new Date(value);
+  if(Number.isNaN(date.getTime())){
+    return "";
+  }
+  return date.toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" });
+}
+
+
+/* =========================================================
+   FETCH + RENDER LISTINGS
+========================================================= */
+
+const ENQUIRIES_TABLE = "enquiries";
+
+let myProperties = [];
+let enquiriesByProperty = {};
+
+async function fetchMyProperties(){
+
+  const { data, error } = await supabaseClient
+    .from(PROPERTIES_TABLE)
+    .select(PROPERTY_SELECT_COLUMNS)
+    .eq("posted_by_user_id", currentUser.id)
+    .order("created_at", { ascending:false });
+
+  if(error){
+    console.error("Failed to load your properties:", error);
+    showToast("Couldn't load your properties. Please try again.");
+    return [];
+  }
+
+  return Array.isArray(data) ? data : [];
+
+}
+
+async function fetchEnquiriesForMyProperties(propertyIds){
+
+  if(!propertyIds.length){
+    return {};
+  }
+
+  const { data, error } = await supabaseClient
+    .from(ENQUIRIES_TABLE)
+    .select("id, created_at, property_id, name, phone, email, message")
+    .in("property_id", propertyIds)
+    .order("created_at", { ascending:false });
+
+  if(error){
+    console.error("Failed to load enquiries:", error);
+    return {};
+  }
+
+  const grouped = {};
+  (data || []).forEach(row => {
+    if(!grouped[row.property_id]){
+      grouped[row.property_id] = [];
+    }
+    grouped[row.property_id].push(row);
+  });
+
+  return grouped;
+
+}
+
+function updateStats(){
+
+  const statsRow = document.getElementById("statsRow");
+
+  if(!myProperties.length){
+    statsRow.hidden = true;
+    return;
+  }
+
+  statsRow.hidden = false;
+
+  const soldCount = myProperties.filter(property => getStatusClass(getStatusText(property)) === "sold").length;
+
+  document.getElementById("statTotal").textContent = myProperties.length;
+  document.getElementById("statActive").textContent = myProperties.length - soldCount;
+  document.getElementById("statSold").textContent = soldCount;
+
+}
+
+function createListingCard(property){
+
+  const id = escapeHtml(property.id);
+  const title = getCardTitle(property);
+  const location = getLocationText(property);
+  const status = getStatusText(property);
+  const statusClass = getStatusClass(status);
+
+  const minPrice = getMinPropertyPrice(property);
+  const priceText = minPrice !== null ? formatPrice(minPrice) + " onwards" : "Price on request";
+
+  const postedText = formatDate(property.created_at);
+
+  const enquiries = enquiriesByProperty[property.id] || [];
+
+  const card = document.createElement("div");
+  card.className = "listing-card";
+  card.dataset.id = id;
+
+  card.innerHTML = `
+    <div class="listing-thumb-wrap">
+      <img src="${escapeHtml(getImageUrl(property))}" alt="" loading="lazy">
+      <span class="listing-badge ${statusClass}">${escapeHtml(status)}</span>
+    </div>
+    <div class="listing-body">
+      <div class="listing-title">${escapeHtml(title)}</div>
+      ${property.rera_id ? `<span class="rera-badge">✓ RERA</span>` : ""}
+      <div class="listing-location">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.3"/></svg>
+        <span>${escapeHtml(location)}</span>
+      </div>
+      <div class="listing-price">${escapeHtml(priceText)}</div>
+      <div class="listing-meta">${postedText ? "Listed on " + escapeHtml(postedText) : ""}</div>
+      <button type="button" class="listing-enquiry-toggle" data-action="toggle-enquiries" data-id="${id}" ${enquiries.length ? "" : "disabled"}>
+        💬 ${enquiries.length} Enquir${enquiries.length === 1 ? "y" : "ies"}
+      </button>
+      <div class="enquiry-panel" id="enquiryPanel-${id}" hidden>
+        ${enquiries.map(enquiry => `
+          <div class="enquiry-item">
+            <div class="enquiry-item-head">
+              <strong>${escapeHtml(enquiry.name || "Unknown")}</strong>
+              <span>${escapeHtml(formatDate(enquiry.created_at))}</span>
+            </div>
+            <div class="enquiry-item-contact">
+              ${enquiry.phone ? `<a href="tel:${escapeHtml(enquiry.phone)}">☎ ${escapeHtml(enquiry.phone)}</a>` : ""}
+              ${enquiry.email ? `<a href="mailto:${escapeHtml(enquiry.email)}">✉ ${escapeHtml(enquiry.email)}</a>` : ""}
+            </div>
+            ${enquiry.message ? `<p class="enquiry-item-message">${escapeHtml(enquiry.message)}</p>` : ""}
+          </div>
+        `).join("") || `<p class="enquiry-item-empty">No enquiries yet.</p>`}
+      </div>
+    </div>
+    <div class="listing-actions">
+      <a class="action-view" href="projects/property-details.html?id=${encodeURIComponent(property.id)}">View</a>
+      <a class="action-edit" href="post-property.html?id=${encodeURIComponent(property.id)}">Edit</a>
+      <button type="button" class="action-delete" data-action="delete" data-id="${id}">Delete</button>
+    </div>
+  `;
+
+  return card;
+
+}
+
+function renderListings(){
+
+  const grid = document.getElementById("listingsGrid");
+  const emptyState = document.getElementById("emptyState");
+
+  grid.innerHTML = "";
+
+  if(!myProperties.length){
+    grid.hidden = true;
+    emptyState.hidden = false;
+    updateStats();
+    return;
+  }
+
+  grid.hidden = false;
+  emptyState.hidden = true;
+
+  myProperties.forEach(property => {
+    grid.appendChild(createListingCard(property));
+  });
+
+  updateStats();
+
+}
+
+document.getElementById("listingsGrid").addEventListener("click", async event => {
+
+  const toggleBtn = event.target.closest("[data-action='toggle-enquiries']");
+
+  if(toggleBtn){
+    const panel = document.getElementById("enquiryPanel-" + toggleBtn.dataset.id);
+    if(panel){
+      panel.hidden = !panel.hidden;
+    }
+    return;
+  }
+
+  const button = event.target.closest("[data-action='delete']");
+
+  if(!button){
+    return;
+  }
+
+  const id = button.dataset.id;
+
+  if(!confirm("Delete this listing? This can't be undone.")){
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Deleting...";
+
+  const { error } = await supabaseClient
+    .from(PROPERTIES_TABLE)
+    .delete()
+    .eq("id", id)
+    .eq("posted_by_user_id", currentUser.id);
+
+  if(error){
+    console.error("Failed to delete property:", error);
+    showToast("Couldn't delete this listing. Please try again.");
+    button.disabled = false;
+    button.textContent = "Delete";
+    return;
+  }
+
+  myProperties = myProperties.filter(property => property.id !== id);
+  renderListings();
+  showToast("Listing deleted.");
+
+});
+
+
+/* =========================================================
+   INIT
+========================================================= */
+
+initBottomNav(null);
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+  initMobileMenu();
+
+  currentUser = await requireSession();
+
+  if(!currentUser){
+    return;
+  }
+
+  myProperties = await fetchMyProperties();
+  enquiriesByProperty = await fetchEnquiriesForMyProperties(myProperties.map(property => property.id));
+  renderListings();
+
+  document.getElementById("pageLoadingGate").hidden = true;
+  document.getElementById("myPropertiesContent").hidden = false;
+
+});
+
+</script>
+
+
+</body>
+</html>

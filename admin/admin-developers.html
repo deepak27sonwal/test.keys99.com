@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#06251f">
+
+<title>Developers | Keys99 Admin</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin-developers.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+
+<body>
+
+
+<div class="admin-shell">
+
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <main class="admin-main">
+
+    <div class="admin-topbar">
+      <div class="admin-title">
+        <h1>Developers</h1>
+        <p>Manage the developer directory shown across Keys99.</p>
+      </div>
+      <button type="button" class="admin-btn admin-btn-primary" id="addDevBtn">+ Add Developer</button>
+    </div>
+
+    <div class="admin-message" id="devMessage" hidden></div>
+
+    <div class="admin-panel">
+
+      <div class="admin-filters">
+        <input type="text" class="admin-search-input" id="devSearch" placeholder="Search by name...">
+      </div>
+
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Developer</th>
+              <th>Contact</th>
+              <th>Website</th>
+              <th>RERA ID</th>
+              <th>Verified</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="devTableBody">
+            <tr class="admin-empty-row"><td colspan="7">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<div class="admin-modal-backdrop" id="devModalBackdrop" hidden>
+  <div class="admin-modal">
+    <h3 id="devModalTitle">Add Developer</h3>
+    <form id="devForm">
+      <input type="hidden" id="devId">
+      <label class="admin-field">
+        <span>Name *</span>
+        <input type="text" id="devName" required>
+      </label>
+      <label class="admin-field">
+        <span>Logo URL</span>
+        <input type="url" id="devLogoUrl" placeholder="https://...">
+      </label>
+      <label class="admin-field">
+        <span>Description</span>
+        <textarea id="devDescription" rows="3"></textarea>
+      </label>
+      <div class="admin-field-row">
+        <label class="admin-field">
+          <span>Contact Email</span>
+          <input type="email" id="devEmail">
+        </label>
+        <label class="admin-field">
+          <span>Contact Phone</span>
+          <input type="text" id="devPhone">
+        </label>
+      </div>
+      <div class="admin-field-row">
+        <label class="admin-field">
+          <span>Website</span>
+          <input type="url" id="devWebsite" placeholder="https://...">
+        </label>
+        <label class="admin-field">
+          <span>RERA ID</span>
+          <input type="text" id="devReraId">
+        </label>
+      </div>
+      <label class="admin-field">
+        <span>Verified</span>
+        <select id="devVerified">
+          <option value="false">Not verified</option>
+          <option value="true">Verified</option>
+        </select>
+      </label>
+      <div class="admin-modal-actions">
+        <button type="button" class="admin-btn" id="devCancelBtn">Cancel</button>
+        <button type="submit" class="admin-btn admin-btn-primary" id="devSaveBtn">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<script src="js/config.js"></script>
+<script src="js/admin-auth.js"></script>
+
+<script>
+
+/* =========================================================
+   KEYS99 - ADMIN DEVELOPERS
+========================================================= */
+
+let allDevelopers = [];
+
+(async () => {
+
+  const user = await requireAdmin();
+  if(!user) return;
+
+  renderAdminSidebar("admin-developers.html");
+
+  await loadDevelopers();
+
+  document.getElementById("devSearch").addEventListener("input", renderTable);
+  document.getElementById("addDevBtn").addEventListener("click", () => openModal(null));
+  document.getElementById("devCancelBtn").addEventListener("click", closeModal);
+  document.getElementById("devForm").addEventListener("submit", saveDeveloper);
+
+})();
+
+
+async function loadDevelopers(){
+
+  const { data, error } = await supabaseClient
+    .from("developers")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if(error){
+    showAdminMessage("devMessage", "Failed to load developers: " + error.message, "error");
+    return;
+  }
+
+  allDevelopers = data || [];
+  renderTable();
+
+}
+
+function renderTable(){
+
+  const tbody = document.getElementById("devTableBody");
+  const search = document.getElementById("devSearch").value.trim().toLowerCase();
+
+  let rows = allDevelopers;
+
+  if(search){
+    rows = rows.filter(d => String(d.name || "").toLowerCase().includes(search));
+  }
+
+  if(rows.length === 0){
+    tbody.innerHTML = '<tr class="admin-empty-row"><td colspan="7">No developers yet. Add your first one.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = rows.map(d => `
+    <tr data-id="${d.id}">
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          ${d.logo_url ? `<img src="${escapeAdminHtml(d.logo_url)}" alt="" style="width:32px;height:32px;border-radius:6px;object-fit:cover;flex-shrink:0;">` : ""}
+          <span style="font-weight:700;">${escapeAdminHtml(d.name)}</span>
+        </div>
+      </td>
+      <td class="admin-cell-muted">${escapeAdminHtml(d.contact_phone || d.contact_email || "-")}</td>
+      <td class="admin-cell-muted">${d.website ? `<a href="${escapeAdminHtml(d.website)}" target="_blank">${escapeAdminHtml(d.website.replace(/^https?:\/\//,""))}</a>` : "-"}</td>
+      <td class="admin-cell-muted">${escapeAdminHtml(d.rera_id || "-")}</td>
+      <td>${d.verified ? '<span class="admin-badge badge-approved">Verified</span>' : '<span class="admin-badge badge-pending">Unverified</span>'}</td>
+      <td>${adminBadge(d.status)}</td>
+      <td>
+        <div class="admin-row-actions">
+          <button type="button" class="admin-btn" data-role="edit">Edit</button>
+          <button type="button" class="admin-btn" data-role="toggle-status">${d.status === "active" ? "Suspend" : "Activate"}</button>
+          <button type="button" class="admin-btn admin-btn-danger" data-role="delete">Delete</button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
+
+  tbody.querySelectorAll('[data-role="edit"]').forEach(btn => {
+    btn.addEventListener("click", () => openModal(btn.closest("tr").dataset.id));
+  });
+  tbody.querySelectorAll('[data-role="toggle-status"]').forEach(btn => {
+    btn.addEventListener("click", () => toggleStatus(btn.closest("tr").dataset.id));
+  });
+  tbody.querySelectorAll('[data-role="delete"]').forEach(btn => {
+    btn.addEventListener("click", () => deleteDeveloper(btn.closest("tr").dataset.id));
+  });
+
+}
+
+function openModal(id){
+
+  const dev = id ? allDevelopers.find(d => d.id === id) : null;
+
+  document.getElementById("devModalTitle").textContent = dev ? "Edit Developer" : "Add Developer";
+  document.getElementById("devId").value = dev ? dev.id : "";
+  document.getElementById("devName").value = dev ? dev.name || "" : "";
+  document.getElementById("devLogoUrl").value = dev ? dev.logo_url || "" : "";
+  document.getElementById("devDescription").value = dev ? dev.description || "" : "";
+  document.getElementById("devEmail").value = dev ? dev.contact_email || "" : "";
+  document.getElementById("devPhone").value = dev ? dev.contact_phone || "" : "";
+  document.getElementById("devWebsite").value = dev ? dev.website || "" : "";
+  document.getElementById("devReraId").value = dev ? dev.rera_id || "" : "";
+  document.getElementById("devVerified").value = dev ? String(!!dev.verified) : "false";
+
+  document.getElementById("devModalBackdrop").hidden = false;
+
+}
+
+function closeModal(){
+  document.getElementById("devModalBackdrop").hidden = true;
+}
+
+async function saveDeveloper(event){
+
+  event.preventDefault();
+
+  const id = document.getElementById("devId").value;
+
+  const payload = {
+    name: document.getElementById("devName").value.trim(),
+    logo_url: document.getElementById("devLogoUrl").value.trim() || null,
+    description: document.getElementById("devDescription").value.trim() || null,
+    contact_email: document.getElementById("devEmail").value.trim() || null,
+    contact_phone: document.getElementById("devPhone").value.trim() || null,
+    website: document.getElementById("devWebsite").value.trim() || null,
+    rera_id: document.getElementById("devReraId").value.trim() || null,
+    verified: document.getElementById("devVerified").value === "true"
+  };
+
+  const saveBtn = document.getElementById("devSaveBtn");
+  saveBtn.disabled = true;
+  saveBtn.textContent = "Saving...";
+
+  const { error } = id
+    ? await supabaseClient.from("developers").update(payload).eq("id", id)
+    : await supabaseClient.from("developers").insert(payload);
+
+  saveBtn.disabled = false;
+  saveBtn.textContent = "Save";
+
+  if(error){
+    showAdminMessage("devMessage", "Failed to save: " + error.message, "error");
+    return;
+  }
+
+  closeModal();
+  showAdminMessage("devMessage", id ? "Developer updated." : "Developer added.", "success");
+  await loadDevelopers();
+
+}
+
+async function toggleStatus(id){
+
+  const dev = allDevelopers.find(d => d.id === id);
+  if(!dev) return;
+
+  const nextStatus = dev.status === "active" ? "suspended" : "active";
+
+  const { error } = await supabaseClient
+    .from("developers")
+    .update({ status: nextStatus })
+    .eq("id", id);
+
+  if(error){
+    showAdminMessage("devMessage", "Failed to update: " + error.message, "error");
+    return;
+  }
+
+  dev.status = nextStatus;
+  renderTable();
+
+}
+
+async function deleteDeveloper(id){
+
+  if(!confirm("Delete this developer? This can't be undone.")) return;
+
+  const { error } = await supabaseClient.from("developers").delete().eq("id", id);
+
+  if(error){
+    showAdminMessage("devMessage", "Failed to delete: " + error.message, "error");
+    return;
+  }
+
+  allDevelopers = allDevelopers.filter(d => d.id !== id);
+  showAdminMessage("devMessage", "Developer deleted.", "success");
+  renderTable();
+
+}
+
+</script>
+
+</body>
+</html>

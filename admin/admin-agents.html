@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#06251f">
+
+<title>Agents | Keys99 Admin</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin-agents.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+
+<body>
+
+
+<div class="admin-shell">
+
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <main class="admin-main">
+
+    <div class="admin-topbar">
+      <div class="admin-title">
+        <h1>Agents</h1>
+        <p>Manage the agent directory shown across Keys99.</p>
+      </div>
+      <button type="button" class="admin-btn admin-btn-primary" id="addAgentBtn">+ Add Agent</button>
+    </div>
+
+    <div class="admin-message" id="agentMessage" hidden></div>
+
+    <div class="admin-panel">
+
+      <div class="admin-filters">
+        <input type="text" class="admin-search-input" id="agentSearch" placeholder="Search by name or company...">
+      </div>
+
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Agent</th>
+              <th>Company</th>
+              <th>Contact</th>
+              <th>RERA ID</th>
+              <th>Verified</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="agentTableBody">
+            <tr class="admin-empty-row"><td colspan="7">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<div class="admin-modal-backdrop" id="agentModalBackdrop" hidden>
+  <div class="admin-modal">
+    <h3 id="agentModalTitle">Add Agent</h3>
+    <form id="agentForm">
+      <input type="hidden" id="agentId">
+      <label class="admin-field">
+        <span>Full Name *</span>
+        <input type="text" id="agentFullName" required>
+      </label>
+      <label class="admin-field">
+        <span>Company Name</span>
+        <input type="text" id="agentCompanyName">
+      </label>
+      <div class="admin-field-row">
+        <label class="admin-field">
+          <span>Email</span>
+          <input type="email" id="agentEmail">
+        </label>
+        <label class="admin-field">
+          <span>Phone</span>
+          <input type="text" id="agentPhone">
+        </label>
+      </div>
+      <label class="admin-field">
+        <span>RERA ID</span>
+        <input type="text" id="agentReraId">
+      </label>
+      <label class="admin-field">
+        <span>Photo URL</span>
+        <input type="url" id="agentPhotoUrl" placeholder="https://...">
+      </label>
+      <label class="admin-field">
+        <span>Bio</span>
+        <textarea id="agentBio" rows="3"></textarea>
+      </label>
+      <label class="admin-field">
+        <span>Verified</span>
+        <select id="agentVerified">
+          <option value="false">Not verified</option>
+          <option value="true">Verified</option>
+        </select>
+      </label>
+      <div class="admin-modal-actions">
+        <button type="button" class="admin-btn" id="agentCancelBtn">Cancel</button>
+        <button type="submit" class="admin-btn admin-btn-primary" id="agentSaveBtn">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<script src="js/config.js"></script>
+<script src="js/admin-auth.js"></script>
+
+<script>
+
+/* =========================================================
+   KEYS99 - ADMIN AGENTS
+========================================================= */
+
+let allAgents = [];
+
+(async () => {
+
+  const user = await requireAdmin();
+  if(!user) return;
+
+  renderAdminSidebar("admin-agents.html");
+
+  await loadAgents();
+
+  document.getElementById("agentSearch").addEventListener("input", renderTable);
+  document.getElementById("addAgentBtn").addEventListener("click", () => openModal(null));
+  document.getElementById("agentCancelBtn").addEventListener("click", closeModal);
+  document.getElementById("agentForm").addEventListener("submit", saveAgent);
+
+})();
+
+
+async function loadAgents(){
+
+  const { data, error } = await supabaseClient
+    .from("agents")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if(error){
+    showAdminMessage("agentMessage", "Failed to load agents: " + error.message, "error");
+    return;
+  }
+
+  allAgents = data || [];
+  renderTable();
+
+}
+
+function renderTable(){
+
+  const tbody = document.getElementById("agentTableBody");
+  const search = document.getElementById("agentSearch").value.trim().toLowerCase();
+
+  let rows = allAgents;
+
+  if(search){
+    rows = rows.filter(a =>
+      String(a.full_name || "").toLowerCase().includes(search) ||
+      String(a.company_name || "").toLowerCase().includes(search)
+    );
+  }
+
+  if(rows.length === 0){
+    tbody.innerHTML = '<tr class="admin-empty-row"><td colspan="7">No agents yet. Add your first one.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = rows.map(a => `
+    <tr data-id="${a.id}">
+      <td style="font-weight:700;">${escapeAdminHtml(a.full_name)}</td>
+      <td class="admin-cell-muted">${escapeAdminHtml(a.company_name || "-")}</td>
+      <td class="admin-cell-muted">${escapeAdminHtml(a.phone || a.email || "-")}</td>
+      <td class="admin-cell-muted">${escapeAdminHtml(a.rera_id || "-")}</td>
+      <td>${a.verified ? '<span class="admin-badge badge-approved">Verified</span>' : '<span class="admin-badge badge-pending">Unverified</span>'}</td>
+      <td>${adminBadge(a.status)}</td>
+      <td>
+        <div class="admin-row-actions">
+          <button type="button" class="admin-btn" data-role="edit">Edit</button>
+          <button type="button" class="admin-btn" data-role="toggle-status">${a.status === "active" ? "Suspend" : "Activate"}</button>
+          <button type="button" class="admin-btn admin-btn-danger" data-role="delete">Delete</button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
+
+  tbody.querySelectorAll('[data-role="edit"]').forEach(btn => {
+    btn.addEventListener("click", () => openModal(btn.closest("tr").dataset.id));
+  });
+  tbody.querySelectorAll('[data-role="toggle-status"]').forEach(btn => {
+    btn.addEventListener("click", () => toggleStatus(btn.closest("tr").dataset.id));
+  });
+  tbody.querySelectorAll('[data-role="delete"]').forEach(btn => {
+    btn.addEventListener("click", () => deleteAgent(btn.closest("tr").dataset.id));
+  });
+
+}
+
+function openModal(id){
+
+  const agent = id ? allAgents.find(a => a.id === id) : null;
+
+  document.getElementById("agentModalTitle").textContent = agent ? "Edit Agent" : "Add Agent";
+  document.getElementById("agentId").value = agent ? agent.id : "";
+  document.getElementById("agentFullName").value = agent ? agent.full_name || "" : "";
+  document.getElementById("agentCompanyName").value = agent ? agent.company_name || "" : "";
+  document.getElementById("agentEmail").value = agent ? agent.email || "" : "";
+  document.getElementById("agentPhone").value = agent ? agent.phone || "" : "";
+  document.getElementById("agentReraId").value = agent ? agent.rera_id || "" : "";
+  document.getElementById("agentPhotoUrl").value = agent ? agent.photo_url || "" : "";
+  document.getElementById("agentBio").value = agent ? agent.bio || "" : "";
+  document.getElementById("agentVerified").value = agent ? String(!!agent.verified) : "false";
+
+  document.getElementById("agentModalBackdrop").hidden = false;
+
+}
+
+function closeModal(){
+  document.getElementById("agentModalBackdrop").hidden = true;
+}
+
+async function saveAgent(event){
+
+  event.preventDefault();
+
+  const id = document.getElementById("agentId").value;
+
+  const payload = {
+    full_name: document.getElementById("agentFullName").value.trim(),
+    company_name: document.getElementById("agentCompanyName").value.trim() || null,
+    email: document.getElementById("agentEmail").value.trim() || null,
+    phone: document.getElementById("agentPhone").value.trim() || null,
+    rera_id: document.getElementById("agentReraId").value.trim() || null,
+    photo_url: document.getElementById("agentPhotoUrl").value.trim() || null,
+    bio: document.getElementById("agentBio").value.trim() || null,
+    verified: document.getElementById("agentVerified").value === "true"
+  };
+
+  const saveBtn = document.getElementById("agentSaveBtn");
+  saveBtn.disabled = true;
+  saveBtn.textContent = "Saving...";
+
+  const { error } = id
+    ? await supabaseClient.from("agents").update(payload).eq("id", id)
+    : await supabaseClient.from("agents").insert(payload);
+
+  saveBtn.disabled = false;
+  saveBtn.textContent = "Save";
+
+  if(error){
+    showAdminMessage("agentMessage", "Failed to save: " + error.message, "error");
+    return;
+  }
+
+  closeModal();
+  showAdminMessage("agentMessage", id ? "Agent updated." : "Agent added.", "success");
+  await loadAgents();
+
+}
+
+async function toggleStatus(id){
+
+  const agent = allAgents.find(a => a.id === id);
+  if(!agent) return;
+
+  const nextStatus = agent.status === "active" ? "suspended" : "active";
+
+  const { error } = await supabaseClient
+    .from("agents")
+    .update({ status: nextStatus })
+    .eq("id", id);
+
+  if(error){
+    showAdminMessage("agentMessage", "Failed to update: " + error.message, "error");
+    return;
+  }
+
+  agent.status = nextStatus;
+  renderTable();
+
+}
+
+async function deleteAgent(id){
+
+  if(!confirm("Delete this agent? This can't be undone.")) return;
+
+  const { error } = await supabaseClient.from("agents").delete().eq("id", id);
+
+  if(error){
+    showAdminMessage("agentMessage", "Failed to delete: " + error.message, "error");
+    return;
+  }
+
+  allAgents = allAgents.filter(a => a.id !== id);
+  showAdminMessage("agentMessage", "Agent deleted.", "success");
+  renderTable();
+
+}
+
+</script>
+
+</body>
+</html>

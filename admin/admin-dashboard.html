@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#06251f">
+
+<title>Admin Dashboard | Keys99.com</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin-dashboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+
+<body>
+
+
+<div class="admin-shell">
+
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <main class="admin-main">
+
+    <div class="admin-topbar">
+      <div class="admin-title">
+        <h1>Dashboard</h1>
+        <p id="welcomeLine">Overview of everything happening on Keys99.</p>
+      </div>
+    </div>
+
+    <div class="admin-message" id="dashMessage" hidden></div>
+
+    <div class="admin-stat-grid" id="statGrid">
+      <div class="admin-stat-card"><div class="stat-label">Total Properties</div><div class="stat-value" id="statTotalProperties">-</div></div>
+      <div class="admin-stat-card accent-ok"><div class="stat-label">Active Properties</div><div class="stat-value" id="statActiveProperties">-</div></div>
+      <div class="admin-stat-card accent-gold"><div class="stat-label">Pending Approval</div><div class="stat-value" id="statPendingProperties">-</div></div>
+      <div class="admin-stat-card"><div class="stat-label">Users</div><div class="stat-value" id="statUsers">-</div></div>
+      <div class="admin-stat-card"><div class="stat-label">Agents</div><div class="stat-value" id="statAgents">-</div></div>
+      <div class="admin-stat-card"><div class="stat-label">Developers</div><div class="stat-value" id="statDevelopers">-</div></div>
+      <div class="admin-stat-card"><div class="stat-label">Enquiries</div><div class="stat-value" id="statEnquiries">-</div></div>
+      <div class="admin-stat-card"><div class="stat-label">Site Visits</div><div class="stat-value" id="statSiteVisits">-</div></div>
+      <div class="admin-stat-card"><div class="stat-label">Total Views</div><div class="stat-value" id="statViews">-</div></div>
+    </div>
+
+    <div class="admin-panel">
+      <div class="admin-panel-head">
+        <h2>Needs your attention</h2>
+        <a href="admin-properties.html?filter=pending" class="admin-btn admin-btn-primary">Review pending listings</a>
+      </div>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Developer</th>
+              <th>City</th>
+              <th>Posted</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="pendingTableBody">
+            <tr class="admin-empty-row"><td colspan="6">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="admin-panel">
+      <div class="admin-panel-head">
+        <h2>Recent enquiries</h2>
+        <a href="admin-enquiries.html" class="admin-btn">View all</a>
+      </div>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Contact</th>
+              <th>Message</th>
+              <th>Received</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="enquiriesTableBody">
+            <tr class="admin-empty-row"><td colspan="5">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+
+<script src="js/config.js"></script>
+<script src="js/admin-auth.js"></script>
+
+<script>
+
+/* =========================================================
+   KEYS99 - ADMIN DASHBOARD
+========================================================= */
+
+(async () => {
+
+  const user = await requireAdmin();
+  if(!user) return;
+
+  renderAdminSidebar("admin-dashboard.html");
+
+  if(user.full_name){
+    document.getElementById("welcomeLine").textContent = "Welcome back, " + user.full_name + ".";
+  }
+
+  await Promise.all([
+    loadStats(),
+    loadPendingProperties(),
+    loadRecentEnquiries()
+  ]);
+
+})();
+
+
+async function countRows(table, filterFn){
+  let query = supabaseClient.from(table).select("*", { count: "exact", head: true });
+  if(filterFn) query = filterFn(query);
+  const { count, error } = await query;
+  if(error){
+    console.error("Count failed for " + table, error);
+    return 0;
+  }
+  return count || 0;
+}
+
+async function loadStats(){
+
+  try{
+
+    const [
+      totalProperties,
+      activeProperties,
+      pendingProperties,
+      users,
+      agents,
+      developers,
+      enquiries,
+      siteVisits,
+      viewsRows
+    ] = await Promise.all([
+      countRows("projects"),
+      countRows("projects", q => q.eq("moderation_status", "approved")),
+      countRows("projects", q => q.eq("moderation_status", "pending")),
+      countRows("profiles"),
+      countRows("agents"),
+      countRows("developers"),
+      countRows("enquiries"),
+      countRows("site_visits"),
+      supabaseClient.from("projects").select("views")
+    ]);
+
+    document.getElementById("statTotalProperties").textContent = totalProperties;
+    document.getElementById("statActiveProperties").textContent = activeProperties;
+    document.getElementById("statPendingProperties").textContent = pendingProperties;
+    document.getElementById("statUsers").textContent = users;
+    document.getElementById("statAgents").textContent = agents;
+    document.getElementById("statDevelopers").textContent = developers;
+    document.getElementById("statEnquiries").textContent = enquiries;
+    document.getElementById("statSiteVisits").textContent = siteVisits;
+
+    const totalViews = (viewsRows.data || []).reduce((sum, row) => sum + (row.views || 0), 0);
+    document.getElementById("statViews").textContent = totalViews.toLocaleString("en-IN");
+
+  }catch(err){
+    console.error(err);
+    showAdminMessage("dashMessage", "Some stats failed to load. Refresh to try again.", "error");
+  }
+
+}
+
+async function loadPendingProperties(){
+
+  const tbody = document.getElementById("pendingTableBody");
+
+  const { data, error } = await supabaseClient
+    .from("projects")
+    .select("id, developer, city, created_at, moderation_status")
+    .eq("moderation_status", "pending")
+    .order("created_at", { ascending: false })
+    .limit(8);
+
+  if(error){
+    tbody.innerHTML = '<tr class="admin-empty-row"><td colspan="6">Failed to load.</td></tr>';
+    return;
+  }
+
+  if(!data || data.length === 0){
+    tbody.innerHTML = '<tr class="admin-empty-row"><td colspan="6">Nothing pending review.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = data.map(p => `
+    <tr>
+      <td>${escapeAdminHtml(p.developer || "Untitled listing")}</td>
+      <td class="admin-cell-muted">${escapeAdminHtml(p.developer || "-")}</td>
+      <td class="admin-cell-muted">${escapeAdminHtml(p.city || "-")}</td>
+      <td class="admin-cell-muted">${adminFormatDate(p.created_at)}</td>
+      <td>${adminBadge(p.moderation_status)}</td>
+      <td><a href="admin-properties.html?filter=pending" class="admin-btn">Review</a></td>
+    </tr>
+  `).join("");
+
+}
+
+async function loadRecentEnquiries(){
+
+  const tbody = document.getElementById("enquiriesTableBody");
+
+  const { data, error } = await supabaseClient
+    .from("enquiries")
+    .select("id, name, phone, email, message, created_at, status")
+    .order("created_at", { ascending: false })
+    .limit(8);
+
+  if(error){
+    tbody.innerHTML = '<tr class="admin-empty-row"><td colspan="5">Failed to load.</td></tr>';
+    return;
+  }
+
+  if(!data || data.length === 0){
+    tbody.innerHTML = '<tr class="admin-empty-row"><td colspan="5">No enquiries yet.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = data.map(e => `
+    <tr>
+      <td>${escapeAdminHtml(e.name || "-")}</td>
+      <td class="admin-cell-muted">${escapeAdminHtml(e.phone || e.email || "-")}</td>
+      <td class="admin-cell-muted">${escapeAdminHtml((e.message || "").slice(0, 60))}${(e.message || "").length > 60 ? "..." : ""}</td>
+      <td class="admin-cell-muted">${adminFormatDate(e.created_at)}</td>
+      <td>${adminBadge(e.status)}</td>
+    </tr>
+  `).join("");
+
+}
+
+</script>
+
+</body>
+</html>

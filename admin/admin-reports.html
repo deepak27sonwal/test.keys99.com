@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#06251f">
+
+<title>Reports | Keys99 Admin</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin-reports.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+
+<body>
+
+
+<div class="admin-shell">
+
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <main class="admin-main">
+
+    <div class="admin-topbar">
+      <div class="admin-title">
+        <h1>Reports</h1>
+        <p>How the marketplace is trending, built from your live data.</p>
+      </div>
+    </div>
+
+    <div class="admin-message" id="reportMessage" hidden></div>
+
+    <div class="admin-stat-grid">
+      <div class="admin-stat-card"><div class="stat-label">New Listings (30d)</div><div class="stat-value" id="statNewListings">-</div></div>
+      <div class="admin-stat-card"><div class="stat-label">Enquiries (30d)</div><div class="stat-value" id="statEnquiries30">-</div></div>
+      <div class="admin-stat-card"><div class="stat-label">Site Visits (30d)</div><div class="stat-value" id="statVisits30">-</div></div>
+      <div class="admin-stat-card accent-gold"><div class="stat-label">Avg. Views / Listing</div><div class="stat-value" id="statAvgViews">-</div></div>
+    </div>
+
+    <div class="admin-panel">
+      <div class="admin-panel-head"><h2>Listings by moderation status</h2></div>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead><tr><th>Status</th><th>Listings</th><th>Share</th></tr></thead>
+          <tbody id="statusBreakdownBody">
+            <tr class="admin-empty-row"><td colspan="3">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="admin-panel">
+      <div class="admin-panel-head"><h2>Top cities by listings</h2></div>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead><tr><th>City</th><th>Listings</th></tr></thead>
+          <tbody id="topCitiesBody">
+            <tr class="admin-empty-row"><td colspan="2">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="admin-panel">
+      <div class="admin-panel-head"><h2>Top localities by listings</h2></div>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead><tr><th>Locality</th><th>City</th><th>Listings</th></tr></thead>
+          <tbody id="topLocalitiesBody">
+            <tr class="admin-empty-row"><td colspan="3">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+
+<script src="js/config.js"></script>
+<script src="js/admin-auth.js"></script>
+
+<script>
+
+/* =========================================================
+   KEYS99 - ADMIN REPORTS
+   All aggregation happens client-side over rows the admin RLS
+   policies already allow it to read - no new DB functions.
+========================================================= */
+
+(async () => {
+
+  const user = await requireAdmin();
+  if(!user) return;
+
+  renderAdminSidebar("admin-reports.html");
+
+  await loadReport();
+
+})();
+
+
+async function loadReport(){
+
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+  const [propsRes, enquiries30Res, visits30Res] = await Promise.all([
+    supabaseClient.from("projects").select("city, locality, moderation_status, views, created_at"),
+    supabaseClient.from("enquiries").select("*", { count: "exact", head: true }).gte("created_at", thirtyDaysAgo),
+    supabaseClient.from("site_visits").select("*", { count: "exact", head: true }).gte("created_at", thirtyDaysAgo)
+  ]);
+
+  if(propsRes.error){
+    showAdminMessage("reportMessage", "Failed to load report data: " + propsRes.error.message, "error");
+    return;
+  }
+
+  const properties = propsRes.data || [];
+
+  const newListings = properties.filter(p => p.created_at && p.created_at >= thirtyDaysAgo).length;
+  const totalViews = properties.reduce((sum, p) => sum + (p.views || 0), 0);
+  const avgViews = properties.length ? Math.round(totalViews / properties.length) : 0;
+
+  document.getElementById("statNewListings").textContent = newListings;
+  document.getElementById("statEnquiries30").textContent = enquiries30Res.count || 0;
+  document.getElementById("statVisits30").textContent = visits30Res.count || 0;
+  document.getElementById("statAvgViews").textContent = avgViews.toLocaleString("en-IN");
+
+  renderStatusBreakdown(properties);
+  renderTopCities(properties);
+  renderTopLocalities(properties);
+
+}
+
+function renderStatusBreakdown(properties){
+
+  const counts = {};
+  properties.forEach(p => {
+    const status = p.moderation_status || "pending";
+    counts[status] = (counts[status] || 0) + 1;
+  });
+
+  const total = properties.length || 1;
+  const tbody = document.getElementById("statusBreakdownBody");
+
+  const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+
+  if(entries.length === 0){
+    tbody.innerHTML = '<tr class="admin-empty-row"><td colspan="3">No listings yet.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = entries.map(([status, count]) => `
+    <tr>
+      <td>${adminBadge(status)}</td>
+      <td>${count}</td>
+      <td class="admin-cell-muted">${Math.round((count / total) * 100)}%</td>
+    </tr>
+  `).join("");
+
+}
+
+function renderTopCities(properties){
+
+  const counts = {};
+  properties.forEach(p => {
+    const city = (p.city || "").trim();
+    if(!city) return;
+    counts[city] = (counts[city] || 0) + 1;
+  });
+
+  const tbody = document.getElementById("topCitiesBody");
+  const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+
+  if(entries.length === 0){
+    tbody.innerHTML = '<tr class="admin-empty-row"><td colspan="2">No city data yet.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = entries.map(([city, count]) => `
+    <tr><td style="font-weight:700;">${escapeAdminHtml(city)}</td><td>${count}</td></tr>
+  `).join("");
+
+}
+
+function renderTopLocalities(properties){
+
+  const counts = {};
+  properties.forEach(p => {
+    const locality = (p.locality || "").trim();
+    if(!locality) return;
+    const key = locality + "|" + (p.city || "");
+    if(!counts[key]) counts[key] = { locality, city: p.city || "-", count: 0 };
+    counts[key].count += 1;
+  });
+
+  const tbody = document.getElementById("topLocalitiesBody");
+  const entries = Object.values(counts).sort((a, b) => b.count - a.count).slice(0, 10);
+
+  if(entries.length === 0){
+    tbody.innerHTML = '<tr class="admin-empty-row"><td colspan="3">No locality data yet.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = entries.map(e => `
+    <tr>
+      <td style="font-weight:700;">${escapeAdminHtml(e.locality)}</td>
+      <td class="admin-cell-muted">${escapeAdminHtml(e.city)}</td>
+      <td>${e.count}</td>
+    </tr>
+  `).join("");
+
+}
+
+</script>
+
+</body>
+</html>
