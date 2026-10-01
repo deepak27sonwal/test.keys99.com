@@ -100,6 +100,35 @@ function rerelativiseScriptLinks(html, outputPath){
   );
 }
 
+/* absolutiseLinks leaves every link root-absolute ("/css/x"), which only
+   works when the site is served from the domain root. Rewrite them relative
+   to the page being written, so the same output also works from a subfolder
+   (e.g. GitHub Pages at user.github.io/repo/). Canonical, Open Graph and
+   JSON-LD URLs are full https:// URLs and are left alone. */
+function relativiseRootLinks(html, outputPath){
+  const fromDir = path.posix.dirname(outputPath.replace(/\/$/, "") + "/x");
+
+  const toRelative = link => {
+    const [pathPart, suffix = ""] = link.split(/(?=[?#])/);
+    let rel = path.posix.relative(fromDir, pathPart) || ".";
+    if(pathPart.endsWith("/")) rel += "/";
+    return rel + suffix;
+  };
+
+  return html
+    .replace(
+      /(\s(?:href|src|action)=)(["'])(\/(?!\/)[^"']*)\2/g,
+      (match, attr, quote, link) => attr + quote + toRelative(link) + quote
+    )
+    .replace(
+      /<script\b(?![^>]*\bsrc=)(?![^>]*application\/ld\+json)[^>]*>[\s\S]*?<\/script>/g,
+      block => block.replace(
+        /(["'`])(\/(?:assets|css|js|projects)\/[^"'`]*|\/[A-Za-z0-9._-]+\.html(?:[?#][^"'`]*)?)\1/g,
+        (match, quote, link) => quote + toRelative(link) + quote
+      )
+    );
+}
+
 /* The site's own head tags are replaced wholesale by the SEO
    head, so remove the originals first to avoid two titles or
    two stylesheets fighting. */
@@ -296,7 +325,9 @@ function propertyPage(property, context = {}){
   $("body").append(`<script>window.__KEYS99_PROPERTY_ID__=${JSON.stringify(property.id)};`
     + `window.__KEYS99_ROOT__=${JSON.stringify(rootPrefix)};</script>`);
 
-  return rerelativiseScriptLinks("<!DOCTYPE html>\n" + $.html(), urlPath);
+  return relativiseRootLinks(
+    rerelativiseScriptLinks("<!DOCTYPE html>\n" + $.html(), urlPath), urlPath
+  );
 }
 
 
@@ -398,7 +429,9 @@ function collectionPage({
      existing filter logic the values it would have read. */
   $("body").append(`<script>window.__KEYS99_FILTERS__=${JSON.stringify(filters)};</script>`);
 
-  return rerelativiseScriptLinks("<!DOCTYPE html>\n" + $.html(), urlPath);
+  return relativiseRootLinks(
+    rerelativiseScriptLinks("<!DOCTYPE html>\n" + $.html(), urlPath), urlPath
+  );
 }
 
 /* ---------------------------------------------------------
@@ -649,4 +682,4 @@ function homePage(properties){
   return html;
 }
 
-module.exports = { propertyPage, collectionPage, homePage };
+module.exports = { propertyPage, collectionPage, homePage, relativiseRootLinks };
