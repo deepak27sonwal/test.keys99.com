@@ -809,7 +809,7 @@ function getImageUrl(property){
   if(image){
     return image;
   }
-  return "/assets/property-placeholder.svg";
+  return "assets/property-placeholder.svg";
 }
 
 function escapeHtml(value){
@@ -901,7 +901,7 @@ function createPropertyCard(property, badgeLabel, badgeClass){
           src="${escapeHtml(image)}"
           alt="${escapeHtml(imageAlt)}"
           loading="lazy"
-          onerror="this.src='/assets/property-placeholder.svg'"
+          onerror="this.src='assets/property-placeholder.svg'"
         >
 
         <span class="badge ${statusClass}">${escapeHtml(status)}</span>
@@ -1110,7 +1110,7 @@ function initBottomNav(activeTarget){
    run it once in your Supabase project's SQL Editor.
 ========================================================= */
 
-const DEFAULT_AVATAR = "/assets/property-placeholder.svg";
+const DEFAULT_AVATAR = "assets/property-placeholder.svg";
 const PROFILES_TABLE = "profiles";
 const AVATAR_BUCKET = "users-avatars";
 const PROPERTIES_TABLE = "projects";

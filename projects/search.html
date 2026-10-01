@@ -671,7 +671,7 @@ function getImageUrl(property){
   if(image){
     return image;
   }
-  return "/assets/property-placeholder.svg";
+  return "../assets/property-placeholder.svg";
 }
 
 function escapeHtml(value){
@@ -765,7 +765,7 @@ function createPropertyCard(property, badgeLabel, badgeClass){
           src="${escapeHtml(image)}"
           alt="${escapeHtml(imageAlt)}"
           loading="lazy"
-          onerror="this.src='/assets/property-placeholder.svg'"
+          onerror="this.src='../assets/property-placeholder.svg'"
         >
 
         <span class="badge ${statusClass}">${escapeHtml(status)}</span>

@@ -76,7 +76,7 @@ function absolutiseLinks($){
 }
 
 /* Links written inside inline <script> blocks - "property-details.html?id=",
-   "../profile.html" and friends - are relative to BASE_PATH, because that is
+   "../profile.html", "../assets/…" and friends - are relative to BASE_PATH, because that is
    where the source page lives. A generated page sits deeper than that, and the
    browser resolves those strings against the *document*, not the script file,
    so they have to be re-pointed for each output depth.
@@ -90,7 +90,7 @@ function rerelativiseScriptLinks(html, outputPath){
   return html.replace(
     /<script\b(?![^>]*\bsrc=)[^>]*>[\s\S]*?<\/script>/g,
     block => block.replace(
-      /(["'`])((?:\.\.\/)*[A-Za-z0-9._-]+\.html(?:\?[^"'`]*)?)\1/g,
+      /(["'`])((?:\.\.\/)*(?:assets\/[A-Za-z0-9._\/-]+|[A-Za-z0-9._-]+\.html(?:\?[^"'`]*)?))\1/g,
       (match, quote, link) => {
         if(/^(https?:|\/\/|\/)/.test(link)) return match;
         const resolved = path.posix.normalize(prefix + "/" + link);
