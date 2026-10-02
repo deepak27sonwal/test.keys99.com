@@ -1,6 +1,6 @@
 /* =========================================================
    KEYS99 - SUPABASE CONFIG
-   Supabase credentials + the properties table column list
+   Supabase credentials + the project query
    for the public site. Every public page loads this file
    before its own script. Fill in the two values below from
    the new Supabase project.
@@ -18,39 +18,44 @@ const supabaseClient =
     SUPABASE_ANON_KEY
   );
 
-const PROPERTY_SELECT_COLUMNS = `
+/* Projects live in residential_projects, with their developer,
+   city, locality, configurations and media in related tables.
+   One request embeds them all. residential_projects has two
+   foreign keys to localities (locality_id, and city_id+locality_id),
+   so the embed names the one to follow. */
+const PROJECTS_TABLE = "residential_projects";
+
+const PROJECT_SELECT = `
   id,
   slug,
-  title,
-  description,
-  seo_title,
-  seo_description,
-  created_at,
-  developer,
-  address,
-  state,
-  city,
-  locality,
-  pincode,
+  project_name,
+  project_type,
   status,
-  possession,
+  construction_stage,
+  possession_status,
+  rera_number,
+  rera_possession_date,
+  target_possession_date,
+  address,
+  pincode,
   overview,
-  main_image,
-  gallery_images,
-  reels,
-  bhk_options,
-  amenities,
-  nearby_landmarks,
-  interior,
-  exterior,
-  rera_id,
-  contact_number,
-  youtube_link,
-  facebook_link,
-  instagram_link,
-  posted_by_user_id,
-  posted_by_user_code,
-  posted_by_name,
-  virtual_tour_video,
-  views
+  starting_price,
+  maximum_price,
+  price_on_request,
+  main_image_path,
+  main_image_bucket,
+  view_count,
+  published_at,
+  created_at,
+  developer:developers ( name ),
+  city:cities ( name, state ),
+  locality:localities!residential_projects_locality_id_fkey ( name ),
+  configurations:residential_configurations (
+    bhk_type, carpet_area, area_unit, starting_price, maximum_price,
+    price_on_request, availability, display_order
+  ),
+  media:residential_media (
+    media_type, media_url, media_path, storage_bucket,
+    is_primary, is_active, display_order
+  )
 `;

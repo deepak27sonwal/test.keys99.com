@@ -825,23 +825,155 @@
 
 async function fetchAllProperties(){
 
-  /* Only approved listings, matching what build/generate.js
-     publishes. Without this the homepage shows pending, rejected
-     and suspended listings, and its city/locality links point at
-     hub pages the build never wrote - a 404 for the crawler. */
+  /* Only published, non-deleted projects. The database's RLS
+     policies enforce the same rule for anonymous visitors; the
+     filters here keep signed-in admins from seeing drafts on the
+     public homepage too. */
   const { data, error } = await supabaseClient
-    .from("projects")
-    .select(PROPERTY_SELECT_COLUMNS)
-    .eq("moderation_status", "approved")
-    .order("created_at", { ascending:false });
+    .from(PROJECTS_TABLE)
+    .select(PROJECT_SELECT)
+    .eq("moderation_status", "published")
+    .is("deleted_at", null)
+    .order("published_at", { ascending:false, nullsFirst:false });
 
   if(error){
     console.error("Supabase error:", error);
     throw error;
   }
 
-  return Array.isArray(data) ? data : [];
+  return Array.isArray(data) ? data.map(mapResidentialProject) : [];
 
+}
+
+
+/* =========================================================
+   RESIDENTIAL PROJECT -> CARD SHAPE
+
+   The database splits a project across residential_projects,
+   developers, cities, localities, residential_configurations
+   and residential_media. The card code below was written for
+   one flat row, so each project is flattened into that shape
+   here and nothing else on the page needs to know.
+========================================================= */
+
+const STATUS_LABELS = {
+  upcoming:"Upcoming",
+  new_launch:"New Launch",
+  under_construction:"Under Construction",
+  ready_to_move:"Ready to Move",
+  completed:"Completed",
+  resale:"Resale"
+};
+
+const PROJECT_TYPE_LABELS = {
+  apartment:"Apartment",
+  villa:"Villa",
+  row_house:"Row House",
+  townhouse:"Townhouse",
+  residential_plot:"Residential Plot",
+  independent_house:"Independent House",
+  mixed_residential:"Residential Project",
+  other:"Property"
+};
+
+const PROJECT_TYPE_CATEGORY = {
+  villa:"luxury",
+  row_house:"luxury",
+  townhouse:"luxury",
+  independent_house:"luxury",
+  residential_plot:"plots"
+};
+
+const AVAILABILITY_LABELS = {
+  available:"Available",
+  sold_out:"Sold Out",
+  on_request:"On Request"
+};
+
+function storagePublicUrl(bucket, path){
+  if(!bucket || !path) return "";
+  return SUPABASE_URL + "/storage/v1/object/public/" + bucket + "/" +
+    String(path).split("/").map(encodeURIComponent).join("/");
+}
+
+function mediaUrl(item){
+  return (item && (item.media_url || storagePublicUrl(item.storage_bucket, item.media_path))) || "";
+}
+
+function pickMainImage(row){
+  const media = (Array.isArray(row.media) ? row.media : [])
+    .filter(item => item && item.is_active !== false)
+    .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
+
+  const main =
+    media.find(item => item.media_type === "main_image" && item.is_primary) ||
+    media.find(item => item.media_type === "main_image") ||
+    media.find(item => item.media_type === "gallery" && item.is_primary) ||
+    media.find(item => item.media_type === "gallery");
+
+  return mediaUrl(main) || storagePublicUrl(row.main_image_bucket, row.main_image_path);
+}
+
+function formatMonthYear(value){
+  if(!value) return "";
+  const date = new Date(value);
+  if(!Number.isFinite(date.getTime())) return "";
+  return date.toLocaleDateString("en-IN", { month:"short", year:"numeric" });
+}
+
+function mapConfiguration(config, projectPriceOnRequest){
+  const onRequest = projectPriceOnRequest || config.price_on_request;
+  const from = Number(config.starting_price);
+  const to = Number(config.maximum_price);
+  const hasFrom = Number.isFinite(from) && from > 0;
+  const hasRange = hasFrom && Number.isFinite(to) && to > from;
+
+  return {
+    type: normaliseBhkType(config.bhk_type),
+    price: onRequest || !hasFrom ? null : from,
+    price_words: onRequest ? "On Request" : (hasRange ? formatPrice(from) + " – " + formatPrice(to) : ""),
+    sqft: config.carpet_area,
+    areaUnit: config.area_unit === "sq_m" ? "Sq.M" : "Sq.Ft",
+    availability: AVAILABILITY_LABELS[config.availability] || ""
+  };
+}
+
+function mapResidentialProject(row){
+  const configs = (Array.isArray(row.configurations) ? row.configurations : [])
+    .slice()
+    .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
+
+  const statusKey = row.construction_stage === "new_launch" ? "new_launch" : row.status;
+
+  return {
+    id: row.id,
+    slug: row.slug,
+    project_name: titleCaseName(row.project_name),
+    project_type: row.project_type,
+    type_label: PROJECT_TYPE_LABELS[row.project_type] || "Property",
+    category: PROJECT_TYPE_CATEGORY[row.project_type] || "residential",
+    is_new_launch: row.status === "new_launch" || row.construction_stage === "new_launch",
+
+    /* Developers are only readable when active and verified, so an
+       unverified developer comes back null and the card omits it. */
+    developer: row.developer ? row.developer.name : "",
+    city: row.city ? row.city.name : "",
+    state: row.city ? row.city.state : "",
+    locality: row.locality ? row.locality.name : "",
+    address: row.address,
+    pincode: row.pincode,
+
+    status: STATUS_LABELS[statusKey] || "",
+    possession: formatMonthYear(row.target_possession_date || row.rera_possession_date),
+    overview: row.overview,
+    rera_id: row.rera_number,
+
+    main_image: pickMainImage(row),
+    bhk_options: configs.map(config => mapConfiguration(config, row.price_on_request)),
+
+    views: row.view_count,
+    created_at: row.published_at || row.created_at
+  };
 }
 
 
@@ -914,6 +1046,12 @@ function normaliseBhkType(value){
 }
 
 function getCardTitle(property){
+  /* Projects have a real name; prefer it over a generated
+     "2 BHK Apartment" label. */
+  if(property.project_name){
+    return property.project_name;
+  }
+
   const bhk = getBhkText(property);
   const category = getCategory(property);
   const label = CATEGORY_LABELS[category] || "Property";
@@ -1059,6 +1197,11 @@ function getStatusClass(status){
 }
 
 function getCategory(property){
+
+  /* Set from project_type when the row came from residential_projects. */
+  if(property.category){
+    return property.category;
+  }
 
   /* Only scan curated fields (bhk config, developer, overview) - never
      address/locality/city. Indian addresses routinely read "Plot 12,
@@ -1638,6 +1781,7 @@ function getNewLaunchProperties(){
   const cutoff = Date.now() - NEW_LAUNCH_WINDOW_MS;
 
   return allProperties.filter(property => {
+    if(property.is_new_launch) return true;
     const created = new Date(property.created_at).getTime();
     return Number.isFinite(created) && created >= cutoff;
   });
