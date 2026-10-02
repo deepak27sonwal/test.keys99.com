@@ -10,7 +10,7 @@ const SUPABASE_URL =
   "https://ljyywdgwjiedeiuqchdt.supabase.co";
 
 const SUPABASE_ANON_KEY =
-  "YOUR_SUPABASE_ANON_KEY"; // Project Settings -> API -> anon / publishable key
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxqeXl3ZGd3amllZGVpdXFjaGR0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwODU5MTksImV4cCI6MjEwNTY2MTkxOX0.d6YMR0MO_MgOaD4DzknBYT4Udmy5xS_B6TntcQ7IYA8";
 
 const supabaseClient =
   window.supabase.createClient(
